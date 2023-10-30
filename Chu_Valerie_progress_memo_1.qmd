@@ -48,7 +48,7 @@ tbr <- read_csv("data/to_read.csv")
 
 ## Before we dive into the data — A quick introduction to Goodreads
 
-What is Goodreads? 
+**What is Goodreads?**
 
 It's essentially what I think of as a combination of Twitter and Amazon for book lovers. 
 
@@ -75,13 +75,47 @@ Officially, this is how Goodreads describes itself: "Goodreads is the world’s 
 
 ## Data source
 
-I'm interested in analyzing user habits on Goodreads. 
+**I'm interested in analyzing user habits on Goodreads.** 
+
+I arrived at this dataset through searching Kaggle and Google. As one Reddit user put it, this is **the** most comprehensive dataset for book data. 
+
+This is what the Kaggle description says, "There have been good datasets for movies (Netflix, Movielens) and music (Million Songs) recommendation, but not for books. That is, until now."
+
+This is the link to the "goodbooks-10k" dataset on Kaggle: 
+[https://www.kaggle.com/datasets/zygmunt/goodbooks-10k](https://www.kaggle.com/datasets/zygmunt/goodbooks-10k)
+
+The description in Kaggle links to a Github repo that has a more updated and comprehensive version of the "books" dataset, which is the one that I loaded in. **The Github repo below is where I got my five datasets from. I believe both the older and newer versions were created by the same person, or at least authorized by them, because the datasets are identical except for more variables being added to the new one. ** 
+
+::: {.callout-tip icon=false}
+
+## My Data Source
+
+**[https://github.com/zygmuntz/goodbooks-10k](https://github.com/zygmuntz/goodbooks-10k)**
+
+:::
+
+
+## Why this data
+
+The reason why I'm interested in this dataset is extremely simple: I love reading. And Goodreads is like the treasure trove of every reader. So being able to analyze Goodreads data/Goodreads user data seems super fun. 
+
+As mentioned above, I'm interested in analyzing user habits on Goodreads. This is why I chose this dataset. I've spent several hours combing through Kaggle, Google, Reddit, and other places on the internet. As far as I can tell, this is the most comprehensive dataset about books and user readings habits I can find, freely available from the internet. It was scraped from Goodread's and Goodread users's publicly available data. 
+
+
+An interesting sidenote: 
+
+At one point, I stumbled across a dataset from the UCSD Book Graph:
+[https://mengtingwan.github.io/data/goodreads.html#datasets](https://mengtingwan.github.io/data/goodreads.html#datasets)
+
+However, the problem is that this dataset is around 4.1 GB. It's the only other dataset I found on the internet that's rumored to have more comprehensive reader user data than the one I found from Github user zygmuntz (the one linked in the section above). However this dataset from UCSD Book Graph is too big, and my computer can't load it without crashing. Hence, why I decided to use the "goodbooks-10k" dataset. 
 
 
 
-**First, a note about the data**
+## Potential data issues, Part 1
 
-There are five datasets relevant to achieving my goal. 
+**Before I talk about data quality & complexity check, I want to first bring up potential data issues. Mainly, the reason why I have five datasets.**
+
+There are five datasets relevant to achieving my goal of wanting to analyze user reading habits through Goodreads data. 
 
 - The primary dataset that I will be using is the one I have saved as "books". 
 
@@ -90,18 +124,42 @@ There are five datasets relevant to achieving my goal.
 - The good thing is, the other four datasets can all be joined with the "books" dataset to create one large dataset. For example, `goodreads_book_id` in the "book_tags" dataset corresponds with `goodreads_book_id` in the "books" dataset. Because every book has a unique `goodreads_book_id`. This is the case across all five datasets pertaining to Goodreads user habits. 
 
 
-## Why this data
-
-Blah blah blah^[another footnote]
-
 ## Data quality & complexity check
 
-Blah blah blah
+As demonstrated above, I had no trouble reading in the data. I've also mentioned above what joining the data might look like. It can definitely be done, and probably with limited issues. 
 
-## Potential data issues
+**So, I've established that for now, I will be primarily focusing on the "books" dataset. That's where most of the data is.**
 
-Blah blah blah
+The books dataset:
+
+- There are 10,000 observations.
+
+- There are 23 variables.
+
+- There are 17 numerical variables.
+
+- There are 6 categorical variables.
+
+Exploring missingness:
+```{r}
+
+naniar::gg_miss_var(books)
+
+```
+- These are the variables with missing values: `language_code`, `isbn`, `original_title`, `isbn13`, `original_publication_year`.
+
+- But overall, there are no big missingness issues. 
+
+
+## Potential data issues, Part 2
+
+Some other potential data issues: 
+
+- As far as I can tell, this dataset doesn't come with a codebook. However, the vast majority of variables — including all of the ones I'm interested in analyzing — have perfectly clear names. (ex. `isbn13`, `authors`, `original_title`, etc.) And luckily, between the READMEs in the Github and Kaggle versions of the books dataset, I know what most of the variables mean. 
 
 ## Misc
 
-Blah Blah
+- For the most part, the "books" dataset is clean, organized, and has lots of data. 
+
+I'm super excited to start working with it! 
+
