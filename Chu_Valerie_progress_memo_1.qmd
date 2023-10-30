@@ -3,29 +3,22 @@ title: "Progress Memo 1"
 subtitle: |
   | Final Project 
   | Data Science 1 with R (STAT 301-1)
-author: "YOUR NAME"
+author: "Valerie Chu"
 date: today
 
 format:
   html:
     toc: true
     embed-resources: true
-    
+    code-fold: show
+    link-external-newwindow: true
+
 execute:
-  echo: false
   warning: false
-
+  
 from: markdown+emoji 
+
 ---
-
-::: {.callout-important}
-## Memo format
-
-Like all other submissions for this course, we expect the memo to be neat and well organized.
-
-You should make this document your own. This is a template. To help with this we have added a date to the yaml above (good whenever writing memos). You should remove this block when making this document your own.
-
-:::
 
 ::: {.callout-tip icon=false}
 
@@ -34,20 +27,15 @@ You should make this document your own. This is a template. To help with this we
 [https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git](https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git)
 
 :::
-
-::: {.callout-warning}
-GitHub (free account) cannot store large files. If you try to commit and push a large dataset you will have an ERROR! Any file over 100 MB (100,000 KB) needs to be added to the `.gitignore` file BEFORE committing.
-
-**We may need to do that for files in your final project!**
-:::
-
 ## Load Packages
+
 ```{r}
 library(tidyverse)
 ```
 
 
 ## Load Data
+
 ```{r}
 
 books <- read_delim("data/books.csv")
@@ -58,11 +46,49 @@ tbr <- read_csv("data/to_read.csv")
 
 ```
 
+## Before we dive into the data — A quick introduction to Goodreads
+
+What is Goodreads? 
+
+It's essentially what I think of as a combination of Twitter and Amazon for book lovers. 
+
+These are a few of Goodread's draws. It allows users to:
+
+- Categorize books on their bookshelves
+
+- Write book reviews
+
+- Find their next read
+
+- Vote on their annual favorites across genres
+
+- See what books their friends are reading
+
+- Track the books they're reading, have read, and want to read
+
+- See their personalized book recommendations. (Goodreads says "Our recommendation engine analyzes 20 billion data points to give suggestions tailored to your literary tastes.")
+
+- Read community reviews
+
+Officially, this is how Goodreads describes itself: "Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007."
 
 
 ## Data source
 
-Blah blah blah^[where blah blah came from, an example of footnote]
+I'm interested in analyzing user habits on Goodreads. 
+
+
+
+**First, a note about the data**
+
+There are five datasets relevant to achieving my goal. 
+
+- The primary dataset that I will be using is the one I have saved as "books". 
+
+- However, the other four datasets — "books_tags", "ratings", "tags", and "tbr" all contain additional data about user habits on Goodreads. 
+
+- The good thing is, the other four datasets can all be joined with the "books" dataset to create one large dataset. For example, `goodreads_book_id` in the "book_tags" dataset corresponds with `goodreads_book_id` in the "books" dataset. Because every book has a unique `goodreads_book_id`. This is the case across all five datasets pertaining to Goodreads user habits. 
+
 
 ## Why this data
 

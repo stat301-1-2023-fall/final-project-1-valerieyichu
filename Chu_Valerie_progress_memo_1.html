@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="YOUR NAME">
+<meta name="author" content="Valerie Chu">
 <meta name="dcterms.date" content="2023-10-29">
 
 <title>Progress Memo 1</title>
@@ -20,6 +20,40 @@ ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
+}
+
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+}
+pre.numberSource { margin-left: 3em; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -2993,6 +3027,7 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages">Load Packages</a></li>
   <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
+  <li><a href="#before-we-dive-into-the-data-a-quick-introduction-to-goodreads" id="toc-before-we-dive-into-the-data-a-quick-introduction-to-goodreads" class="nav-link" data-scroll-target="#before-we-dive-into-the-data-a-quick-introduction-to-goodreads">Before we dive into the data — A quick introduction to Goodreads</a></li>
   <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data source</a></li>
   <li><a href="#why-this-data" id="toc-why-this-data" class="nav-link" data-scroll-target="#why-this-data">Why this data</a></li>
   <li><a href="#data-quality-complexity-check" id="toc-data-quality-complexity-check" class="nav-link" data-scroll-target="#data-quality-complexity-check">Data quality &amp; complexity check</a></li>
@@ -3017,7 +3052,7 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>YOUR NAME </p>
+             <p>Valerie Chu </p>
           </div>
   </div>
     
@@ -3034,20 +3069,6 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
 
 </header>
 
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Memo format
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Like all other submissions for this course, we expect the memo to be neat and well organized.</p>
-<p>You should make this document your own. This is a template. To help with this we have added a date to the yaml above (good whenever writing memos). You should remove this block when making this document your own.</p>
-</div>
-</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3061,33 +3082,58 @@ Github Repo Link
 <p><a href="https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git">https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git</a></p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>GitHub (free account) cannot store large files. If you try to commit and push a large dataset you will have an ERROR! Any file over 100 MB (100,000 KB) needs to be added to the <code>.gitignore</code> file BEFORE committing.</p>
-<p><strong>We may need to do that for files in your final project!</strong></p>
-</div>
-</div>
 <section id="load-packages" class="level2">
 <h2 class="anchored" data-anchor-id="load-packages">Load Packages</h2>
+<div class="cell">
+<details open>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 <section id="load-data" class="level2">
 <h2 class="anchored" data-anchor-id="load-data">Load Data</h2>
+<div class="cell">
+<details open>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>books <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;data/books.csv&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>books_tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/book_tags.csv&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/ratings.csv&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/tags.csv&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tbr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/to_read.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="before-we-dive-into-the-data-a-quick-introduction-to-goodreads" class="level2">
+<h2 class="anchored" data-anchor-id="before-we-dive-into-the-data-a-quick-introduction-to-goodreads">Before we dive into the data — A quick introduction to Goodreads</h2>
+<p>What is Goodreads?</p>
+<p>It’s essentially what I think of as a combination of Twitter and Amazon for book lovers.</p>
+<p>These are a few of Goodread’s draws. It allows users to:</p>
+<ul>
+<li><p>Categorize books on their bookshelves</p></li>
+<li><p>Write book reviews</p></li>
+<li><p>Find their next read</p></li>
+<li><p>Vote on their annual favorites across genres</p></li>
+<li><p>See what books their friends are reading</p></li>
+<li><p>Track the books they’re reading, have read, and want to read</p></li>
+<li><p>See their personalized book recommendations. (Goodreads says “Our recommendation engine analyzes 20 billion data points to give suggestions tailored to your literary tastes.”)</p></li>
+<li><p>Read community reviews</p></li>
+</ul>
+<p>Officially, this is how Goodreads describes itself: “Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007.”</p>
 </section>
 <section id="data-source" class="level2">
 <h2 class="anchored" data-anchor-id="data-source">Data source</h2>
-<p>Blah blah blah<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>I’m interested in analyzing user habits on Goodreads.</p>
+<p>There are five datasets relevant to achieving my goal.</p>
+<ul>
+<li><p>The primary dataset that I will be using is the one I have saved as “books”.</p></li>
+<li><p>However, the other four datasets — “books_tags”, “ratings”, “tags”, and “tbr” all contain additional data about user habits on Goodreads.</p></li>
+<li><p>The good thing is, the other four datasets can all be joined with the “books” dataset to create one large dataset. For example, <code>goodreads_book_id</code> in the “book_tags” dataset corresponds with <code>goodreads_book_id</code> in the “books” dataset. Because every book has a unique <code>goodreads_book_id</code>. This is the case across all five datasets pertaining to Goodreads user habits.</p></li>
+</ul>
 </section>
 <section id="why-this-data" class="level2">
 <h2 class="anchored" data-anchor-id="why-this-data">Why this data</h2>
-<p>Blah blah blah<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>Blah blah blah<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 </section>
 <section id="data-quality-complexity-check" class="level2">
 <h2 class="anchored" data-anchor-id="data-quality-complexity-check">Data quality &amp; complexity check</h2>
@@ -3106,8 +3152,7 @@ Warning
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>where blah blah came from, an example of footnote<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>another footnote<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>another footnote<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->
@@ -3342,6 +3387,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
 });
 </script>
 </div> <!-- /content -->
