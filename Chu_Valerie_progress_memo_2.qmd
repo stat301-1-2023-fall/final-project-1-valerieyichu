@@ -20,6 +20,12 @@ from: markdown+emoji
 
 ---
 
+**Data should be merged, cleaned, and variables should be explored. Univariate and bivariate analysis completed for several variables.** 
+If your tibble is particularly big, put an appendix. Or if you have miscellaneous information that's not that important but that you really want to show, put it in an appendix. 
+
+Either use ggsave or echo false. 
+
+
 ## Load Data
 ```{r}
 library(tidyverse)
