@@ -39,8 +39,3 @@
 # the following code in the Terminal:
 # find . -size +100M | sed 's|^\./||g' | cat >> .gitignore; awk '!NF || !seen[$0]++' .gitignore
 
-# IGNORE LARGE DATA (> 5 MB, since that's what triggers the RStudio warning)
-data/book_tags.csv
-data/ratings.csv
-data/tags.csv
-data/to_read.csv
