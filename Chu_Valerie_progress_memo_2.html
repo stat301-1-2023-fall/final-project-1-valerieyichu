@@ -3027,8 +3027,11 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages">Load Packages</a></li>
   <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
+  <li><a href="#a-quick-refresher-on-my-data" id="toc-a-quick-refresher-on-my-data" class="nav-link" data-scroll-target="#a-quick-refresher-on-my-data">A Quick Refresher On My Data</a></li>
+  <li><a href="#my-objectives" id="toc-my-objectives" class="nav-link" data-scroll-target="#my-objectives">My Objectives</a></li>
   <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining Data</a></li>
   <li><a href="#step-1-joining-tags-with-book_tags" id="toc-step-1-joining-tags-with-book_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-with-book_tags">Step 1: Joining tags with book_tags</a></li>
+  <li><a href="#step-2-joining" id="toc-step-2-joining" class="nav-link" data-scroll-target="#step-2-joining">Step 2: Joining</a></li>
   <li><a href="#scratch-work-ignore-below" id="toc-scratch-work-ignore-below" class="nav-link" data-scroll-target="#scratch-work-ignore-below">SCRATCH WORK IGNORE BELOW</a>
   <ul class="collapse">
   <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1">Load Data</a></li>
@@ -3107,6 +3110,25 @@ My Data Source
 <p><strong><a href="https://github.com/zygmuntz/goodbooks-10k">https://github.com/zygmuntz/goodbooks-10k</a></strong></p>
 </div>
 </div>
+</section>
+<section id="a-quick-refresher-on-my-data" class="level2">
+<h2 class="anchored" data-anchor-id="a-quick-refresher-on-my-data">A Quick Refresher On My Data</h2>
+<p><strong>What is Goodreads?</strong></p>
+<p>Officially, this is how Goodreads describes itself: “Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007.”</p>
+<p><strong>What is my data about?</strong></p>
+<p>This is an extremely comprehensive dataset for book data.</p>
+<p>It comes in five separate files: “books”, “books_tags”, “ratings”, “tags”, and “tbr”</p>
+<p>(For context, users on Goodreads can <em>tag</em> books and add them to their shelves. And “tbr” stands for “to be read”.)</p>
+<p>In this document, when I say “Goodreads data”, I am referring to the five datasets generally. When I join the datasets and give them a more specific name, that specific name is what I will use.</p>
+</section>
+<section id="my-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="my-objectives">My Objectives</h2>
+<p>There are several questions I’m interested in examining in Goodreads data.</p>
+<ul>
+<li><p>What are the most highly rated books?</p></li>
+<li><p>What is the relationship between a book’s average rating and the year it was published?</p></li>
+<li><p>How do users tag the most highly rated books? Is there a trend?</p></li>
+</ul>
 </section>
 <section id="joining-data" class="level2">
 <h2 class="anchored" data-anchor-id="joining-data">Joining Data</h2>
@@ -3228,6 +3250,9 @@ My Data Source
 </div>
 </div>
 <p>Now, for the fun part. An EDA of our new dataset, books_and_tags.</p>
+</section>
+<section id="step-2-joining" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-joining">Step 2: Joining</h2>
 </section>
 <section id="scratch-work-ignore-below" class="level1">
 <h1>SCRATCH WORK IGNORE BELOW</h1>

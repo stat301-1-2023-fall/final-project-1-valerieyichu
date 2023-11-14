@@ -42,6 +42,34 @@ tbr <- read_csv("data/to_read.csv")
 
 :::
 
+## A Quick Refresher On My Data
+
+**What is Goodreads?**
+
+Officially, this is how Goodreads describes itself: “Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007.”
+
+**What is my data about?**
+
+This is an extremely comprehensive dataset for book data. 
+
+It comes in five separate files: "books", “books_tags”, “ratings”, “tags”, and “tbr”
+
+(For context, users on Goodreads can *tag* books and add them to their shelves. And "tbr" stands for "to be read".) 
+
+In this document, when I say "Goodreads data", I am referring to the five datasets generally. When I join the datasets and give them a more specific name, that specific name is what I will use. 
+
+
+## My Objectives
+
+There are several questions I'm interested in examining in Goodreads data. 
+
+- What are the most highly rated books? 
+
+- What is the relationship between a book's average rating and the year it was published? 
+
+- How do users tag the most highly rated books? Is there a trend?
+
+
 ## Joining Data
 
 The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below:
@@ -112,7 +140,7 @@ books_and_tags
 Now, for the fun part. An EDA of our new dataset, books_and_tags. 
 
 
-
+## Step 2: Joining 
 
 
 # SCRATCH WORK IGNORE BELOW
