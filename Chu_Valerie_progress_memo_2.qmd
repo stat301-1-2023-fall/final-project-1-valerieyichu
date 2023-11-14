@@ -169,9 +169,10 @@ Interestingly, both antijoins reveal that there are 9,824 rows missing. So that 
 Let's use full_join then filter for NA values. 
 
 ```{r}
-books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id))
+books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id)) |> 
+  select(title, work_id, book_id) 
 
-books_and_ratings |> knitr::kable
+books_and_ratings 
 ```
 
 

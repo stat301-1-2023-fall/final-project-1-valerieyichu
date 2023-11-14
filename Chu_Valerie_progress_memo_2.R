@@ -39,5 +39,23 @@
   # --- very few, if any projects, fall into this rare case. 
 
 
+library(tidyverse)
+
+
+books <- read_delim("data/books.csv")
+books_tags <- read_csv("data/book_tags.csv")
+ratings <- read_csv("data/ratings.csv")
+tags <- read_csv("data/tags.csv")
+tbr <- read_csv("data/to_read.csv")
+
+
+
+
+
+books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id)) |> 
+  select(title, work_id, book_id) 
+
+books_and_ratings 
+
 
 
