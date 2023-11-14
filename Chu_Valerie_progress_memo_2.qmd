@@ -20,6 +20,103 @@ from: markdown+emoji
 
 ---
 
+## Load Packages
+```{r}
+library(tidyverse)
+```
+
+## Load Data
+
+```{r}
+books <- read_delim("data/books.csv")
+books_tags <- read_csv("data/book_tags.csv")
+ratings <- read_csv("data/ratings.csv")
+tags <- read_csv("data/tags.csv")
+tbr <- read_csv("data/to_read.csv")
+```
+::: {.callout-tip icon=false}
+
+## My Data Source
+
+**[https://github.com/zygmuntz/goodbooks-10k](https://github.com/zygmuntz/goodbooks-10k)**
+
+:::
+
+## Joining Data
+
+The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below:
+
+**Ratings**
+
+- Ratings go from one to five. Both book IDs and user IDs are contiguous. For books, they are 1-10000, for users, 1-53424.
+
+- to_read.csv provides IDs of the books marked "to read" by each user, as user_id,book_id pairs, sorted by time. There are close to a million pairs.
+
+- books.csv has metadata for each book (goodreads IDs, authors, title, average rating, etc.). The metadata have been extracted from goodreads XML files, available in books_xml.
+
+**Tags**
+
+- book_tags.csv contains tags/shelves/genres assigned by users to books. Tags in this file are represented by their IDs. They are sorted by goodreads_book_id ascending and count descending.
+
+- Each tag/shelf is given an ID. tags.csv translates tag IDs to names.
+
+**Goodreads IDs**
+
+- Each book may have many editions. goodreads_book_id and best_book_id generally point to the most popular edition of a given book, while goodreads work_id refers to the book in the abstract sense.
+
+- Note that book_id in ratings.csv and to_read.csv maps to work_id, not to goodreads_book_id, meaning that ratings for different editions are aggregated.
+
+
+## Step 1: Joining tags with book_tags
+
+
+One of the things we learned from the README:
+
+tags.csv and books_tags.csv both have the variable `tag_id` in common. And `tag_id` has only unique values for both datasets. `tag_id` also corresponds for both datasets. So let's test whether `tag_id` is a feasible foreign / primary key:
+
+First, a data exploration of implicit missing variables:
+```{r}
+anti_join(tags, books_tags, by = c("tag_id" = "tag_id")) 
+```
+```{r}
+anti_join(books_tags, tags, by = c("tag_id" = "tag_id")) 
+```
+Using anti_joins shows us that there are no `tag_id` rows in `books_tags` that don't have a matching `tag_id` row in `tags`. In other words, every `tag_id` is unique and each `tag_id` row in both datasets correspond directly to each other. 
+
+Also, if we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows
+```{r}
+books_tags |> count(tag_id)
+tags |> count(tag_id)
+```
+
+
+
+So:
+
+**`tag_id` is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
+
+
+Now, let's actually join the two datasets: 
+
+To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_Join in this case because `tag_id` in both datasets perfectly correspond): 
+
+```{r}
+# Join tags and books_tags
+
+books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
+
+books_and_tags
+
+```
+
+Now, for the fun part. An EDA of our new dataset, books_and_tags. 
+
+
+
+
+
+# SCRATCH WORK IGNORE BELOW
+
 **Data should be merged, cleaned, and variables should be explored. Univariate and bivariate analysis completed for several variables.** 
 If your tibble is particularly big, put an appendix. Or if you have miscellaneous information that's not that important but that you really want to show, put it in an appendix. 
 
