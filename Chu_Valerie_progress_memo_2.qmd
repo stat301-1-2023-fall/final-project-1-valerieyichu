@@ -52,7 +52,7 @@ Officially, this is how Goodreads describes itself: “Goodreads is the world’
 
 This is an extremely comprehensive dataset for book data. 
 
-It comes in five separate files: "books", “books_tags”, “ratings”, “tags”, and “tbr”
+It comes in five separate csv files: "books", “books_tags”, “ratings”, “tags”, and “tbr”
 
 (For context, users on Goodreads can *tag* books and add them to their shelves. And "tbr" stands for "to be read".) 
 
@@ -126,7 +126,7 @@ So:
 
 Now, let's actually join the two datasets: 
 
-To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_Join in this case because `tag_id` in both datasets perfectly correspond): 
+To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_join in this case because `tag_id` in both datasets perfectly correspond): 
 
 ```{r}
 # Join tags and books_tags
@@ -140,7 +140,42 @@ books_and_tags
 Now, for the fun part. An EDA of our new dataset, books_and_tags. 
 
 
-## Step 2: Joining 
+## Step 2: Joining books and ratings
+
+The README says that both `book_id` and `user_id` are contiguous in the ratings.csv file.
+
+It also contains a very important note: `book_id` in the ratings dataset and tbr dataset map to `work_id` in the books dataset (not `goodreads_book_id` as we would intuitively assume). 
+
+Right now, I just want to focus on my first question: "What are the most highly rated books?" 
+
+And to do so, I need to join the ratings dataset with the books dataset. 
+
+Let's start by seeing whether there is implicit missingness using antijoins:
+
+```{r}
+anti_join(books, ratings, by = c("work_id" = "book_id")) |> distinct(work_id)
+```
+
+The code above returns all rows for `work_id` within books that don't have a matching `book_id` within rating.
+
+```{r}
+anti_join(books, ratings, by = c("work_id" = "book_id")) |> distinct(work_id)
+```
+
+The code above returns all rows for `book_id` within rating that don't have a matching `work_id` within books. 
+
+Interestingly, both antijoins reveal that there are 9,824 rows missing. So that means that `book_id` from rating and `work_id` from books have the same number of implicitly missing values. I wonder why that is. 
+
+Let's use full_join then filter for NA values. 
+
+```{r}
+books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id))
+
+books_and_ratings |> knitr::kable
+```
+
+
+
 
 
 # SCRATCH WORK IGNORE BELOW

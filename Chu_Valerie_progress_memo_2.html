@@ -3031,7 +3031,7 @@ vertical-align: -.125em;
   <li><a href="#my-objectives" id="toc-my-objectives" class="nav-link" data-scroll-target="#my-objectives">My Objectives</a></li>
   <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining Data</a></li>
   <li><a href="#step-1-joining-tags-with-book_tags" id="toc-step-1-joining-tags-with-book_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-with-book_tags">Step 1: Joining tags with book_tags</a></li>
-  <li><a href="#step-2-joining" id="toc-step-2-joining" class="nav-link" data-scroll-target="#step-2-joining">Step 2: Joining</a></li>
+  <li><a href="#step-2-joining-books-and-ratings" id="toc-step-2-joining-books-and-ratings" class="nav-link" data-scroll-target="#step-2-joining-books-and-ratings">Step 2: Joining books and ratings</a></li>
   <li><a href="#scratch-work-ignore-below" id="toc-scratch-work-ignore-below" class="nav-link" data-scroll-target="#scratch-work-ignore-below">SCRATCH WORK IGNORE BELOW</a>
   <ul class="collapse">
   <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1">Load Data</a></li>
@@ -3117,7 +3117,7 @@ My Data Source
 <p>Officially, this is how Goodreads describes itself: “Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007.”</p>
 <p><strong>What is my data about?</strong></p>
 <p>This is an extremely comprehensive dataset for book data.</p>
-<p>It comes in five separate files: “books”, “books_tags”, “ratings”, “tags”, and “tbr”</p>
+<p>It comes in five separate csv files: “books”, “books_tags”, “ratings”, “tags”, and “tbr”</p>
 <p>(For context, users on Goodreads can <em>tag</em> books and add them to their shelves. And “tbr” stands for “to be read”.)</p>
 <p>In this document, when I say “Goodreads data”, I am referring to the five datasets generally. When I join the datasets and give them a more specific name, that specific name is what I will use.</p>
 </section>
@@ -3222,7 +3222,7 @@ My Data Source
 <p>So:</p>
 <p><strong><code>tag_id</code> is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
 <p>Now, let’s actually join the two datasets:</p>
-<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_Join in this case because <code>tag_id</code> in both datasets perfectly correspond):</p>
+<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_join in this case because <code>tag_id</code> in both datasets perfectly correspond):</p>
 <div class="cell">
 <details open>
 <summary>Code</summary>
@@ -3251,8 +3251,91 @@ My Data Source
 </div>
 <p>Now, for the fun part. An EDA of our new dataset, books_and_tags.</p>
 </section>
-<section id="step-2-joining" class="level2">
-<h2 class="anchored" data-anchor-id="step-2-joining">Step 2: Joining</h2>
+<section id="step-2-joining-books-and-ratings" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-joining-books-and-ratings">Step 2: Joining books and ratings</h2>
+<p>The README says that both <code>book_id</code> and <code>user_id</code> are contiguous in the ratings.csv file.</p>
+<p>It also contains a very important note: <code>book_id</code> in the ratings dataset and tbr dataset map to <code>work_id</code> in the books dataset (not <code>goodreads_book_id</code> as we would intuitively assume).</p>
+<p>Right now, I just want to focus on my first question: “What are the most highly rated books?”</p>
+<p>And to do so, I need to join the ratings dataset with the books dataset.</p>
+<p>Let’s start by seeing whether there is implicit missingness using antijoins:</p>
+<div class="cell">
+<details open>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;work_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;book_id&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(work_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9,824 × 1
+    work_id
+      &lt;dbl&gt;
+ 1  2792775
+ 2  4640799
+ 3  3212258
+ 4  3275794
+ 5   245494
+ 6 16827462
+ 7  1540236
+ 8  3036731
+ 9  3338963
+10  3060926
+# ℹ 9,814 more rows</code></pre>
+</div>
+</div>
+<p>The code above returns all rows for <code>work_id</code> within books that don’t have a matching <code>book_id</code> within rating.</p>
+<div class="cell">
+<details open>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;work_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;book_id&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(work_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9,824 × 1
+    work_id
+      &lt;dbl&gt;
+ 1  2792775
+ 2  4640799
+ 3  3212258
+ 4  3275794
+ 5   245494
+ 6 16827462
+ 7  1540236
+ 8  3036731
+ 9  3338963
+10  3060926
+# ℹ 9,814 more rows</code></pre>
+</div>
+</div>
+<p>The code above returns all rows for <code>book_id</code> within rating that don’t have a matching <code>work_id</code> within books.</p>
+<p>Interestingly, both antijoins reveal that there are 9,824 rows missing. So that means that <code>book_id</code> from rating and <code>work_id</code> from books have the same number of implicitly missing values. I wonder why that is.</p>
+<p>Let’s use full_join then filter for NA values.</p>
+<div class="cell">
+<details open>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(work_id <span class="sc">==</span> book_id))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>books_and_ratings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,986,303 × 25
+   book_id goodreads_book_id best_book_id  work_id books_count isbn       isbn13
+     &lt;dbl&gt;             &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
+ 1       1           2767052      2767052  2792775         272 439023483 9.78e12
+ 2       2                 3            3  4640799         491 439554934 9.78e12
+ 3       3             41865        41865  3212258         226 316015849 9.78e12
+ 4       4              2657         2657  3275794         487 61120081  9.78e12
+ 5       5              4671         4671   245494        1356 743273567 9.78e12
+ 6       6          11870085     11870085 16827462         226 525478817 9.78e12
+ 7       7              5907         5907  1540236         969 618260307 9.78e12
+ 8       8              5107         5107  3036731         360 316769177 9.78e12
+ 9       9               960          960  3338963         311 14165247… 9.78e12
+10      10              1885         1885  3060926        3455 679783261 9.78e12
+# ℹ 5,986,293 more rows
+# ℹ 18 more variables: authors &lt;chr&gt;, original_publication_year &lt;dbl&gt;,
+#   original_title &lt;chr&gt;, title &lt;chr&gt;, language_code &lt;chr&gt;,
+#   average_rating &lt;dbl&gt;, ratings_count &lt;dbl&gt;, work_ratings_count &lt;dbl&gt;,
+#   work_text_reviews_count &lt;dbl&gt;, ratings_1 &lt;dbl&gt;, ratings_2 &lt;dbl&gt;,
+#   ratings_3 &lt;dbl&gt;, ratings_4 &lt;dbl&gt;, ratings_5 &lt;dbl&gt;, image_url &lt;chr&gt;,
+#   small_image_url &lt;chr&gt;, user_id &lt;dbl&gt;, rating &lt;dbl&gt;</code></pre>
+</div>
+</div>
 </section>
 <section id="scratch-work-ignore-below" class="level1">
 <h1>SCRATCH WORK IGNORE BELOW</h1>
@@ -3263,7 +3346,7 @@ My Data Source
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script.</p>
