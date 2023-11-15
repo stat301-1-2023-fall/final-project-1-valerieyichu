@@ -25,6 +25,8 @@ from: markdown+emoji
 library(tidyverse)
 ```
 
+[https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git](https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git)
+
 ## Load Data
 
 ```{r}
@@ -68,7 +70,7 @@ There are several questions I'm interested in examining in Goodreads data.
 - What is the relationship between a book's average rating and the year it was published? 
 
 - How do users tag the most highly rated books? Is there a trend?
-
+grouping the different ratings (if treating rating as a category) --> stacked barplot, etc. 
 
 ## Joining Data
 
@@ -153,23 +155,31 @@ And to do so, I need to join the ratings dataset with the books dataset.
 Let's start by seeing whether there is implicit missingness using antijoins:
 
 ```{r}
-anti_join(books, ratings, by = c("work_id" = "book_id")) |> distinct(work_id)
+anti_join(books, ratings, by = c("book_id" = "book_id"))
 ```
 
-The code above returns all rows for `work_id` within books that don't have a matching `book_id` within rating.
+The code above returns all rows for `work_id` within books that don't have a matching `book_id` within rating and vice versa.
 
-```{r}
-anti_join(books, ratings, by = c("work_id" = "book_id")) |> distinct(work_id)
-```
 
-The code above returns all rows for `book_id` within rating that don't have a matching `work_id` within books. 
-
-Interestingly, both antijoins reveal that there are 9,824 rows missing. So that means that `book_id` from rating and `work_id` from books have the same number of implicitly missing values. I wonder why that is. 
+Interestingly, the antijoins reveal that there are 9,824 rows missing. So that means that `book_id` from rating and `work_id` from books have the same number of implicitly missing values. I wonder why that is. 
 
 Let's use full_join then filter for NA values. 
 
+ ful join includes books that don't have a rating and ratings that aren't paired with books.\
+maybe - summarize ratings by books then join them
+left join books
+
+0. misisngness .merge issues. summary statistics. weird things happening/outliers to deal with/unusual things.
+1. make sure factors are factors, characters are characters, etc. 
+3. Research questions
+
+
+1. condense ratings into summarized outputs. 
+2. mess around with the order of the left join. 
+
+
 ```{r}
-books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id)) |> 
+books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
   select(title, work_id, book_id) 
 
 books_and_ratings 
