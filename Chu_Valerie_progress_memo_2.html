@@ -3031,6 +3031,7 @@ vertical-align: -.125em;
   <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining Data</a></li>
   <li><a href="#step-1-joining-tags-and-books_tags" id="toc-step-1-joining-tags-and-books_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-and-books_tags">Step 1: Joining tags and books_tags</a></li>
   <li><a href="#step-2-joining-books-and-ratings" id="toc-step-2-joining-books-and-ratings" class="nav-link" data-scroll-target="#step-2-joining-books-and-ratings">Step 2: Joining books and ratings</a></li>
+  <li><a href="#question-1-what-are-the-most-highly-rated-books" id="toc-question-1-what-are-the-most-highly-rated-books" class="nav-link" data-scroll-target="#question-1-what-are-the-most-highly-rated-books">Question 1: What are the most highly rated books?</a></li>
   <li><a href="#scratch-work-ignore-below" id="toc-scratch-work-ignore-below" class="nav-link" data-scroll-target="#scratch-work-ignore-below">SCRATCH WORK IGNORE BELOW</a>
   <ul class="collapse">
   <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
@@ -3136,6 +3137,7 @@ My Data Source
 <ul>
 <li><p>What are the most highly rated books?</p></li>
 <li><p>What is the relationship between a book’s average rating and the year it was published?</p></li>
+<li><p>Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?</p></li>
 <li><p>How do users tag the most highly rated books? Is there a trend? grouping the different ratings (if treating rating as a category) –&gt; stacked barplot, etc.</p></li>
 </ul>
 </section>
@@ -3243,7 +3245,7 @@ My Data Source
 <section id="step-2-joining-books-and-ratings" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-joining-books-and-ratings">Step 2: Joining books and ratings</h2>
 <p><strong>Why am I joining books and ratings?</strong></p>
-<p>Joining books and ratings will allow me to start working on two of my research questions: “What are the most highly rated books?” and “What is the relationship between a book’s average rating and the year it was published?”</p>
+<p>Joining books and ratings will allow me to start answering on three of my research questions: “What are the most highly rated books?”, “What is the relationship between a book’s average rating and the year it was published?” and “Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?”</p>
 <p><strong>Now let’s actually join books and ratings</strong></p>
 <p>But first, some prefaces:</p>
 <p>The README says:</p>
@@ -3277,43 +3279,31 @@ My Data Source
 </div>
 <p>The code above returns all rows for <code>book_id</code> within books that don’t have a matching <code>book_id</code> within rating and vice versa. There are no rows that don’t match.</p>
 <p>So <strong>book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
-<p>Just a quick sidenote because I find this very interesting: If we were to have instead mapped <code>work_id</code> in books with <code>book_id</code> in ratings (which I didn’t because I’m interested in the most popular edition of a given book, <em>not</em> different editions being aggregated). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where <code>work_id</code> doesn’t match to <code>book_id</code> and 5,846,293 rows where <code>book_id</code> doesn’t match to <code>work_id</code> (see R file for more details). But since I’m not doing that because I’m not interested in different editions being aggregated, all I need to do is use <code>book_id</code> to join the datasets books and ratings.</p>
-<p>Let’s use full_join then filter for NA values.</p>
-<p>full join includes books that don’t have a rating and ratings that aren’t paired with books.<br>
-maybe - summarize ratings by books then join them left join books</p>
-<ol start="0" type="1">
-<li><p>misisngness .merge issues. summary statistics. weird things happening/outliers to deal with/unusual things.</p></li>
-<li><p>make sure factors are factors, characters are characters, etc.</p></li>
-<li><p>Research questions</p></li>
-<li><p>condense ratings into summarized outputs.</p></li>
-<li><p>mess around with the order of the left join.</p></li>
-</ol>
+<p>Just a quick side note because I find this very interesting: If I were to have instead mapped <code>work_id</code> in books with <code>book_id</code> in ratings (which I didn’t because I’m interested in the most popular edition of a given book, <em>not</em> different editions being aggregated). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where <code>work_id</code> doesn’t match to <code>book_id</code> and 5,846,293 rows where <code>book_id</code> doesn’t match to <code>work_id</code> (there are simply many more work_id rows than book_id rows because, again, multiple book editions. See my R file for more details). But since I’m not doing that because I’m not interested in different editions being aggregated, all I need to do is use <code>book_id</code> to join the datasets books and ratings.</p>
+<p>An excerpt of <strong>the new books_and_ratings dataset:</strong></p>
 <div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(book_id <span class="sc">==</span> book_id)) <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, work_id, book_id) </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>books_and_ratings </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5,976,479 × 3
-   title                                   work_id book_id
-   &lt;chr&gt;                                     &lt;dbl&gt;   &lt;dbl&gt;
- 1 The Hunger Games (The Hunger Games, #1) 2792775       1
- 2 The Hunger Games (The Hunger Games, #1) 2792775       1
- 3 The Hunger Games (The Hunger Games, #1) 2792775       1
- 4 The Hunger Games (The Hunger Games, #1) 2792775       1
- 5 The Hunger Games (The Hunger Games, #1) 2792775       1
- 6 The Hunger Games (The Hunger Games, #1) 2792775       1
- 7 The Hunger Games (The Hunger Games, #1) 2792775       1
- 8 The Hunger Games (The Hunger Games, #1) 2792775       1
- 9 The Hunger Games (The Hunger Games, #1) 2792775       1
-10 The Hunger Games (The Hunger Games, #1) 2792775       1
+<pre><code># A tibble: 5,976,479 × 6
+# Groups:   title [9,964]
+   title                        book_id goodreads_book_id work_id user_id rating
+   &lt;chr&gt;                          &lt;dbl&gt;             &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+ 1 The Hunger Games (The Hunge…       1           2767052 2792775    2886      5
+ 2 The Hunger Games (The Hunge…       1           2767052 2792775    6158      5
+ 3 The Hunger Games (The Hunge…       1           2767052 2792775    3991      4
+ 4 The Hunger Games (The Hunge…       1           2767052 2792775    5281      5
+ 5 The Hunger Games (The Hunge…       1           2767052 2792775    5721      5
+ 6 The Hunger Games (The Hunge…       1           2767052 2792775    5034      5
+ 7 The Hunger Games (The Hunge…       1           2767052 2792775     695      5
+ 8 The Hunger Games (The Hunge…       1           2767052 2792775    5021      5
+ 9 The Hunger Games (The Hunge…       1           2767052 2792775    3209      5
+10 The Hunger Games (The Hunge…       1           2767052 2792775    6769      4
 # ℹ 5,976,469 more rows</code></pre>
 </div>
 </div>
-<p>Now, for the fun part. An EDA of our two new datasets, books_and_tags and books_and_ratings.</p>
+<p>Now, for the fun part. An EDA with our two new datasets, books_and_tags and books_and_ratings. And maybe some of the original datasets too.</p>
+</section>
+<section id="question-1-what-are-the-most-highly-rated-books" class="level2">
+<h2 class="anchored" data-anchor-id="question-1-what-are-the-most-highly-rated-books">Question 1: What are the most highly rated books?</h2>
 </section>
 <section id="scratch-work-ignore-below" class="level1">
 <h1>SCRATCH WORK IGNORE BELOW</h1>
@@ -3324,7 +3314,7 @@ maybe - summarize ratings by books then join them left join books</p>
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script.</p>

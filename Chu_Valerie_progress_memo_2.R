@@ -122,11 +122,26 @@ anti_join(books, ratings, by = c("book_id" = "book_id"))
   # 1. condense ratings into summarized outputs. 
   # 2. mess around with the order of the left join. 
 
-
+# Out of curiosity; not included in the qmd; joining work_id by book_id
 books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id)) |> 
   select(title, work_id, book_id) 
 
 books_and_ratings 
+
+
+# Joining book_id by book_id
+
+books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
+  group_by(title) |> 
+  select(title, book_id, goodreads_book_id, work_id, user_id, rating)
+
+books_and_ratings
+
+
+# Joining book_id with book_id gives way too many columns, mainly because the ratings aren't counted by books. 
+# So let's count the books. 
+
+
 
 
 
