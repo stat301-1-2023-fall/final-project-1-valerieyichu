@@ -20,14 +20,22 @@ from: markdown+emoji
 
 ---
 
-## Load Packages
-```{r}
-library(tidyverse)
-```
+::: {.callout-tip icon=false}
+
+## Github Repo
 
 [https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git](https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git)
 
-## Load Data
+:::
+
+## Set Up
+
+- Load Packages
+```{r, echo = FALSE}
+library(tidyverse)
+```
+
+- Load Data
 
 ```{r}
 books <- read_delim("data/books.csv")
@@ -74,7 +82,7 @@ grouping the different ratings (if treating rating as a category) --> stacked ba
 
 ## Joining Data
 
-The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below:
+The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below. I'll re-explain the key points when I join my data in the following section, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:
 
 **Ratings**
 
@@ -105,32 +113,30 @@ One of the things we learned from the README:
 tags.csv and books_tags.csv both have the variable `tag_id` in common. And `tag_id` has only unique values for both datasets. `tag_id` also corresponds for both datasets. So let's test whether `tag_id` is a feasible foreign / primary key:
 
 First, a data exploration of implicit missing variables:
-```{r}
+```{r, echo = FALSE}
 anti_join(tags, books_tags, by = c("tag_id" = "tag_id")) 
 ```
-```{r}
+```{r, echo = FALSE}
 anti_join(books_tags, tags, by = c("tag_id" = "tag_id")) 
 ```
 Using anti_joins shows us that there are no `tag_id` rows in `books_tags` that don't have a matching `tag_id` row in `tags`. In other words, every `tag_id` is unique and each `tag_id` row in both datasets correspond directly to each other. 
 
-Also, if we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows
-```{r}
+Also, if we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows:
+```{r, echo = FALSE}
 books_tags |> count(tag_id)
 tags |> count(tag_id)
 ```
 
 
 
-So:
-
-**`tag_id` is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
+So: **`tag_id` is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
 
 
 Now, let's actually join the two datasets: 
 
-To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_join in this case because `tag_id` in both datasets perfectly correspond): 
+To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_join in this case because `tag_id` in both datasets perfectly correspond). This is part of **the new books_and_tags dataset**:
 
-```{r}
+```{r, echo = FALSE}
 # Join tags and books_tags
 
 books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))

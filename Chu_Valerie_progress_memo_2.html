@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Valerie Chu">
-<meta name="dcterms.date" content="2023-11-14">
+<meta name="dcterms.date" content="2023-11-22">
 
 <title>Progress Memo 2</title>
 <style>
@@ -3025,8 +3025,7 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages">Load Packages</a></li>
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
+  <li><a href="#set-up" id="toc-set-up" class="nav-link active" data-scroll-target="#set-up">Set Up</a></li>
   <li><a href="#a-quick-refresher-on-my-data" id="toc-a-quick-refresher-on-my-data" class="nav-link" data-scroll-target="#a-quick-refresher-on-my-data">A Quick Refresher On My Data</a></li>
   <li><a href="#my-objectives" id="toc-my-objectives" class="nav-link" data-scroll-target="#my-objectives">My Objectives</a></li>
   <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining Data</a></li>
@@ -3034,7 +3033,7 @@ vertical-align: -.125em;
   <li><a href="#step-2-joining-books-and-ratings" id="toc-step-2-joining-books-and-ratings" class="nav-link" data-scroll-target="#step-2-joining-books-and-ratings">Step 2: Joining books and ratings</a></li>
   <li><a href="#scratch-work-ignore-below" id="toc-scratch-work-ignore-below" class="nav-link" data-scroll-target="#scratch-work-ignore-below">SCRATCH WORK IGNORE BELOW</a>
   <ul class="collapse">
-  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1">Load Data</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
   <li><a href="#basic-objectives" id="toc-basic-objectives" class="nav-link" data-scroll-target="#basic-objectives">Basic objectives</a></li>
   <li><a href="#objective-2" id="toc-objective-2" class="nav-link" data-scroll-target="#objective-2">Objective 2</a></li>
   <li><a href="#what-else-should-be-in-the-memo" id="toc-what-else-should-be-in-the-memo" class="nav-link" data-scroll-target="#what-else-should-be-in-the-memo">What else should be in the memo</a></li>
@@ -3066,7 +3065,7 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 14, 2023</p>
+      <p class="date">November 22, 2023</p>
     </div>
   </div>
   
@@ -3076,25 +3075,35 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
 
 </header>
 
-<section id="load-packages" class="level2">
-<h2 class="anchored" data-anchor-id="load-packages">Load Packages</h2>
-<div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
 </div>
-</section>
-<section id="load-data" class="level2">
-<h2 class="anchored" data-anchor-id="load-data">Load Data</h2>
+<div class="callout-title-container flex-fill">
+Github Repo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git">https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git</a></p>
+</div>
+</div>
+<section id="set-up" class="level2">
+<h2 class="anchored" data-anchor-id="set-up">Set Up</h2>
+<ul>
+<li>Load Packages</li>
+</ul>
+<ul>
+<li>Load Data</li>
+</ul>
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>books <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;data/books.csv&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>books_tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/book_tags.csv&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/ratings.csv&quot;</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/tags.csv&quot;</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tbr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/to_read.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>books <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">&quot;data/books.csv&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>books_tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/book_tags.csv&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/ratings.csv&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/tags.csv&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>tbr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/to_read.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -3127,12 +3136,12 @@ My Data Source
 <ul>
 <li><p>What are the most highly rated books?</p></li>
 <li><p>What is the relationship between a book’s average rating and the year it was published?</p></li>
-<li><p>How do users tag the most highly rated books? Is there a trend?</p></li>
+<li><p>How do users tag the most highly rated books? Is there a trend? grouping the different ratings (if treating rating as a category) –&gt; stacked barplot, etc.</p></li>
 </ul>
 </section>
 <section id="joining-data" class="level2">
 <h2 class="anchored" data-anchor-id="joining-data">Joining Data</h2>
-<p>The README in my data source has some notes userful for joining the five Goodreads datasets. I’ve copied and pasted the notes I found most interesting and relevant below:</p>
+<p>The README in my data source has some notes userful for joining the five Goodreads datasets. I’ve copied and pasted the notes I found most interesting and relevant below. I’ll re-explain the key points when I join my data in the following section, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:</p>
 <p><strong>Ratings</strong></p>
 <ul>
 <li><p>Ratings go from one to five. Both book IDs and user IDs are contiguous. For books, they are 1-10000, for users, 1-53424.</p></li>
@@ -3156,32 +3165,20 @@ My Data Source
 <p>tags.csv and books_tags.csv both have the variable <code>tag_id</code> in common. And <code>tag_id</code> has only unique values for both datasets. <code>tag_id</code> also corresponds for both datasets. So let’s test whether <code>tag_id</code> is a feasible foreign / primary key:</p>
 <p>First, a data exploration of implicit missing variables:</p>
 <div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(tags, books_tags, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;tag_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;tag_id&quot;</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 2
 # ℹ 2 variables: tag_id &lt;dbl&gt;, tag_name &lt;chr&gt;</code></pre>
 </div>
 </div>
 <div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books_tags, tags, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;tag_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;tag_id&quot;</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 3
 # ℹ 3 variables: goodreads_book_id &lt;dbl&gt;, tag_id &lt;dbl&gt;, count &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <p>Using anti_joins shows us that there are no <code>tag_id</code> rows in <code>books_tags</code> that don’t have a matching <code>tag_id</code> row in <code>tags</code>. In other words, every <code>tag_id</code> is unique and each <code>tag_id</code> row in both datasets correspond directly to each other.</p>
-<p>Also, if we take the <code>count</code> of <code>tag_id</code> in both datasets, the number of rows is exactly the same: 34,252 rows</p>
+<p>Also, if we take the <code>count</code> of <code>tag_id</code> in both datasets, the number of rows is exactly the same: 34,252 rows:</p>
 <div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>books_tags <span class="sc">|&gt;</span> <span class="fu">count</span>(tag_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 34,252 × 2
    tag_id     n
@@ -3198,10 +3195,6 @@ My Data Source
 10      9     1
 # ℹ 34,242 more rows</code></pre>
 </div>
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tags <span class="sc">|&gt;</span> <span class="fu">count</span>(tag_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 34,252 × 2
    tag_id     n
@@ -3219,19 +3212,10 @@ My Data Source
 # ℹ 34,242 more rows</code></pre>
 </div>
 </div>
-<p>So:</p>
-<p><strong><code>tag_id</code> is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
+<p>So: <strong><code>tag_id</code> is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
 <p>Now, let’s actually join the two datasets:</p>
-<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_join in this case because <code>tag_id</code> in both datasets perfectly correspond):</p>
+<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_join in this case because <code>tag_id</code> in both datasets perfectly correspond). This is part of the new books_and_tags dataset:</p>
 <div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Join tags and books_tags</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>books_and_tags <span class="ot">&lt;-</span> <span class="fu">full_join</span>(tags, books_tags, <span class="fu">join_by</span>(tag_id <span class="sc">==</span> tag_id))</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>books_and_tags</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 999,912 × 4
    tag_id tag_name goodreads_book_id count
@@ -3261,79 +3245,54 @@ My Data Source
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;work_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;book_id&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(work_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;book_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;book_id&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9,824 × 1
-    work_id
-      &lt;dbl&gt;
- 1  2792775
- 2  4640799
- 3  3212258
- 4  3275794
- 5   245494
- 6 16827462
- 7  1540236
- 8  3036731
- 9  3338963
-10  3060926
-# ℹ 9,814 more rows</code></pre>
+<pre><code># A tibble: 0 × 23
+# ℹ 23 variables: book_id &lt;dbl&gt;, goodreads_book_id &lt;dbl&gt;, best_book_id &lt;dbl&gt;,
+#   work_id &lt;dbl&gt;, books_count &lt;dbl&gt;, isbn &lt;chr&gt;, isbn13 &lt;dbl&gt;, authors &lt;chr&gt;,
+#   original_publication_year &lt;dbl&gt;, original_title &lt;chr&gt;, title &lt;chr&gt;,
+#   language_code &lt;chr&gt;, average_rating &lt;dbl&gt;, ratings_count &lt;dbl&gt;,
+#   work_ratings_count &lt;dbl&gt;, work_text_reviews_count &lt;dbl&gt;, ratings_1 &lt;dbl&gt;,
+#   ratings_2 &lt;dbl&gt;, ratings_3 &lt;dbl&gt;, ratings_4 &lt;dbl&gt;, ratings_5 &lt;dbl&gt;,
+#   image_url &lt;chr&gt;, small_image_url &lt;chr&gt;</code></pre>
 </div>
 </div>
-<p>The code above returns all rows for <code>work_id</code> within books that don’t have a matching <code>book_id</code> within rating.</p>
-<div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;work_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;book_id&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(work_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9,824 × 1
-    work_id
-      &lt;dbl&gt;
- 1  2792775
- 2  4640799
- 3  3212258
- 4  3275794
- 5   245494
- 6 16827462
- 7  1540236
- 8  3036731
- 9  3338963
-10  3060926
-# ℹ 9,814 more rows</code></pre>
-</div>
-</div>
-<p>The code above returns all rows for <code>book_id</code> within rating that don’t have a matching <code>work_id</code> within books.</p>
-<p>Interestingly, both antijoins reveal that there are 9,824 rows missing. So that means that <code>book_id</code> from rating and <code>work_id</code> from books have the same number of implicitly missing values. I wonder why that is.</p>
+<p>The code above returns all rows for <code>work_id</code> within books that don’t have a matching <code>book_id</code> within rating and vice versa.</p>
+<p>Interestingly, the antijoins reveal that there are 9,824 rows missing. So that means that <code>book_id</code> from rating and <code>work_id</code> from books have the same number of implicitly missing values. I wonder why that is.</p>
 <p>Let’s use full_join then filter for NA values.</p>
+<p>ful join includes books that don’t have a rating and ratings that aren’t paired with books.<br>
+maybe - summarize ratings by books then join them left join books</p>
+<ol start="0" type="1">
+<li><p>misisngness .merge issues. summary statistics. weird things happening/outliers to deal with/unusual things.</p></li>
+<li><p>make sure factors are factors, characters are characters, etc.</p></li>
+<li><p>Research questions</p></li>
+<li><p>condense ratings into summarized outputs.</p></li>
+<li><p>mess around with the order of the left join.</p></li>
+</ol>
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(work_id <span class="sc">==</span> book_id))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>books_and_ratings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(book_id <span class="sc">==</span> book_id)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, work_id, book_id) </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>books_and_ratings </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5,986,303 × 25
-   book_id goodreads_book_id best_book_id  work_id books_count isbn       isbn13
-     &lt;dbl&gt;             &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
- 1       1           2767052      2767052  2792775         272 439023483 9.78e12
- 2       2                 3            3  4640799         491 439554934 9.78e12
- 3       3             41865        41865  3212258         226 316015849 9.78e12
- 4       4              2657         2657  3275794         487 61120081  9.78e12
- 5       5              4671         4671   245494        1356 743273567 9.78e12
- 6       6          11870085     11870085 16827462         226 525478817 9.78e12
- 7       7              5907         5907  1540236         969 618260307 9.78e12
- 8       8              5107         5107  3036731         360 316769177 9.78e12
- 9       9               960          960  3338963         311 14165247… 9.78e12
-10      10              1885         1885  3060926        3455 679783261 9.78e12
-# ℹ 5,986,293 more rows
-# ℹ 18 more variables: authors &lt;chr&gt;, original_publication_year &lt;dbl&gt;,
-#   original_title &lt;chr&gt;, title &lt;chr&gt;, language_code &lt;chr&gt;,
-#   average_rating &lt;dbl&gt;, ratings_count &lt;dbl&gt;, work_ratings_count &lt;dbl&gt;,
-#   work_text_reviews_count &lt;dbl&gt;, ratings_1 &lt;dbl&gt;, ratings_2 &lt;dbl&gt;,
-#   ratings_3 &lt;dbl&gt;, ratings_4 &lt;dbl&gt;, ratings_5 &lt;dbl&gt;, image_url &lt;chr&gt;,
-#   small_image_url &lt;chr&gt;, user_id &lt;dbl&gt;, rating &lt;dbl&gt;</code></pre>
+<pre><code># A tibble: 5,976,479 × 3
+   title                                   work_id book_id
+   &lt;chr&gt;                                     &lt;dbl&gt;   &lt;dbl&gt;
+ 1 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 2 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 3 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 4 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 5 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 6 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 7 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 8 The Hunger Games (The Hunger Games, #1) 2792775       1
+ 9 The Hunger Games (The Hunger Games, #1) 2792775       1
+10 The Hunger Games (The Hunger Games, #1) 2792775       1
+# ℹ 5,976,469 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -3341,12 +3300,12 @@ My Data Source
 <h1>SCRATCH WORK IGNORE BELOW</h1>
 <p><strong>Data should be merged, cleaned, and variables should be explored. Univariate and bivariate analysis completed for several variables.</strong> If your tibble is particularly big, put an appendix. Or if you have miscellaneous information that’s not that important but that you really want to show, put it in an appendix.</p>
 <p>Either use ggsave or echo false.</p>
-<section id="load-data-1" class="level2">
-<h2 class="anchored" data-anchor-id="load-data-1">Load Data</h2>
+<section id="load-data" class="level2">
+<h2 class="anchored" data-anchor-id="load-data">Load Data</h2>
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script.</p>

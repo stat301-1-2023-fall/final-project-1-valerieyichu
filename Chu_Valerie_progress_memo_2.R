@@ -39,8 +39,17 @@
   # --- very few, if any projects, fall into this rare case. 
 
 
+## Starting the project -----
+
+
+## Load Packages -----
+
 library(tidyverse)
 
+
+
+
+## Load Data -----
 
 books <- read_delim("data/books.csv")
 books_tags <- read_csv("data/book_tags.csv")
@@ -48,6 +57,31 @@ ratings <- read_csv("data/ratings.csv")
 tags <- read_csv("data/tags.csv")
 tbr <- read_csv("data/to_read.csv")
 
+
+
+
+## Joining Datasets -----
+
+# tags.csv and books_tags.csv both have the variable `tag_id` in common. 
+# And `tag_id` has only unique values for both datasets. 
+# `tag_id` also corresponds for both datasets. 
+# So let's test whether `tag_id` is a feasible foreign / primary key:
+
+anti_join(tags, books_tags, by = c("tag_id" = "tag_id"))  
+
+anti_join(books_tags, tags, by = c("tag_id" = "tag_id")) 
+
+books_tags |> count(tag_id)
+tags |> count(tag_id)
+
+
+# tag_id is a primary key for both datasets and a foreign key
+
+# Joining the datasets
+
+books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
+
+books_and_tags
 
 
 
