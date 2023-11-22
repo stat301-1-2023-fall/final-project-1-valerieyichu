@@ -82,7 +82,7 @@ grouping the different ratings (if treating rating as a category) --> stacked ba
 
 ## Joining Data
 
-The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below. I'll re-explain the key points when I join my data in the following section, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:
+The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below. I'll re-explain the key points when I join my data in the following sections, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:
 
 **Ratings**
 
@@ -105,14 +105,22 @@ The README in my data source has some notes userful for joining the five Goodrea
 - Note that book_id in ratings.csv and to_read.csv maps to work_id, not to goodreads_book_id, meaning that ratings for different editions are aggregated.
 
 
-## Step 1: Joining tags with book_tags
+## Step 1: Joining tags and books_tags
 
+**Why am I joining tags and books_tags?**
+
+I want to join tags and books_tags. This is because each `goodreads_book_id` within the books_tags dataset has a `tag_id`. And each `tag_name` within the tags dataset has a `tag_id`. In other words, when I join the books_tags dataset together with the tags dataset, I can figure out what each `goodreads_book_id` was tagged with (`tag_name`). I would still have to match each `goodreads_book_id` with its title, but that's another join that I'll do later on. 
+
+And just to recap, the reason why I want to figure out what each `goodreads_book_id` was tagged with is so that I can start to answer my research question about if there's a trend in how users tag the most highly rated books. 
+
+
+**Now let's actually join tags and books_tags**
 
 One of the things we learned from the README:
 
 tags.csv and books_tags.csv both have the variable `tag_id` in common. And `tag_id` has only unique values for both datasets. `tag_id` also corresponds for both datasets. So let's test whether `tag_id` is a feasible foreign / primary key:
 
-First, a data exploration of implicit missing variables:
+First, an exploration of implicit missing variables in the tags and books_tags datasets:
 ```{r, echo = FALSE}
 anti_join(tags, books_tags, by = c("tag_id" = "tag_id")) 
 ```
@@ -121,20 +129,19 @@ anti_join(books_tags, tags, by = c("tag_id" = "tag_id"))
 ```
 Using anti_joins shows us that there are no `tag_id` rows in `books_tags` that don't have a matching `tag_id` row in `tags`. In other words, every `tag_id` is unique and each `tag_id` row in both datasets correspond directly to each other. 
 
-Also, if we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows:
+Also, we can check double this. If we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows:
 ```{r, echo = FALSE}
 books_tags |> count(tag_id)
 tags |> count(tag_id)
 ```
 
-
-
-So: **`tag_id` is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
-
+So **`tag_id` is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
 
 Now, let's actually join the two datasets: 
 
-To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_join in this case because `tag_id` in both datasets perfectly correspond). This is part of **the new books_and_tags dataset**:
+To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_join in this case because `tag_id` in both datasets perfectly correspond). 
+
+An excerpt of **the new books_and_tags dataset:**
 
 ```{r, echo = FALSE}
 # Join tags and books_tags
@@ -145,33 +152,56 @@ books_and_tags
 
 ```
 
-Now, for the fun part. An EDA of our new dataset, books_and_tags. 
+Step 1 is done. Now, before I get to the EDA of our new dataset, books_and_tags, I want to join another two datasets:  
 
 
 ## Step 2: Joining books and ratings
 
-The README says that both `book_id` and `user_id` are contiguous in the ratings.csv file.
+**Why am I joining books and ratings?**
 
-It also contains a very important note: `book_id` in the ratings dataset and tbr dataset map to `work_id` in the books dataset (not `goodreads_book_id` as we would intuitively assume). 
+Joining books and ratings will allow me to start working on two of my research questions: "What are the most highly rated books?" and "What is the relationship between a book’s average rating and the year it was published?" 
 
-Right now, I just want to focus on my first question: "What are the most highly rated books?" 
 
-And to do so, I need to join the ratings dataset with the books dataset. 
+**Now let's actually join books and ratings**
+
+But first, some prefaces:
+
+The README says:
+
+- Both `book_id` and `user_id` are contiguous in the ratings.csv file.
+
+- It also contains an important note: `book_id` in the ratings dataset and tbr dataset map to `work_id` in the books dataset (not `goodreads_book_id` as we would intuitively assume). 
+
+This [article linked on the About section of the github where I found the Goodreads dataset](http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/) says:
+
+- "Each book may have many editions. `goodreads_book_id` and `best_book_id` generally point to the most popular edition of a given book, while goodreads `work_id` refers to the book in the abstract sense." 
+
+- It also again states that "Note that book_id in ratings.csv and to_read.csv (I, Valerie, called this the  "tbr" dataset) maps to `work_id`, not to goodreads_book_id. **It means that ratings for different editions are aggregated.**
+
+I read through the README of the [dataset](https://github.com/zygmuntz/goodbooks-10k), the [article linked on the dataset](http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/), and [the Kaggle which has descriptions for the previous, unupdated version of the github dataset I'm using](https://www.kaggle.com/datasets/zygmunt/goodbooks-10k#books.csv). 
+
+From these three links, I've arrived at several conclusions:
+
+- Mapping `book_id` in the ratings dataset to `work_id` in the books dataset is only necessary if I care about different editions being aggregated. I don't. I'm more interested in the most popular edition of a given book. That's what `goodreads_book_id` tracks, according to the article. 
+
+- And `books_id` in the books dataset *should be* equivalent to `books_id` in the ratings dataset. So I'm going to see if I can join the books and ratings dataset using `books_id` as the key: 
+
 
 Let's start by seeing whether there is implicit missingness using antijoins:
 
-```{r}
+```{r, echo = FALSE}
 anti_join(books, ratings, by = c("book_id" = "book_id"))
 ```
 
-The code above returns all rows for `work_id` within books that don't have a matching `book_id` within rating and vice versa.
+The code above returns all rows for `book_id` within books that don't have a matching `book_id` within rating and vice versa. There are no rows that don't match. 
 
+So **book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
 
-Interestingly, the antijoins reveal that there are 9,824 rows missing. So that means that `book_id` from rating and `work_id` from books have the same number of implicitly missing values. I wonder why that is. 
+Just a quick side note because I find this very interesting: If I were to have instead mapped `work_id` in books with `book_id` in ratings (which I didn't because I'm interested in the most popular edition of a given book, *not* different editions being aggregated). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where `work_id` doesn't match to `book_id` and 5,846,293 rows where `book_id` doesn't match to `work_id` (there are simply many more work_id rows than book_id rows because, again, multiple book editions. See R file for more details). But since I'm not doing that because I'm not interested in different editions being aggregated, all I need to do is use `book_id` to join the datasets books and ratings.  
 
 Let's use full_join then filter for NA values. 
 
- ful join includes books that don't have a rating and ratings that aren't paired with books.\
+full join includes books that don't have a rating and ratings that aren't paired with books.\
 maybe - summarize ratings by books then join them
 left join books
 
@@ -190,6 +220,9 @@ books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |>
 
 books_and_ratings 
 ```
+
+Now, for the fun part. An EDA of our two new datasets, books_and_tags and books_and_ratings. 
+
 
 
 

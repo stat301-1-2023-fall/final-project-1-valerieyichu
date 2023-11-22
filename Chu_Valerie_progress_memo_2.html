@@ -3029,7 +3029,7 @@ vertical-align: -.125em;
   <li><a href="#a-quick-refresher-on-my-data" id="toc-a-quick-refresher-on-my-data" class="nav-link" data-scroll-target="#a-quick-refresher-on-my-data">A Quick Refresher On My Data</a></li>
   <li><a href="#my-objectives" id="toc-my-objectives" class="nav-link" data-scroll-target="#my-objectives">My Objectives</a></li>
   <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining Data</a></li>
-  <li><a href="#step-1-joining-tags-with-book_tags" id="toc-step-1-joining-tags-with-book_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-with-book_tags">Step 1: Joining tags with book_tags</a></li>
+  <li><a href="#step-1-joining-tags-and-books_tags" id="toc-step-1-joining-tags-and-books_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-and-books_tags">Step 1: Joining tags and books_tags</a></li>
   <li><a href="#step-2-joining-books-and-ratings" id="toc-step-2-joining-books-and-ratings" class="nav-link" data-scroll-target="#step-2-joining-books-and-ratings">Step 2: Joining books and ratings</a></li>
   <li><a href="#scratch-work-ignore-below" id="toc-scratch-work-ignore-below" class="nav-link" data-scroll-target="#scratch-work-ignore-below">SCRATCH WORK IGNORE BELOW</a>
   <ul class="collapse">
@@ -3141,7 +3141,7 @@ My Data Source
 </section>
 <section id="joining-data" class="level2">
 <h2 class="anchored" data-anchor-id="joining-data">Joining Data</h2>
-<p>The README in my data source has some notes userful for joining the five Goodreads datasets. I’ve copied and pasted the notes I found most interesting and relevant below. I’ll re-explain the key points when I join my data in the following section, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:</p>
+<p>The README in my data source has some notes userful for joining the five Goodreads datasets. I’ve copied and pasted the notes I found most interesting and relevant below. I’ll re-explain the key points when I join my data in the following sections, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:</p>
 <p><strong>Ratings</strong></p>
 <ul>
 <li><p>Ratings go from one to five. Both book IDs and user IDs are contiguous. For books, they are 1-10000, for users, 1-53424.</p></li>
@@ -3159,11 +3159,15 @@ My Data Source
 <li><p>Note that book_id in ratings.csv and to_read.csv maps to work_id, not to goodreads_book_id, meaning that ratings for different editions are aggregated.</p></li>
 </ul>
 </section>
-<section id="step-1-joining-tags-with-book_tags" class="level2">
-<h2 class="anchored" data-anchor-id="step-1-joining-tags-with-book_tags">Step 1: Joining tags with book_tags</h2>
+<section id="step-1-joining-tags-and-books_tags" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-joining-tags-and-books_tags">Step 1: Joining tags and books_tags</h2>
+<p><strong>Why am I joining tags and books_tags?</strong></p>
+<p>I want to join tags and books_tags. This is because each <code>goodreads_book_id</code> within the books_tags dataset has a <code>tag_id</code>. And each <code>tag_name</code> within the tags dataset has a <code>tag_id</code>. In other words, when I join the books_tags dataset together with the tags dataset, I can figure out what each <code>goodreads_book_id</code> was tagged with (<code>tag_name</code>). I would still have to match each <code>goodreads_book_id</code> with its title, but that’s another join that I’ll do later on.</p>
+<p>And just to recap, the reason why I want to figure out what each <code>goodreads_book_id</code> was tagged with is so that I can start to answer my research question about if there’s a trend in how users tag the most highly rated books.</p>
+<p><strong>Now let’s actually join tags and books_tags</strong></p>
 <p>One of the things we learned from the README:</p>
 <p>tags.csv and books_tags.csv both have the variable <code>tag_id</code> in common. And <code>tag_id</code> has only unique values for both datasets. <code>tag_id</code> also corresponds for both datasets. So let’s test whether <code>tag_id</code> is a feasible foreign / primary key:</p>
-<p>First, a data exploration of implicit missing variables:</p>
+<p>First, an exploration of implicit missing variables in the tags and books_tags datasets:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 2
@@ -3177,7 +3181,7 @@ My Data Source
 </div>
 </div>
 <p>Using anti_joins shows us that there are no <code>tag_id</code> rows in <code>books_tags</code> that don’t have a matching <code>tag_id</code> row in <code>tags</code>. In other words, every <code>tag_id</code> is unique and each <code>tag_id</code> row in both datasets correspond directly to each other.</p>
-<p>Also, if we take the <code>count</code> of <code>tag_id</code> in both datasets, the number of rows is exactly the same: 34,252 rows:</p>
+<p>Also, we can check double this. If we take the <code>count</code> of <code>tag_id</code> in both datasets, the number of rows is exactly the same: 34,252 rows:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 34,252 × 2
@@ -3212,9 +3216,10 @@ My Data Source
 # ℹ 34,242 more rows</code></pre>
 </div>
 </div>
-<p>So: <strong><code>tag_id</code> is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
+<p>So <strong><code>tag_id</code> is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
 <p>Now, let’s actually join the two datasets:</p>
-<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_join in this case because <code>tag_id</code> in both datasets perfectly correspond). This is part of the new books_and_tags dataset:</p>
+<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_join in this case because <code>tag_id</code> in both datasets perfectly correspond).</p>
+<p>An excerpt of <strong>the new books_and_tags dataset:</strong></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 999,912 × 4
@@ -3233,20 +3238,32 @@ My Data Source
 # ℹ 999,902 more rows</code></pre>
 </div>
 </div>
-<p>Now, for the fun part. An EDA of our new dataset, books_and_tags.</p>
+<p>Step 1 is done. Now, before I get to the EDA of our new dataset, books_and_tags, I want to join another two datasets:</p>
 </section>
 <section id="step-2-joining-books-and-ratings" class="level2">
 <h2 class="anchored" data-anchor-id="step-2-joining-books-and-ratings">Step 2: Joining books and ratings</h2>
-<p>The README says that both <code>book_id</code> and <code>user_id</code> are contiguous in the ratings.csv file.</p>
-<p>It also contains a very important note: <code>book_id</code> in the ratings dataset and tbr dataset map to <code>work_id</code> in the books dataset (not <code>goodreads_book_id</code> as we would intuitively assume).</p>
-<p>Right now, I just want to focus on my first question: “What are the most highly rated books?”</p>
-<p>And to do so, I need to join the ratings dataset with the books dataset.</p>
+<p><strong>Why am I joining books and ratings?</strong></p>
+<p>Joining books and ratings will allow me to start working on two of my research questions: “What are the most highly rated books?” and “What is the relationship between a book’s average rating and the year it was published?”</p>
+<p><strong>Now let’s actually join books and ratings</strong></p>
+<p>But first, some prefaces:</p>
+<p>The README says:</p>
+<ul>
+<li><p>Both <code>book_id</code> and <code>user_id</code> are contiguous in the ratings.csv file.</p></li>
+<li><p>It also contains an important note: <code>book_id</code> in the ratings dataset and tbr dataset map to <code>work_id</code> in the books dataset (not <code>goodreads_book_id</code> as we would intuitively assume).</p></li>
+</ul>
+<p>This <a href="http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/">article linked on the About section of the github where I found the Goodreads dataset</a> says:</p>
+<ul>
+<li><p>“Each book may have many editions. <code>goodreads_book_id</code> and <code>best_book_id</code> generally point to the most popular edition of a given book, while goodreads <code>work_id</code> refers to the book in the abstract sense.”</p></li>
+<li><p>It also again states that “Note that book_id in ratings.csv and to_read.csv (I, Valerie, called this the”tbr” dataset) maps to <code>work_id</code>, not to goodreads_book_id. <strong>It means that ratings for different editions are aggregated.</strong></p></li>
+</ul>
+<p>I read through the README of the <a href="https://github.com/zygmuntz/goodbooks-10k">dataset</a>, the <a href="http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/">article linked on the dataset</a>, and <a href="https://www.kaggle.com/datasets/zygmunt/goodbooks-10k#books.csv">the Kaggle which has descriptions for the previous, unupdated version of the github dataset I’m using</a>.</p>
+<p>From these three links, I’ve arrived at several conclusions:</p>
+<ul>
+<li><p>Mapping <code>book_id</code> in the ratings dataset to <code>work_id</code> in the books dataset is only necessary if I care about different editions being aggregated. I don’t. I’m more interested in the most popular edition of a given book. That’s what <code>goodreads_book_id</code> tracks, according to the article.</p></li>
+<li><p>And <code>books_id</code> in the books dataset <em>should be</em> equivalent to <code>books_id</code> in the ratings dataset. So I’m going to see if I can join the books and ratings dataset using <code>books_id</code> as the key:</p></li>
+</ul>
 <p>Let’s start by seeing whether there is implicit missingness using antijoins:</p>
 <div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;book_id&quot;</span> <span class="ot">=</span> <span class="st">&quot;book_id&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 23
 # ℹ 23 variables: book_id &lt;dbl&gt;, goodreads_book_id &lt;dbl&gt;, best_book_id &lt;dbl&gt;,
@@ -3258,10 +3275,11 @@ My Data Source
 #   image_url &lt;chr&gt;, small_image_url &lt;chr&gt;</code></pre>
 </div>
 </div>
-<p>The code above returns all rows for <code>work_id</code> within books that don’t have a matching <code>book_id</code> within rating and vice versa.</p>
-<p>Interestingly, the antijoins reveal that there are 9,824 rows missing. So that means that <code>book_id</code> from rating and <code>work_id</code> from books have the same number of implicitly missing values. I wonder why that is.</p>
+<p>The code above returns all rows for <code>book_id</code> within books that don’t have a matching <code>book_id</code> within rating and vice versa. There are no rows that don’t match.</p>
+<p>So <strong>book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
+<p>Just a quick sidenote because I find this very interesting: If we were to have instead mapped <code>work_id</code> in books with <code>book_id</code> in ratings (which I didn’t because I’m interested in the most popular edition of a given book, <em>not</em> different editions being aggregated). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where <code>work_id</code> doesn’t match to <code>book_id</code> and 5,846,293 rows where <code>book_id</code> doesn’t match to <code>work_id</code> (see R file for more details). But since I’m not doing that because I’m not interested in different editions being aggregated, all I need to do is use <code>book_id</code> to join the datasets books and ratings.</p>
 <p>Let’s use full_join then filter for NA values.</p>
-<p>ful join includes books that don’t have a rating and ratings that aren’t paired with books.<br>
+<p>full join includes books that don’t have a rating and ratings that aren’t paired with books.<br>
 maybe - summarize ratings by books then join them left join books</p>
 <ol start="0" type="1">
 <li><p>misisngness .merge issues. summary statistics. weird things happening/outliers to deal with/unusual things.</p></li>
@@ -3273,10 +3291,10 @@ maybe - summarize ratings by books then join them left join books</p>
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(book_id <span class="sc">==</span> book_id)) <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, work_id, book_id) </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>books_and_ratings </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(book_id <span class="sc">==</span> book_id)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, work_id, book_id) </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>books_and_ratings </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5,976,479 × 3
@@ -3295,6 +3313,7 @@ maybe - summarize ratings by books then join them left join books</p>
 # ℹ 5,976,469 more rows</code></pre>
 </div>
 </div>
+<p>Now, for the fun part. An EDA of our two new datasets, books_and_tags and books_and_ratings.</p>
 </section>
 <section id="scratch-work-ignore-below" class="level1">
 <h1>SCRATCH WORK IGNORE BELOW</h1>
@@ -3305,7 +3324,7 @@ maybe - summarize ratings by books then join them left join books</p>
 <div class="cell">
 <details open>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script.</p>

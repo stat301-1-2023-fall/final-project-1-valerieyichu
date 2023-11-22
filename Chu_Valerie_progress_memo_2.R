@@ -60,7 +60,7 @@ tbr <- read_csv("data/to_read.csv")
 
 
 
-## Joining Datasets -----
+## Step 1: Joining tags and book_tags -----
 
 # tags.csv and books_tags.csv both have the variable `tag_id` in common. 
 # And `tag_id` has only unique values for both datasets. 
@@ -85,11 +85,55 @@ books_and_tags
 
 
 
+## Step 2: Joining books and ratings -----
+
+
+# This is a bit of a detour and hard to explain without showing my code, 
+# so I'm not including this part in the qmd, but I'm going to write it here because it's interesting. 
+
+# Antijoins using work_id and book_id don't quite fit together
+anti_join(books, ratings, by = c("work_id" = "book_id"))
+anti_join(ratings, books, by = c("book_id" = "work_id"))
+
+# Interestingly, the first antijoin using work_id and book_id reveal that there are 9,824 rows missing. 
+# The second antijoin using book_id and work_id reveal that there are 5,846,293 rows missing. 
+# So that means that `book_id` from rating and `work_id` from books don't quite match. 
+# **That's probably because of all the additional book editions that joining with `work_id` uses.** 
+# So instead, since I only care about the most popular edition of a given book and not all the editions aggregated, 
+# I'm going to join book_id to book_id:
+
+anti_join(books, ratings, by = c("book_id" = "book_id"))
+
+
+# Back to the qmd work
+
+# Some Office Hours Advice:
+  # Let's use full_join then filter for NA values. 
+  # 
+  # full join includes books that don't have a rating and ratings that aren't paired with books.
+  # So instead maybe - summarize ratings by books then join them
+  # left join books
+  # 
+  # 0. missingness .merge issues. summary statistics. weird things happening/outliers to deal with/unusual things.
+  # 1. make sure factors are factors, characters are characters, etc. 
+  # 3. Research questions
+  # 
+  # 
+  # 1. condense ratings into summarized outputs. 
+  # 2. mess around with the order of the left join. 
+
 
 books_and_ratings <- full_join(books, ratings, join_by(work_id == book_id)) |> 
   select(title, work_id, book_id) 
 
 books_and_ratings 
+
+
+
+
+
+
+
 
 
 
