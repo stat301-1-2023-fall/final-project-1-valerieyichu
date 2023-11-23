@@ -298,6 +298,31 @@ books_cut |>
        y = "Number of Books")
 
 
+## Question 2 -----
 
+books_and_ratings |> 
+  group_by(user_id) |> 
+  summarize(count = n()) |> 
+  arrange(desc(count))
+
+# Now, let's see what the average ratings of these top book-rating users is. 
+
+# Still in progress: 
+# Finish in final project:
+# for (i in unique(user_id)) {
+#   
+#   if (user_id = 1) {
+#     rating = 
+#   }
+#   user_ratings <- 
+#     
+# }
+# rank_ratings <- function(books, ratings_count) {
+#   books %>%
+#     arrange(desc({{ ratings_count }})) %>%
+#     mutate(rank_of_number_ratings = row_number())
+# }
+# 
+# rank_ratings <- rank_ratings(books, ratings_count)
 
 

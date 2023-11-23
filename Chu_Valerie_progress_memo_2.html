@@ -5460,6 +5460,7 @@ color: #333;
   <li><a href="#step-1-joining-tags-and-books_tags" id="toc-step-1-joining-tags-and-books_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-and-books_tags">Step 1: Joining tags and books_tags</a></li>
   <li><a href="#step-2-joining-books-and-ratings" id="toc-step-2-joining-books-and-ratings" class="nav-link" data-scroll-target="#step-2-joining-books-and-ratings">Step 2: Joining books and ratings</a></li>
   <li><a href="#question-1-which-are-the-most-highly-rated-books" id="toc-question-1-which-are-the-most-highly-rated-books" class="nav-link" data-scroll-target="#question-1-which-are-the-most-highly-rated-books">Question 1: Which are the most highly rated books?</a></li>
+  <li><a href="#question-2-do-readers-who-leave-the-most-ratings-leave-the-higher-ratings-on-average-or-lower-ratings-on-average" id="toc-question-2-do-readers-who-leave-the-most-ratings-leave-the-higher-ratings-on-average-or-lower-ratings-on-average" class="nav-link" data-scroll-target="#question-2-do-readers-who-leave-the-most-ratings-leave-the-higher-ratings-on-average-or-lower-ratings-on-average">Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?</a></li>
   <li><a href="#my-progress" id="toc-my-progress" class="nav-link" data-scroll-target="#my-progress">My Progress</a></li>
   </ul>
 </nav>
@@ -5547,9 +5548,9 @@ My Data Source
 <p>There are several questions I’m interested in examining in Goodreads data.</p>
 <ul>
 <li><p>What are the most highly rated books?</p></li>
+<li><p>Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?</p></li>
 <li><p>Is there any relationship between the number of times a book appears in the tbr dataset and the number of ratings it received?</p></li>
 <li><p>What is the relationship between a book’s average rating and the year it was published?</p></li>
-<li><p>Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?</p></li>
 <li><p>How do users tag the most highly rated books? Is there a trend?</p></li>
 </ul>
 </section>
@@ -5704,8 +5705,8 @@ My Data Source
 <div class="cell">
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1a4944532094206fe329" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1a4944532094206fe329">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9ac7b45f638aa1faf7d2" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9ac7b45f638aa1faf7d2">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>I’m surprised at some of the ratings of these books, yet very much not surprised at others.</p>
@@ -5827,6 +5828,67 @@ rank_of_number_ratings    -0.08634326             1.00000000</code></pre>
 </ul>
 <p>Without more data, it’s hard to tell whether we can explain away the cluster around book ratings between 3.75 and 4.25 as one of these suggestions, a combination of these suggestions, or none of these suggestions. It’s still fun to think about though.</p>
 </section>
+</section>
+<section id="question-2-do-readers-who-leave-the-most-ratings-leave-the-higher-ratings-on-average-or-lower-ratings-on-average" class="level1">
+<h1>Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?</h1>
+<p>Each user (user_id) can one rating to one book, so that means users can rate multiple books. Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. <code>count</code> is the number of books the user has rated. If we also keep in mind that this dataset only has the data of about 10k books on Goodreads, rating 200 of them (as the top two book-rating users have done) is quite impressive.</p>
+<p>Let’s display the top 10 (of 53,424 total users who rated books on Goodreads) who rated the most books in this Goodreads dataset.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">user_id</th>
+<th style="text-align: right;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">12874</td>
+<td style="text-align: right;">200</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">30944</td>
+<td style="text-align: right;">200</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">12381</td>
+<td style="text-align: right;">199</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">28158</td>
+<td style="text-align: right;">199</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">52036</td>
+<td style="text-align: right;">199</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6630</td>
+<td style="text-align: right;">197</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">45554</td>
+<td style="text-align: right;">197</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7563</td>
+<td style="text-align: right;">196</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9668</td>
+<td style="text-align: right;">196</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9806</td>
+<td style="text-align: right;">196</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now, let’s see what the average ratings of these top book-rating users is.</p>
+<p><em>to be completed in final project</em></p>
 </section>
 <section id="my-progress" class="level1">
 <h1>My Progress</h1>

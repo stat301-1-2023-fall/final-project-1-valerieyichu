@@ -75,11 +75,11 @@ There are several questions I'm interested in examining in Goodreads data.
 
 - What are the most highly rated books? 
 
+- Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average? 
+
 - Is there any relationship between the number of times a book appears in the tbr dataset and the number of ratings it received?  
 
 - What is the relationship between a book's average rating and the year it was published? 
-
-- Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average? 
 
 - How do users tag the most highly rated books? Is there a trend?
 
@@ -377,9 +377,23 @@ Without more data, it's hard to tell whether we can explain away the cluster aro
 # Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
 
 
-```{r}
+Each user (user_id) can one rating to one book, so that means users can rate multiple books. Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of about 10k books on Goodreads, rating 200 of them (as the top two book-rating users have done) is quite impressive. 
+
+Let's display the top 10 (of 53,424 total users who rated books on Goodreads) who rated the most books in this Goodreads dataset.  
+
+```{r, echo = FALSE}
+books_and_ratings |> 
+  group_by(user_id) |> 
+  summarize(count = n()) |> 
+  arrange(desc(count)) |> 
+  slice_head(n = 10) |> 
+  knitr::kable()
 
 ```
+Now, let's see what the average ratings of these top book-rating users is. 
+
+*to be completed in final project*
+
 
 
 
