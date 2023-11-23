@@ -182,4 +182,30 @@ corr <- rank_ratings |>
 corr
 
 
+## Cut -----
+books_cut <- rank_ratings |> 
+  mutate(average_rating_cut = cut(average_rating, 
+                                  breaks = c(0, 1, 2, 3, 4, 5, 6))) |> 
+  select(title, average_rating, average_rating_cut)
+
+books_cut
+
+books_cut |> 
+  ggplot(aes(x = average_rating_cut)) +
+  geom_bar()
+
+
+# Not varied enough. Let's make the cuts in books_cut smaller
+
+books_cut <- rank_ratings |> 
+  mutate(average_rating_cut = cut(average_rating, 
+                                  breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6))) |> 
+  select(title, average_rating, average_rating_cut)
+
+books_cut
+
+books_cut |> 
+  ggplot(aes(x = average_rating_cut)) +
+  geom_bar()
+
 

@@ -296,6 +296,22 @@ I'm very surprised at this finding. I had expected the rank of the number of rat
 
 Now let's look at the distribution of the most highly rated books. 
 
+```{r}
+books_cut <- rank_ratings |> 
+  mutate(average_rating_cut = cut(average_rating, 
+                                 breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6))) |> 
+  select(title, average_rating, average_rating_cut)
+
+books_cut
+
+```
+
+```{r}
+books_cut |> 
+  ggplot(aes(x = average_rating_cut)) +
+  geom_bar()
+
+```
 
 
 
