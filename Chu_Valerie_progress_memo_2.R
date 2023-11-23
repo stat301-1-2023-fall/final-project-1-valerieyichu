@@ -1,42 +1,43 @@
 
 ### Progress Memo 2 -----
 
-# Basic objectives
-# Objective 1
-# Students are expected to setup their own qmd file to render to an html for this project. 
-  # The document should be appropriately formatted (see previous memo and other assignments). 
-  # Should have a title, author, date, and appropriate headers, and sub-headers.
-
-# Objective 2
-# Students are expected to demonstrate that significant progress has been made 
-  # on their final project since the submission of progress memo 1. 
-# Students should have their data cleaned and the EDA should be started.
-
-# Demonstrating significant progress means students should have some 
-  # univariate and bivariate analyses complete for several of their variables.
-# They should share a few graphics and/or tables with a description of what they 
-  # have found thus far to demonstrate they progress. 
-# Students should should clearly state what they are exploring and why in these demonstrations. 
-# That is, they should share the guiding curiosity or research question 
-  # that accompanies the particular graphics and/or tables they choose to share. 
-
-# What else should be in the memo
-# Students should summarize their progress, where they are at, and what their next steps will be. 
-# Self assessment of progress would also be appropriate. 
-# When thinking or describing next steps students should share 
-  # any guiding curiosities or research questions they plan to explore.
-
-# Misc Notes/Comments
-# Final GitHub repo link should be at the top in a callout block --- 
-  # similar to all other assignments
-# There should be no code visible or accessible in memo. 
-# There should be no raw R output like tibbles/data frames. Use html tables.
-# In rare cases where the the project is extremely heavy on 
-  # advanced data collection, progress will look quite different. 
-# Projects like this will be focused on showing progress on getting the data 
-  # together and collected. 
-# If your project falls in this category, then discuss this with your instructor
-  # --- very few, if any projects, fall into this rare case. 
+## The Instructions -----
+    # Basic objectives
+    # Objective 1
+    # Students are expected to setup their own qmd file to render to an html for this project. 
+      # The document should be appropriately formatted (see previous memo and other assignments). 
+      # Should have a title, author, date, and appropriate headers, and sub-headers.
+    
+    # Objective 2
+    # Students are expected to demonstrate that significant progress has been made 
+      # on their final project since the submission of progress memo 1. 
+    # Students should have their data cleaned and the EDA should be started.
+    
+    # Demonstrating significant progress means students should have some 
+      # univariate and bivariate analyses complete for several of their variables.
+    # They should share a few graphics and/or tables with a description of what they 
+      # have found thus far to demonstrate they progress. 
+    # Students should should clearly state what they are exploring and why in these demonstrations. 
+    # That is, they should share the guiding curiosity or research question 
+      # that accompanies the particular graphics and/or tables they choose to share. 
+    
+    # What else should be in the memo
+    # Students should summarize their progress, where they are at, and what their next steps will be. 
+    # Self assessment of progress would also be appropriate. 
+    # When thinking or describing next steps students should share 
+      # any guiding curiosities or research questions they plan to explore.
+    
+    # Misc Notes/Comments
+    # Final GitHub repo link should be at the top in a callout block --- 
+      # similar to all other assignments
+    # There should be no code visible or accessible in memo. 
+    # There should be no raw R output like tibbles/data frames. Use html tables.
+    # In rare cases where the the project is extremely heavy on 
+      # advanced data collection, progress will look quite different. 
+    # Projects like this will be focused on showing progress on getting the data 
+      # together and collected. 
+    # If your project falls in this category, then discuss this with your instructor
+      # --- very few, if any projects, fall into this rare case. 
 
 
 ## Starting the project -----
@@ -56,6 +57,13 @@ books_tags <- read_csv("data/book_tags.csv")
 ratings <- read_csv("data/ratings.csv")
 tags <- read_csv("data/tags.csv")
 tbr <- read_csv("data/to_read.csv")
+
+
+
+
+# Questions, note to self
+# - How do users tag the most highly rated books? Is there a trend?
+#  grouping the different ratings (if treating rating as a category) --> stacked barplot, etc. 
 
 
 
@@ -162,6 +170,8 @@ rank_ratings <- rank_ratings(books, ratings_count)
 # rank_ratings contains everything inside the books dataset, plus the rank_of_number_ratings
 
 
+
+
 # Create a line graph to show how the average rating changes as the rank of the number of ratings changes
 rank_ratings |> 
   ggplot(aes(x = rank_of_number_ratings, y = average_rating)) +
@@ -171,6 +181,17 @@ rank_ratings |>
     subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
     x = "Books ranked by the number of ratings it got. (1 = Most ratings, 10000 = Least ratings)", 
     y = "Average Rating")
+
+# Actually, a scatterplot is better. The data is so dense that a line graph adds too much noise. 
+rank_ratings |> 
+  ggplot(aes(x = rank_of_number_ratings, y = average_rating)) +
+  geom_point() +
+  labs(
+    title = "Average Rating vs. Ratings Place",
+    subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
+    x = "Books ranked by the number of ratings it got. (1 = Most ratings, 10000 = Least ratings)", 
+    y = "Average Rating")
+
 
 
 # Correlation
@@ -182,7 +203,22 @@ corr <- rank_ratings |>
 corr
 
 
+
+
 ## Cut -----
+
+# So, technically, a histogram works fine
+
+books |> 
+  ggplot(aes(x = average_rating)) +
+  geom_histogram(binwidth = 0.25, color = "white") +
+  scale_x_continuous(breaks = pretty(c(0,5), n = 10)) 
+
+# But a histogram isn't that easy to read. It would be easier to create bins that ratings fall within. 
+# Hence, let's use cut.
+
+
+# Try 1
 books_cut <- rank_ratings |> 
   mutate(average_rating_cut = cut(average_rating, 
                                   breaks = c(0, 1, 2, 3, 4, 5, 6))) |> 
@@ -197,15 +233,34 @@ books_cut |>
 
 # Not varied enough. Let's make the cuts in books_cut smaller
 
+# Cut average_rating into bins of 0.25
 books_cut <- rank_ratings |> 
   mutate(average_rating_cut = cut(average_rating, 
-                                  breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6))) |> 
+                                  breaks = c(0, 0.25, 0.5, 0.75,
+                                             1, 1.25, 1.5, 1.75,
+                                             2, 2.25, 2.5, 2.75,
+                                             3, 3.25, 3.5, 3.75, 
+                                             4, 4.25, 4.5, 4.75, 
+                                             5))) |> 
   select(title, average_rating, average_rating_cut)
 
 books_cut
 
+# First, a quick look at how many books are in each bin.
+books_cut |> 
+  count(average_rating_cut) |> 
+  knitr::kable()
+
+
+# Create Bar Plot
 books_cut |> 
   ggplot(aes(x = average_rating_cut)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "The Distribution of the Average Rating of Books",
+       x = "Average Rating",
+       y = "Number of Books")
+
+
+
 
 
