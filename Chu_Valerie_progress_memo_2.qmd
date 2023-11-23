@@ -206,16 +206,17 @@ So **book_id is the primary key for both datasets and also a foreign key that ca
 
 Just a quick side note because I find this very interesting: If I were to have instead mapped `work_id` in books with `book_id` in ratings (which I didn't because I'm interested in the most popular edition of a given book, *not* different editions being aggregated). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where `work_id` doesn't match to `book_id` and 5,846,293 rows where `book_id` doesn't match to `work_id` (there are simply many more work_id rows than book_id rows because, again, multiple book editions. See my R file for more details). But since I'm not doing that because I'm not interested in different editions being aggregated, all I need to do is use `book_id` to join the datasets books and ratings.  
 
-An excerpt of **the new books_and_ratings dataset:** (The first 10 of 5,976,479 rows.)
+Now that the new books_and_ratings dataset has been created:
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
   group_by(title) |> 
   select(title, book_id, goodreads_book_id, work_id, user_id, rating)
 
-books_and_ratings |> 
-  slice_head(n = 10) |> 
-  knitr::kable()
+books_and_ratings # |> 
+  # slice_head(n = 10) # |> 
+  # knitr::kable()
+  # my computer won't load when I try to make this a neat table like I did above. So I'm just going to change echo = FALSE to include = FALSE and not print this tibble altogether since it's pretty messy right now. 
 
 ```
 
@@ -373,6 +374,15 @@ That means that people who rate books on Goodreads usually either:
 Without more data, it's hard to tell whether we can explain away the cluster around book ratings between 3.75 and 4.25 as one of these suggestions, a combination of these suggestions, or none of these suggestions. It's still fun to think about though.
 
 
+# Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
+
+
+```{r}
+
+```
+
+
+
 # My Progress
 
 - I've been making good progress. I picked out the appropriate keys (which took hours because I had to try numerous ones due to how vague the README was at some parts) and joined four datasets to produce two separate datasets: books_and_ratings and books_and_tags. 
@@ -382,56 +392,5 @@ Without more data, it's hard to tell whether we can explain away the cluster aro
 - For my final project, I intend to continue exploring the other questions I wrote out in the "My Objectives" section of this document. 
 
 
-# SCRATCH WORK IGNORE BELOW
 
-**Data should be merged, cleaned, and variables should be explored. Univariate and bivariate analysis completed for several variables.** 
-If your tibble is particularly big, put an appendix. Or if you have miscellaneous information that's not that important but that you really want to show, put it in an appendix. 
-
-Either use ggsave or echo false. 
-
-
-## Load Data
-```{r}
-library(tidyverse)
-```
-
-
-
-After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script. 
-
-Here's a demo of what it could look like:
-```{r}
-#| echo: false
-
-tibble <- tibble(name = c("var1") , value = c(1))
-
-tibble |> 
-  knitr::kable()
-
-```
-
-Don't show a skim or a summary output. INSTEAD, make it look nice. 
-
-- Ex. Calculate summary stats with summarize() to output as a nice table. Mean, sd, correlation, etc. 
-
-- Ex. Make a scatterplot, a boxplot, etc. 
-
-
-## Basic objectives
-Objective 1
-Students are expected to setup their own qmd file to render to an html for this project. The document should be appropriately formatted (see previous memo and other assignments). Should have a title, author, date, and appropriate headers, and sub-headers.
-
-## Objective 2
-Students are expected to demonstrate that significant progress has been made on their final project since the submission of progress memo 1. Students should have their data cleaned and the EDA should be started.
-
-Demonstrating significant progress means students should have some univariate and bivariate analyses complete for several of their variables.  They should share a few graphics and/or tables with a description of what they have found thus far to demonstrate they progress. Students should should clearly state what they are exploring and why in these demonstrations. That is, they should share the guiding curiosity or research question that accompanies the particular graphics and/or tables they choose to share. 
-
-## What else should be in the memo
-Students should summarize their progress, where they are at, and what their next steps will be. Self assessment of progress would also be appropriate. When thinking or describing next steps students should share any guiding curiosities or research questions they plan to explore.
-
-## Misc Notes/Comments
-Final GitHub repo link should be at the top in a callout block --- similar to all other assignments
-There should be no code visible or accessible in memo. 
-There should be no raw R output like tibbles/data frames. Use html tables.
-In rare cases where the the project is extremely heavy on advanced data collection, progress will look quite different. Projects like this will be focused on showing progress on getting the data together and collected. If your project falls in this category, then discuss this with your instructor --- very few, if any projects, fall into this rare case. 
 

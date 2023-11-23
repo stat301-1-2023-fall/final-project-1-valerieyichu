@@ -39,6 +39,43 @@
     # If your project falls in this category, then discuss this with your instructor
       # --- very few, if any projects, fall into this rare case. 
 
+  ## Notes from Class
+          # # SCRATCH WORK IGNORE BELOW
+          # 
+          # **Data should be merged, cleaned, and variables should be explored. Univariate and bivariate analysis completed for several variables.** 
+          #   If your tibble is particularly big, put an appendix. Or if you have miscellaneous information that's not that important but that you really want to show, put it in an appendix. 
+          # 
+          # Either use ggsave or echo false. 
+          # 
+          # 
+          # ## Load Data
+          # ```{r}
+          # library(tidyverse)
+          # ```
+          # 
+          # 
+          # 
+          # After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script. 
+          # 
+          # Here's a demo of what it could look like:
+          #   ```{r}
+          # #| echo: false
+          # 
+          # tibble <- tibble(name = c("var1") , value = c(1))
+          # 
+          # tibble |> 
+          #   knitr::kable()
+          # 
+          # ```
+          # 
+          # Don't show a skim or a summary output. INSTEAD, make it look nice. 
+          # 
+          # - Ex. Calculate summary stats with summarize() to output as a nice table. Mean, sd, correlation, etc. 
+          # 
+          # - Ex. Make a scatterplot, a boxplot, etc. 
+
+
+
 
 ## Starting the project -----
 

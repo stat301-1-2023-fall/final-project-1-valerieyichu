@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
 }
-
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-}
-pre.numberSource { margin-left: 3em; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -5495,14 +5461,6 @@ color: #333;
   <li><a href="#step-2-joining-books-and-ratings" id="toc-step-2-joining-books-and-ratings" class="nav-link" data-scroll-target="#step-2-joining-books-and-ratings">Step 2: Joining books and ratings</a></li>
   <li><a href="#question-1-which-are-the-most-highly-rated-books" id="toc-question-1-which-are-the-most-highly-rated-books" class="nav-link" data-scroll-target="#question-1-which-are-the-most-highly-rated-books">Question 1: Which are the most highly rated books?</a></li>
   <li><a href="#my-progress" id="toc-my-progress" class="nav-link" data-scroll-target="#my-progress">My Progress</a></li>
-  <li><a href="#scratch-work-ignore-below" id="toc-scratch-work-ignore-below" class="nav-link" data-scroll-target="#scratch-work-ignore-below">SCRATCH WORK IGNORE BELOW</a>
-  <ul class="collapse">
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
-  <li><a href="#basic-objectives" id="toc-basic-objectives" class="nav-link" data-scroll-target="#basic-objectives">Basic objectives</a></li>
-  <li><a href="#objective-2" id="toc-objective-2" class="nav-link" data-scroll-target="#objective-2">Objective 2</a></li>
-  <li><a href="#what-else-should-be-in-the-memo" id="toc-what-else-should-be-in-the-memo" class="nav-link" data-scroll-target="#what-else-should-be-in-the-memo">What else should be in the memo</a></li>
-  <li><a href="#misc-notescomments" id="toc-misc-notescomments" class="nav-link" data-scroll-target="#misc-notescomments">Misc Notes/Comments</a></li>
-  </ul></li>
   </ul>
 </nav>
 </div>
@@ -5734,26 +5692,7 @@ My Data Source
 <p>There are now rows for <code>book_id</code> within books that don’t have a matching <code>book_id</code> within rating and vice versa. All rows match.</p>
 <p>So <strong>book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
 <p>Just a quick side note because I find this very interesting: If I were to have instead mapped <code>work_id</code> in books with <code>book_id</code> in ratings (which I didn’t because I’m interested in the most popular edition of a given book, <em>not</em> different editions being aggregated). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where <code>work_id</code> doesn’t match to <code>book_id</code> and 5,846,293 rows where <code>book_id</code> doesn’t match to <code>work_id</code> (there are simply many more work_id rows than book_id rows because, again, multiple book editions. See my R file for more details). But since I’m not doing that because I’m not interested in different editions being aggregated, all I need to do is use <code>book_id</code> to join the datasets books and ratings.</p>
-<p>An excerpt of <strong>the new books_and_ratings dataset:</strong></p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5,976,479 × 6
-# Groups:   title [9,964]
-   title                        book_id goodreads_book_id work_id user_id rating
-   &lt;chr&gt;                          &lt;dbl&gt;             &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
- 1 The Hunger Games (The Hunge…       1           2767052 2792775    2886      5
- 2 The Hunger Games (The Hunge…       1           2767052 2792775    6158      5
- 3 The Hunger Games (The Hunge…       1           2767052 2792775    3991      4
- 4 The Hunger Games (The Hunge…       1           2767052 2792775    5281      5
- 5 The Hunger Games (The Hunge…       1           2767052 2792775    5721      5
- 6 The Hunger Games (The Hunge…       1           2767052 2792775    5034      5
- 7 The Hunger Games (The Hunge…       1           2767052 2792775     695      5
- 8 The Hunger Games (The Hunge…       1           2767052 2792775    5021      5
- 9 The Hunger Games (The Hunge…       1           2767052 2792775    3209      5
-10 The Hunger Games (The Hunge…       1           2767052 2792775    6769      4
-# ℹ 5,976,469 more rows</code></pre>
-</div>
-</div>
+<p>Now that the new books_and_ratings dataset has been created:</p>
 <p>Now, for the fun part. An EDA with our two new datasets, books_and_tags and books_and_ratings. And maybe some of the original datasets too.</p>
 </section>
 <section id="question-1-which-are-the-most-highly-rated-books" class="level2">
@@ -5765,8 +5704,8 @@ My Data Source
 <div class="cell">
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-87a5e2ca591fc16137a2" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-87a5e2ca591fc16137a2">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1a4944532094206fe329" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1a4944532094206fe329">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>I’m surprised at some of the ratings of these books, yet very much not surprised at others.</p>
@@ -5892,66 +5831,10 @@ rank_of_number_ratings    -0.08634326             1.00000000</code></pre>
 <section id="my-progress" class="level1">
 <h1>My Progress</h1>
 <ul>
-<li><p>I’ve been making progress so far. I picked out the appropriate keys (which took hours because I had to try numerous ones due to how vague the README was at some parts) and joined four datasets to produce two separate datasets: books_and_ratings and books_and_tags.</p></li>
+<li><p>I’ve been making good progress. I picked out the appropriate keys (which took hours because I had to try numerous ones due to how vague the README was at some parts) and joined four datasets to produce two separate datasets: books_and_ratings and books_and_tags.</p></li>
 <li><p>I also finished exploring my first question through several tables, a bivariate analysis and a multivariate analysis.</p></li>
-<li><p>For my final project, I intend to continue exploring my other questions that I wrote out in the “My Objectives” section of this document.</p></li>
+<li><p>For my final project, I intend to continue exploring the other questions I wrote out in the “My Objectives” section of this document.</p></li>
 </ul>
-</section>
-<section id="scratch-work-ignore-below" class="level1">
-<h1>SCRATCH WORK IGNORE BELOW</h1>
-<p><strong>Data should be merged, cleaned, and variables should be explored. Univariate and bivariate analysis completed for several variables.</strong> If your tibble is particularly big, put an appendix. Or if you have miscellaneous information that’s not that important but that you really want to show, put it in an appendix.</p>
-<p>Either use ggsave or echo false.</p>
-<section id="load-data" class="level2">
-<h2 class="anchored" data-anchor-id="load-data">Load Data</h2>
-<div class="cell">
-<details open>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>After you do all this data cleaning, save it as an RDS to preserve variable types!! That way you can read it in again with each script.</p>
-<p>Here’s a demo of what it could look like:</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;">name</th>
-<th style="text-align: right;">value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">var1</td>
-<td style="text-align: right;">1</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Don’t show a skim or a summary output. INSTEAD, make it look nice.</p>
-<ul>
-<li><p>Ex. Calculate summary stats with summarize() to output as a nice table. Mean, sd, correlation, etc.</p></li>
-<li><p>Ex. Make a scatterplot, a boxplot, etc.</p></li>
-</ul>
-</section>
-<section id="basic-objectives" class="level2">
-<h2 class="anchored" data-anchor-id="basic-objectives">Basic objectives</h2>
-<p>Objective 1 Students are expected to setup their own qmd file to render to an html for this project. The document should be appropriately formatted (see previous memo and other assignments). Should have a title, author, date, and appropriate headers, and sub-headers.</p>
-</section>
-<section id="objective-2" class="level2">
-<h2 class="anchored" data-anchor-id="objective-2">Objective 2</h2>
-<p>Students are expected to demonstrate that significant progress has been made on their final project since the submission of progress memo 1. Students should have their data cleaned and the EDA should be started.</p>
-<p>Demonstrating significant progress means students should have some univariate and bivariate analyses complete for several of their variables. They should share a few graphics and/or tables with a description of what they have found thus far to demonstrate they progress. Students should should clearly state what they are exploring and why in these demonstrations. That is, they should share the guiding curiosity or research question that accompanies the particular graphics and/or tables they choose to share.</p>
-</section>
-<section id="what-else-should-be-in-the-memo" class="level2">
-<h2 class="anchored" data-anchor-id="what-else-should-be-in-the-memo">What else should be in the memo</h2>
-<p>Students should summarize their progress, where they are at, and what their next steps will be. Self assessment of progress would also be appropriate. When thinking or describing next steps students should share any guiding curiosities or research questions they plan to explore.</p>
-</section>
-<section id="misc-notescomments" class="level2">
-<h2 class="anchored" data-anchor-id="misc-notescomments">Misc Notes/Comments</h2>
-<p>Final GitHub repo link should be at the top in a callout block — similar to all other assignments There should be no code visible or accessible in memo. There should be no raw R output like tibbles/data frames. Use html tables. In rare cases where the the project is extremely heavy on advanced data collection, progress will look quite different. Projects like this will be focused on showing progress on getting the data together and collected. If your project falls in this category, then discuss this with your instructor — very few, if any projects, fall into this rare case.</p>
-</section>
 </section>
 
 </main>
