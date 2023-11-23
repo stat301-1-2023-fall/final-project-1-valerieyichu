@@ -138,17 +138,48 @@ books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |>
 books_and_ratings
 
 
-# Joining book_id with book_id gives way too many columns, mainly because the ratings aren't counted by books. 
-# So let's count the books. 
+## Question 1: Which are the most highly rated books? -----
+
+# 10 Books with the Highest Average Goodreads Rating
+books |> 
+  arrange(desc(average_rating)) |> 
+  select(book_id, title, authors, average_rating, ratings_count) |> 
+  slice_head(n = 10) |> 
+  DT::datatable()
 
 
+# Start by creating a new variable, rank_of_number_ratings, that assigns each book a rank based on how high their ratings_count is. 
+# In other words, more ratings = higher rank. 
+
+rank_ratings <- function(books, ratings_count) {
+  books %>%
+    arrange(desc({{ ratings_count }})) %>%
+    mutate(rank_of_number_ratings = row_number())
+}
+
+rank_ratings <- rank_ratings(books, ratings_count)
+
+# rank_ratings contains everything inside the books dataset, plus the rank_of_number_ratings
 
 
+# Create a line graph to show how the average rating changes as the rank of the number of ratings changes
+rank_ratings |> 
+  ggplot(aes(x = rank_of_number_ratings, y = average_rating)) +
+  geom_line() +
+  labs(
+    title = "Average Rating vs. Ratings Place",
+    subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
+    x = "Books ranked by the number of ratings it got. (1 = Most ratings, 10000 = Least ratings)", 
+    y = "Average Rating")
 
 
+# Correlation
 
+corr <- rank_ratings |> 
+  select(average_rating, rank_of_number_ratings) |> 
+  cor()
 
-
+corr
 
 
 

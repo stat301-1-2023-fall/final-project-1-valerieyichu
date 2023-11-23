@@ -116,23 +116,23 @@ I want to join tags and books_tags. This is because each `goodreads_book_id` wit
 And just to recap, the reason why I want to figure out what each `goodreads_book_id` was tagged with is so that I can start to answer my research question about if there's a trend in how users tag the most highly rated books. 
 
 
-**Now let's actually join tags and books_tags**
+**Now let's actually join tags and books_tags:**
 
 One of the things we learned from the README:
 
-tags.csv and books_tags.csv both have the variable `tag_id` in common. And `tag_id` has only unique values for both datasets. `tag_id` also corresponds for both datasets. So let's test whether `tag_id` is a feasible foreign / primary key:
+tags.csv and books_tags.csv both have the variable `tag_id` in common. And `tag_id` has only unique values for both datasets. `tag_id` also corresponds for both datasets. So let's test whether `tag_id` is a feasible foreign / primary key.
 
-First, an exploration of implicit missing variables in the tags and books_tags datasets:
-```{r, echo = FALSE}
+First, an exploration of implicit missing variables in the tags and books_tags datasets using anti_joins.
+```{r, include = FALSE}
 anti_join(tags, books_tags, by = c("tag_id" = "tag_id")) 
 ```
-```{r, echo = FALSE}
+```{r, include = FALSE}
 anti_join(books_tags, tags, by = c("tag_id" = "tag_id")) 
 ```
 Using anti_joins shows us that there are no `tag_id` rows in `books_tags` that don't have a matching `tag_id` row in `tags`. In other words, every `tag_id` is unique and each `tag_id` row in both datasets correspond directly to each other. 
 
-Also, we can check double this. If we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows:
-```{r, echo = FALSE}
+Also, we can check double this. If we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows.
+```{r, include = FALSE}
 books_tags |> count(tag_id)
 tags |> count(tag_id)
 ```
@@ -189,13 +189,13 @@ From these three links, I've arrived at several conclusions:
 - And `books_id` in the books dataset *should be* equivalent to `books_id` in the ratings dataset. So I'm going to see if I can join the books and ratings dataset using `books_id` as the key: 
 
 
-Let's start by seeing whether there is implicit missingness using antijoins:
+Let's start by seeing whether there is implicit missingness using antijoins.
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 anti_join(books, ratings, by = c("book_id" = "book_id"))
 ```
 
-The code above returns all rows for `book_id` within books that don't have a matching `book_id` within rating and vice versa. There are no rows that don't match. 
+There are now rows for `book_id` within books that don't have a matching `book_id` within rating and vice versa. All rows match. 
 
 So **book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
 
@@ -215,9 +215,86 @@ books_and_ratings
 Now, for the fun part. An EDA with our two new datasets, books_and_tags and books_and_ratings. And maybe some of the original datasets too. 
 
 
-## Question 1: What are the most highly rated books?
+## Question 1: Which are the most highly rated books?
+
+To answer this question, I'm going to look at the books dataset. The variable `average_rating` can help us figure this out. 
+
+**10 Books with the Highest Average Goodreads Rating**
+
+```{r, echo = FALSE}
+books |> 
+  arrange(desc(average_rating)) |> 
+  select(book_id, title, authors, average_rating, ratings_count) |> 
+  slice_head(n = 10) |> 
+  DT::datatable()
+
+```
+
+I'm surprised at some of the ratings of these books, yet very much not surprised at others. 
+
+- "The Complete Calvin and Hobbes" is more geared toward middle-grade readers, so it's odd that it has the highest rating. 
+
+- But I'm not surprised that "Words of Radiance" had the second highest average Goodreads rating. I know that the Goodreads demographic tends to be young adults and book bloggers, most of who all enjoy reading and rating young adult fiction on Goodreads. That's a category this book falls within. 
+
+- I definitely expected a Harry Potter book to be one of Goodreads's highest average books, but not necessarily a boxed set. (Although I should note, the problem with Goodreads is that it considers boxed sets individual books, and there are neither string functions that I can use to filter them from individual books nor tags I can use to filter them, since the naming conventions vary from boxed set to boxed set and closely resemble how individual book titles appear.) But just from being a casual Goodreads user, I've observed that boxed sets tend to get higher ratings than individual books of the series. So in a way, it *is* unsurprising that the trend holds true here. 
+
+- The "ESV Study Bible" is also something I expected to see on this list, although I expected it to be ranked higher. Today, it's not 1800s Europe where everyone owns a copy of the Bible, but there are still many people who do and love reading it. 
+
+- I *am* surprised that various spinoffs of Calvin and Hobbes and Harry Potter dominate 7 of 10 rankings in the top 10 most highly rated books. I knew they were popular, but not *that* popular. But I guess Goodreads is also an American company, and those are the types of books Americans read and love. 
 
 
+I'm curious about whether there's a relationship between the rank a book receives based on its number of ratings (rank_of_number_ratings) and its average_rating. 
+
+```{r, echo = FALSE}
+# Start by creating a new variable, rank_of_number_ratings, that assigns each book a rank based on how high their ratings_count is. In other words, more ratings = higher rank. 
+
+rank_ratings <- function(books, ratings_count) {
+  books %>%
+    arrange(desc({{ ratings_count }})) %>%
+    mutate(rank_of_number_ratings = row_number())
+}
+
+rank_ratings <- rank_ratings(books, ratings_count)
+
+# rank_ratings contains everything inside the books dataset, plus the rank_of_number_ratings
+
+```
+
+
+```{r, echo = FALSE}
+# rank_ratings contains everything inside the books dataset, plus the rank_of_number_ratings
+# Create a line graph to show how the average rating changes as the rank of the number of ratings changes
+
+rank_ratings |> 
+ggplot(aes(x = rank_of_number_ratings, y = average_rating)) +
+  geom_line() +
+  labs(
+    title = "Average Rating vs. Ratings Place",
+    subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
+    x = "Books ranked by the number of ratings it got. (1 = Most ratings, 10000 = Least ratings)", 
+    y = "Average Rating")
+
+```
+Interestingly, **there is no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.** 
+
+
+And looking at the correlation confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0. 
+
+```{r, echo = FALSE}
+# rank_ratings contains everything inside the books dataset, plus the rank_of_number_ratings
+
+corr <- rank_ratings |> 
+  select(average_rating, rank_of_number_ratings) |> 
+  cor()
+
+corr
+
+```
+
+I'm very surprised at this finding. I had expected the rank of the number of ratings a book received to have at least some correlation with the average rating. **So I guess people are neither more nor less inclined to rate a book whether they hated or loved that book.** 
+
+
+Now let's look at the distribution of the most highly rated books. 
 
 
 
