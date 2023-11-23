@@ -5705,8 +5705,8 @@ My Data Source
 <div class="cell">
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9ac7b45f638aa1faf7d2" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-9ac7b45f638aa1faf7d2">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-74187ff2b8970770f0e5" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-74187ff2b8970770f0e5">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>I’m surprised at some of the ratings of these books, yet very much not surprised at others.</p>
@@ -5729,10 +5729,28 @@ My Data Source
 <p>Interestingly, <strong>there appears to be no relationship between a <em>book’s average rating</em> and <em>its rank based on the number of ratings it received</em>.</strong></p>
 <p>And looking at the correlation confirms this: The correlation between <code>rank_of_number_ratings</code> and<code>average_rating</code> is almost 0.</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>                       average_rating rank_of_number_ratings
-average_rating             1.00000000            -0.08634326
-rank_of_number_ratings    -0.08634326             1.00000000</code></pre>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">average_rating</th>
+<th style="text-align: right;">rank_of_number_ratings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">average_rating</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">-0.0863433</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rank_of_number_ratings</td>
+<td style="text-align: right;">-0.0863433</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>I’m very surprised at this finding. I had expected the rank of the number of ratings a book received to have at least some correlation with the average rating. <strong>So I guess people are neither more nor less inclined to rate a book based on whether they hated or loved that book.</strong></p>

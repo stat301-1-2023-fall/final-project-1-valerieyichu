@@ -235,7 +235,8 @@ rank_ratings |>
 
 corr <- rank_ratings |> 
   select(average_rating, rank_of_number_ratings) |> 
-  cor()
+  cor() |> 
+  knitr::kable()
 
 corr
 

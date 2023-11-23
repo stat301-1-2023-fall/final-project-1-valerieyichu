@@ -298,7 +298,8 @@ And looking at the correlation confirms this: The correlation between `rank_of_n
 
 corr <- rank_ratings |> 
   select(average_rating, rank_of_number_ratings) |> 
-  cor()
+  cor() |> 
+  knitr::kable()
 
 corr
 
