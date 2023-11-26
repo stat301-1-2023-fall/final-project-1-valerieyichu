@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Valerie Chu">
-<meta name="dcterms.date" content="2023-11-26">
 
 <title>Progress Memo 2</title>
 <style>
@@ -5453,8 +5452,10 @@ color: #333;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#set-up" id="toc-set-up" class="nav-link active" data-scroll-target="#set-up">Set Up</a></li>
-  <li><a href="#a-quick-refresher-on-my-data" id="toc-a-quick-refresher-on-my-data" class="nav-link" data-scroll-target="#a-quick-refresher-on-my-data">A Quick Refresher On My Data</a></li>
+  <li><a href="#final-project" id="toc-final-project" class="nav-link active" data-scroll-target="#final-project">Final Project</a></li>
+  <li><a href="#things-to-fix" id="toc-things-to-fix" class="nav-link" data-scroll-target="#things-to-fix">Things to Fix</a></li>
+  <li><a href="#set-up" id="toc-set-up" class="nav-link" data-scroll-target="#set-up">Set Up</a></li>
+  <li><a href="#an-overview-of-my-data" id="toc-an-overview-of-my-data" class="nav-link" data-scroll-target="#an-overview-of-my-data">An Overview of My Data</a></li>
   <li><a href="#my-objectives" id="toc-my-objectives" class="nav-link" data-scroll-target="#my-objectives">My Objectives</a></li>
   <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining Data</a></li>
   <li><a href="#step-1-joining-tags-and-books_tags" id="toc-step-1-joining-tags-and-books_tags" class="nav-link" data-scroll-target="#step-1-joining-tags-and-books_tags">Step 1: Joining tags and books_tags</a></li>
@@ -5488,7 +5489,7 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 26, 2023</p>
+      <p class="date">today</p>
     </div>
   </div>
   
@@ -5498,6 +5499,20 @@ Data Science 1 with R (STAT 301-1)</p><p></p>
 
 </header>
 
+<section id="final-project" class="level2">
+<h2 class="anchored" data-anchor-id="final-project">Final Project</h2>
+</section>
+<section id="things-to-fix" class="level2">
+<h2 class="anchored" data-anchor-id="things-to-fix">Things to Fix</h2>
+<p>Q1, Pt 1</p>
+<ul>
+<li><p>If two books have the same average rating, put the book with the higher rating count ahead of the one with the lower rating count.</p></li>
+<li><p>Filter with 1,000+ ratings. Or mention that this book only contains the 10,000 most popular books on Goodreads, so that’s why this filtering doesn’t matter since it already takes care of that itself.</p></li>
+</ul>
+<p>Q1, Pt 3</p>
+<ul>
+<li>Mention that the average is so high bc these are the 10,000 most popular books on Goodreads.</li>
+</ul>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -5511,14 +5526,9 @@ Github Repo
 <p><a href="https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git">https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git</a></p>
 </div>
 </div>
+</section>
 <section id="set-up" class="level2">
 <h2 class="anchored" data-anchor-id="set-up">Set Up</h2>
-<ul>
-<li>Load Packages</li>
-</ul>
-<ul>
-<li>Load Data</li>
-</ul>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -5533,15 +5543,27 @@ My Data Source
 </div>
 </div>
 </section>
-<section id="a-quick-refresher-on-my-data" class="level2">
-<h2 class="anchored" data-anchor-id="a-quick-refresher-on-my-data">A Quick Refresher On My Data</h2>
+<section id="an-overview-of-my-data" class="level2">
+<h2 class="anchored" data-anchor-id="an-overview-of-my-data">An Overview of My Data</h2>
 <p><strong>What is Goodreads?</strong></p>
 <p>Officially, this is how Goodreads describes itself: “Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007.”</p>
 <p><strong>What is my data about?</strong></p>
-<p>This is an extremely comprehensive dataset for book data.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This dataset contains six million ratings for ten thousand most popular (with most ratings) books.</p>
+</div>
+</div>
 <p>It comes in five separate csv files: “books”, “books_tags”, “ratings”, “tags”, and “tbr”</p>
 <p>(For context, users on Goodreads can <em>tag</em> books and add them to their shelves. And “tbr” stands for “to be read”.)</p>
-<p>In this document, when I say “Goodreads data”, I am referring to the five datasets generally. When I join the datasets and give them a more specific name, that specific name is what I will use.</p>
+<p>In this document, when I say “Goodreads data”, I am referring to the five datasets generally. For individual datasets, I will use their more specific name.</p>
 </section>
 <section id="my-objectives" class="level2">
 <h2 class="anchored" data-anchor-id="my-objectives">My Objectives</h2>
@@ -5705,8 +5727,8 @@ My Data Source
 <div class="cell">
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-f9d1b696f9821ba7278e" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-f9d1b696f9821ba7278e">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-aa4db68d26f12becbe5b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-aa4db68d26f12becbe5b">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[3628,862,3275,7947,8854,4483,422,6361,3753,6590],["The Complete Calvin and Hobbes","Words of Radiance (The Stormlight Archive, #2)","Harry Potter Boxed Set, Books 1-5 (Harry Potter, #1-5)","ESV Study Bible","Mark of the Lion Trilogy","It's a Magical World: A Calvin and Hobbes Collection","Harry Potter Boxset (Harry Potter, #1-7)","There's Treasure Everywhere: A Calvin and Hobbes Collection","Harry Potter Collection (Harry Potter, #1-6)","The Authoritative Calvin and Hobbes: A Calvin and Hobbes Treasury"],["Bill Watterson","Brandon Sanderson","J.K. Rowling, Mary GrandPré","Anonymous, Lane T. Dennis, Wayne A. Grudem","Francine Rivers","Bill Watterson","J.K. Rowling","Bill Watterson","J.K. Rowling","Bill Watterson"],[4.82,4.77,4.77,4.76,4.76,4.75,4.74,4.74,4.73,4.73],[28900,73572,33220,8953,9081,22351,190050,16766,24618,16087]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>book_id<\/th>\n      <th>title<\/th>\n      <th>authors<\/th>\n      <th>average_rating<\/th>\n      <th>ratings_count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>I’m surprised at some of the ratings of these books, yet very much not surprised at others.</p>
