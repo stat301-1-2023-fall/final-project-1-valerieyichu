@@ -33,6 +33,12 @@ Q1, Pt 3
 
 -   Mention that the average is so high bc these are the 10,000 most popular books on Goodreads.
 
+Notes
+
+- maybe use gg_miss_var
+
+
+
 
 ::: {.callout-tip icon="false"}
 ## Github Repo
@@ -387,7 +393,7 @@ Without more data, it's hard to tell whether we can explain away the cluster aro
 
 Each user (user_id) can one rating to one book, so that means users can rate multiple books. Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of about 10k books on Goodreads, rating 200 of them (as the top two book-rating users have done) is quite impressive.
 
-Let's display the top 10 (of 53,424 total users who rated books on Goodreads) who rated the most books in this Goodreads dataset.
+Let's display the top 10 (of 53,424 total users who rated the top 10,000 rated books on Goodreads) who rated the most books in this Goodreads dataset.
 
 ```{r, echo = FALSE}
 books_and_ratings |> 
@@ -399,9 +405,24 @@ books_and_ratings |>
 
 ```
 
-Now, let's see what the average ratings of these top book-rating users is.
+Now, let's see what the average ratings of these top book-rating users is. 
 
-*to be completed in final project*
+```{r, echo = FALSE}
+books_and_ratings <- books_and_ratings |> 
+  group_by(user_id) |> 
+  mutate(average_rating = (mean(rating, na.rm = TRUE))) 
+
+```
+
+Here's an excerpt of our dataset "books_and_ratings", updated with a new column called average_rating that displays the average ratings each user_id gives of the books in this dataset. 
+```{r, echo = FALSE}
+books_and_ratings |> 
+  slice_head(n = 10) |> 
+  DT::datatable()
+```
+
+
+
 
 # My Progress
 

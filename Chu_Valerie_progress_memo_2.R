@@ -326,4 +326,8 @@ books_and_ratings |>
 # 
 # rank_ratings <- rank_ratings(books, ratings_count)
 
+books_and_ratings |> 
+  group_by(user_id) |> 
+  mutate(average_rating = (mean(rating, na.rm = TRUE)))
+
 
