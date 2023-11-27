@@ -33,31 +33,11 @@ Q1, Pt 3
 
 -   Mention that the average is so high bc these are the 10,000 most popular books on Goodreads.
 
----
-title: "Progress Memo 2"
-subtitle: |
-  | Final Project 
-  | Data Science 1 with R (STAT 301-1)
-author: "Valerie Chu"
-date: today
-
-format:
-  html:
-    toc: true
-    embed-resources: true
-    code-fold: show
-    link-external-newwindow: true
-
-execute:
-  warning: false
-  
-from: markdown+emoji 
----
 
 ::: {.callout-tip icon="false"}
 ## Github Repo
 
-<https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git>
+[https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git](https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git)
 :::
 
 ## Set Up
