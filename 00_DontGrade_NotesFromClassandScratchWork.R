@@ -330,4 +330,12 @@ books_and_ratings |>
   group_by(user_id) |> 
   mutate(average_rating = (mean(rating, na.rm = TRUE)))
 
+# Here's an excerpt of our dataset "books_and_ratings", updated with a new column called average_rating that displays the average ratings each user_id gives of the books in this dataset. 
+
+# books_and_ratings |> 
+#   group_by(title) |> 
+#   distinct(title) |> 
+#   slice_head(n = 1) |> 
+#   knitr::kable()
+
 
