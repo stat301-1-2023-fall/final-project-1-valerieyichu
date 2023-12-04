@@ -41,6 +41,15 @@ books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
 
 books_and_tags
 
+# Print an excerpt of the new dataset
+books_and_tags |> 
+  slice_head(n = 10) |> 
+  knitr::kable()
+
+
+# Write the dataset
+write_rds(books_and_tags, "data/books_and_tags")
+
 
 
 
@@ -61,7 +70,7 @@ anti_join(ratings, books, by = c("book_id" = "work_id"))
 # The second antijoin using book_id and work_id reveal that there are 5,846,293 rows missing. 
 # So that means that `book_id` from rating and `work_id` from books don't quite match. 
 # **That's probably because of all the additional book editions that joining with `work_id` uses.** 
-# Or, as the original dataset noted, 
+# As the original dataset noted, 
   # Each book may have many editions. 
   # goodreads_book_id and best_book_id generally point to the most popular edition of a given book, 
   # while goodreads work_id refers to the book in the abstract sense.
@@ -69,6 +78,12 @@ anti_join(ratings, books, by = c("book_id" = "work_id"))
 # I'm going to join book_id to book_id:
 
 anti_join(books, ratings, by = c("book_id" = "book_id"))
+
+# Joining the datasets
+books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) 
+
+# Write the dataset
+write_rds(books_and_ratings, "data/books_and_ratings")
 
 
 

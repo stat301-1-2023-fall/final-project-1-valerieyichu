@@ -37,6 +37,8 @@ Notes
 
 - maybe use gg_miss_var
 
+- Write in the csv
+
 
 
 
