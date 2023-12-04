@@ -391,7 +391,11 @@ Without more data, it's hard to tell whether we can explain away the cluster aro
 
 # Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
 
-Each user (user_id) can one rating to one book, so that means users can rate multiple books. Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of about 10k books on Goodreads, rating 200 of them (as the top two book-rating users have done) is quite impressive.
+Some background information:
+
+- Each user (user_id) can give one rating to one book. 
+
+- Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of the 10k most rated books on Goodreads, having users who rated 200 books (as a few book-rating users have done) is quite impressive.
 
 These are the top 10 users (of 53,424 total users who rated the top 10,000 rated books on Goodreads) who rated the most books in this Goodreads dataset.
 
@@ -415,11 +419,26 @@ books_and_ratings <- books_and_ratings |>
 
 ```
 
+```{r}
+# We just added a new variable, `average_rating` to the "books_and_ratings" dataset. `average_rating` shows the average rating of each user.
+# However, there are 5976497 observations in our "books_and_ratings" dataset, and my computer crashes if I try to plot all those points. 
+# Besides, I'm interested in the users who leave the most number of ratings anways. 
+# As the table above shows, the users who left the most ratings left 200 ratings. So let's use filter to keep only the users who rated more than 195 books. 
+
+books_and_ratings_top_raters <- books_and_ratings |> 
+  group_by(user_id) |> 
+  mutate(count = n()) |> 
+  filter(count > 195)
+
+```
+
 
 ```{r}
-books_and_ratings |> 
+books_and_ratings_top_raters |> 
   ggplot(aes(x = user_id, y = average_rating, color = average_rating)) +
-  geom_point()
+  geom_point() +
+  ylim(c(2, 5)) +
+  scale_y_continuous(breaks = seq(2, 5, by = 0.125))
 
 ```
 
