@@ -416,9 +416,11 @@ books_and_ratings <- books_and_ratings |>
 
 Here's an excerpt of our dataset "books_and_ratings", updated with a new column called average_rating that displays the average ratings each user_id gives of the books in this dataset. 
 ```{r, echo = FALSE}
-books_and_ratings |> 
-  slice_head(n = 10) |> 
-  DT::datatable()
+books_and_ratings_sliced <- books_and_ratings |> 
+  group_by(user_id) |> 
+  slice_head(n = 10) 
+
+  DT::datatable(books_and_ratings_sliced)
 ```
 
 
