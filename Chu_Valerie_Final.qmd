@@ -529,6 +529,34 @@ books_and_ratings_top_raters_id |>
 
 ```
 
+# Question 3: What are the most common tags?
+
+```{r, echo = FALSE}
+popular_tags <- books_and_tags |> 
+  group_by(tag_name) |> 
+  summarize(tags = n()) |> 
+  filter(tags > 1000) |> 
+  arrange(desc(tags)) |> 
+  DT::datatable()
+
+popular_tags
+
+```
+
+
+
+#### Question 3, Part 1: Which books have the most tags? The most hated or liked ones?
+
+
+```{r}
+tags_count <- books_and_tags |> 
+  group_by(goodreads_book_id) |> 
+  # add everything in count
+  summarize(book_tags_count = n())
+
+tags_count
+```
+
 
 
 

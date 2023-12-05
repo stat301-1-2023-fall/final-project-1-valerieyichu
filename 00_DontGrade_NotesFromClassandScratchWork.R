@@ -338,4 +338,13 @@ books_and_ratings |>
 #   slice_head(n = 1) |> 
 #   knitr::kable()
 
+# ## Question 3: Is there any relationship between 
+  # the number of times a book appears in the “tbr” dataset and 
+  # the number of ratings it received?
+# For this dataset, no. It cuts off at 100 tags recorded per book
+tags_count <- books_and_tags |> 
+  group_by(goodreads_book_id) |> 
+  summarize(book_tags_count = n())
+
+tags_count
 
