@@ -132,8 +132,12 @@ books_cut
 
 
 # Distribution of Book Ratings
-books_cut |> 
-  count(average_rating_cut) |> 
+books_count <- books_cut |> 
+  count(average_rating_cut) 
+
+colnames(books_count) <- c("Average Rating", "Number of Books")
+
+books_count |>
   knitr::kable()
 
 
@@ -145,4 +149,6 @@ books_cut |>
        x = "Average Rating",
        y = "Number of Books") +
   theme_bw()
+
+
 

@@ -1,9 +1,9 @@
 ---
-title: "Final Project"
+title: "The Habits of Goodreads Users"
 subtitle: |
-  | Final Project
+  | An Exploration of Ratings, Tags, and More
   | Data Science 1 with R (STAT 301-1)
-author: "Me"
+author: "Valerie Chu"
 date: today
 
 format:
@@ -19,7 +19,6 @@ execute:
 from: markdown+emoji 
 ---
 
-## Final Project
 
 ## Things to Fix
 
@@ -377,15 +376,15 @@ books_cut
 
 ```
 
-I've made bins of 0.25 for each average rating. `n` shows how many books there are in each bin:
-
 **Distribution of Book Ratings**
-
 ```{r, echo = FALSE}
-books_cut |> 
-  count(average_rating_cut) |> 
-  knitr::kable()
+books_count <- books_cut |> 
+  count(average_rating_cut) 
 
+colnames(books_count) <- c("Average Rating", "Number of Books")
+
+books_count |>
+  knitr::kable()
 ```
 
 ```{r, echo = FALSE}
@@ -430,6 +429,7 @@ That means that people who rate the popular books on Goodreads usually either:
 Without more data, it's hard to tell whether we can explain away the cluster around book ratings between 3.75 and 4.25 as one of these suggestions, a combination of these suggestions, or none of these suggestions. It's still fun to think about though.
 
 Also, I should note again that in the context of this dataset containing only the most rated (ie. popular) books on Goodreads, it does make sense that books with lower ratings likely aren't promoted enough — and therefore likely aren't rated enough — to appear on this dataset.   
+
 
 # Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
 
