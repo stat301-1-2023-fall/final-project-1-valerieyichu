@@ -48,7 +48,7 @@ books_and_tags |>
 
 
 # Write the dataset
-write_rds(books_and_tags, "data/books_and_tags")
+write_rds(books_and_tags, "data/books_and_tags.rds")
 
 
 
@@ -83,7 +83,7 @@ anti_join(books, ratings, by = c("book_id" = "book_id"))
 books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) 
 
 # Write the dataset
-write_rds(books_and_ratings, "data/books_and_ratings")
+write_rds(books_and_ratings, "data/books_and_ratings.rds")
 
 
 
