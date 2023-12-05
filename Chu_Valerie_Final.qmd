@@ -39,6 +39,7 @@ Notes
 
 - Write in the csv
 
+- perhaps add a count of each language. or factor all the english ones as english varieties then have an other category.
 
 
 
@@ -269,9 +270,9 @@ I'm surprised at some of the ratings of these books, yet very much not surprised
 
 -   I *am* surprised that various spinoffs of Calvin and Hobbes and Harry Potter dominate 7 of 10 rankings in the top 10 most highly rated books. I knew they were popular, but not *that* popular. But I guess Goodreads is also an American company, and those are the types of books Americans read and love.
 
-#### Question 1, Part 2: Is there a relationship between the rank a book receives based on its number of ratings and its average rating?
+#### Question 1, Part 2: Do people hate-rate or love-rate books?
 
-I'm curious about whether there's a relationship between the rank a book receives based on its number of ratings (rank_of_number_ratings) and its average_rating.
+**In other words, is there a relationship between a book's number of ratings and its average rating?**
 
 ```{r, echo = FALSE}
 # Start by creating a new variable, rank_of_number_ratings, that assigns each book a rank based on how high their ratings_count is. In other words, more ratings = higher rank. 
@@ -300,12 +301,12 @@ ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code
     subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
     x = "Books ranked by the number of ratings it got (1 = Most ratings, 10000 = Least ratings)", 
     y = "Average Rating",
-    color = "Language Code")
+    color = "Language Code") +
+  theme_bw()
 
 ```
-## perhaps add a count of each language. or factor all the english ones as english varieties then have an other category.
 
-**This graph is so green. How many books are written in English?**
+**This graph is so green. How many books and what percent of books on Goodreads are written in English?**
 ```{r, echo = FALSE}
 rank_ratings_summary <- rank_ratings |> 
   group_by(language_code) |> 
@@ -317,18 +318,24 @@ rank_ratings_summary <- rank_ratings |>
 rank_ratings_prop <- rank_ratings_summary |> 
   mutate(percent = count / sum(count) * 100)
   
+rank_ratings_prop <- rank_ratings_prop %>%
+  mutate(language_code = coalesce(language_code, "other"))
+
+colnames(rank_ratings_prop) <- c("Language Code", "Count", "Percent")
+
 rank_ratings_prop |> 
   DT::datatable()
+ 
 ```
 
 
-There are two interesting observations here. 
+Two interesting observations:
 
-- 1. This dataset is a dataset of the 10k most rated books on Goodreads. The graph above is so green because most of these books are in some form of English. Unsurprisingly, the people who use Goodreads, an America-based company, mostly rate books written English and other European languages. 
+- 1. This dataset is a dataset of the 10k most rated books on Goodreads. The graph above is so green because most of these books are in some variety of English. Unsurprisingly, the people who use Goodreads, an American-based company, mostly rate books written in English and other European languages. 
 
 - 2. **There appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
 
-And looking at the correlation confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
+Looking at the correlation confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
 
 ```{r, echo = FALSE}
 # reminder: rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
