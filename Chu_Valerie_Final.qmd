@@ -305,7 +305,28 @@ ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code
 ```
 ## perhaps add a count of each language. or factor all the english ones as english varieties then have an other category.
 
-Interestingly, **there appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
+**This graph is so green. How many books are written in English?**
+```{r, echo = FALSE}
+rank_ratings_summary <- rank_ratings |> 
+  group_by(language_code) |> 
+  summarize(count = n()) 
+
+```
+
+```{r, echo = FALSE}
+rank_ratings_prop <- rank_ratings_summary |> 
+  mutate(percent = count / sum(count) * 100)
+  
+rank_ratings_prop |> 
+  DT::datatable()
+```
+
+
+There are two interesting observations here. 
+
+- 1. This dataset is a dataset of the 10k most rated books on Goodreads. The graph above is so green because most of these books are in some form of English. Unsurprisingly, the people who use Goodreads, an America-based company, mostly rate books written English and other European languages. 
+
+- 2. **There appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
 
 And looking at the correlation confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
 
@@ -454,7 +475,7 @@ books_and_ratings_top_raters_id <- count_cut |>
 
 ```{r}
 books_and_ratings_top_raters_id |> 
-  ggplot(aes(x = id, y = average_rating, color = average_rating_cut)) +
+  ggplot(aes(x = id, y = average_rating)) +
   geom_point() +
 #  geom_point() +
 #  geom_smooth(alpha = 0.25) +
@@ -498,6 +519,7 @@ books_and_ratings_top_raters_id <- books_and_ratings_top_raters |>
   
 # books_and_ratings_top_raters_id
 ```
+
 ```{r, include = FALSE}
 # What is the number of Top Users, ie users who rated more than 175 books
 number_of_top_raters <- books_and_ratings_top_raters_id |> 
