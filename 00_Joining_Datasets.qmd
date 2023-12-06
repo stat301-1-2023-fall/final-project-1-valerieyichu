@@ -1,0 +1,201 @@
+---
+title: "00_Joining_Datasets"
+format: html
+editor: visual
+---
+
+## Set Up
+
+```{r}
+# Load Package
+library(tidyverse)
+
+```
+
+```{r}
+# Load Data
+
+books <- read_delim("data/books.csv")
+books_tags <- read_csv("data/book_tags.csv")
+ratings <- read_csv("data/ratings.csv")
+tags <- read_csv("data/tags.csv")
+tbr <- read_csv("data/to_read.csv")
+```
+
+::: {.callout-tip icon="false"}
+## My Data Source
+
+[**https://github.com/zygmuntz/goodbooks-10k**](https://github.com/zygmuntz/goodbooks-10k)
+:::
+
+## An Overview of My Data
+
+**What is Goodreads?**
+
+Officially, this is how Goodreads describes itself: "Goodreads is the world's largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007."
+
+
+::: {.callout-tip icon="false"}
+## What is my data about?
+
+This dataset contains six million ratings for the 10,000 most rated books on Goodreads.
+:::
+
+It comes in five separate csv files: "books", "books_tags", "ratings", "tags", and "tbr"
+
+(For context, users on Goodreads can *tag* books and add them to their shelves. And "tbr" stands for "to be read".)
+
+In this document, when I say "Goodreads data", I am referring to the five datasets generally. For individual datasets, I will use their more specific name.
+
+## My Objectives
+
+There are several questions I'm interested in examining in Goodreads data.
+
+-   What are the most highly rated books?
+
+-   Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
+
+-   Is there any relationship between the number of times a book appears in the "tbr" dataset and the number of ratings it received?
+
+-   What is the relationship between a book's average rating and the year it was published?
+
+-   How do users tag the most highly rated books? Is there a trend?
+
+## Joining Data
+
+The README in my data source has some notes userful for joining the five Goodreads datasets. I've copied and pasted the notes I found most interesting and relevant below. I'll re-explain the key points when I join my data in the following sections, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:
+
+**Ratings**
+
+-   Ratings go from one to five. Both book IDs and user IDs are contiguous. For books, they are 1-10000, for users, 1-53424.
+
+-   to_read.csv provides IDs of the books marked "to read" by each user, as user_id,book_id pairs, sorted by time. There are close to a million pairs.
+
+-   books.csv has metadata for each book (goodreads IDs, authors, title, average rating, etc.). The metadata have been extracted from goodreads XML files, available in books_xml.
+
+**Tags**
+
+-   book_tags.csv contains tags/shelves/genres assigned by users to books. Tags in this file are represented by their IDs. They are sorted by goodreads_book_id ascending and count descending.
+
+-   Each tag/shelf is given an ID. tags.csv translates tag IDs to names.
+
+**Goodreads IDs**
+
+-   Each book may have many editions. goodreads_book_id and best_book_id generally point to the most popular edition of a given book, while goodreads work_id refers to the book in the abstract sense.
+
+-   Note that book_id in ratings.csv and to_read.csv maps to work_id, not to goodreads_book_id, meaning that ratings for different editions are aggregated.
+
+## Step 1: Joining tags and books_tags
+
+**Why am I joining tags and books_tags?**
+
+I want to join tags and books_tags. This is because each `goodreads_book_id` within the books_tags dataset has a `tag_id`. And each `tag_name` within the tags dataset has a `tag_id`. In other words, when I join the books_tags dataset together with the tags dataset, I can figure out what each `goodreads_book_id` was tagged with (`tag_name`). I would still have to match each `goodreads_book_id` with its title, but that would happen in a different join.
+
+And just to recap, the reason why I want to figure out what each `goodreads_book_id` was tagged with is so that I can start to answer my research question about if there's a trend in how users tag the most highly rated books.
+
+**Now let's actually join tags and books_tags:**
+
+One of the things we learned from the README:
+
+tags.csv and books_tags.csv both have the variable `tag_id` in common. And `tag_id` has only unique values for both datasets. `tag_id` also corresponds for both datasets. So let's test whether `tag_id` is a feasible foreign / primary key.
+
+First, an exploration of implicit missing variables in the tags and books_tags datasets using anti_joins.
+
+```{r}
+anti_join(tags, books_tags, by = c("tag_id" = "tag_id")) 
+```
+
+```{r}
+anti_join(books_tags, tags, by = c("tag_id" = "tag_id")) 
+```
+
+Using anti_joins shows us that there are no `tag_id` rows in `books_tags` that don't have a matching `tag_id` row in `tags`. In other words, every `tag_id` is unique and each `tag_id` row in both datasets correspond directly to each other.
+
+Also, we can check double this. If we take the `count` of `tag_id` in both datasets, the number of rows is exactly the same: 34,252 rows.
+
+```{r}
+books_tags |> count(tag_id)
+tags |> count(tag_id)
+```
+
+So **`tag_id` is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
+
+Now, let's actually join the two datasets:
+
+To do this, I'm going to use a full_join (it won't really matter whether I use a full_join, left_join, right_join, or inner_join in this case because `tag_id` in both datasets perfectly correspond).
+
+An excerpt of **the new books_and_tags dataset:** (The first 10 of 999,912 rows.)
+
+```{r}
+# Join tags and books_tags
+
+books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
+
+books_and_tags |> 
+  slice_head(n = 10) |> 
+  knitr::kable()
+
+```
+
+Step 1 is done. Now, before I get to the EDA of our new dataset, books_and_tags, I want to join another two datasets:
+
+## Step 2: Joining books and ratings
+
+**Why am I joining books and ratings?**
+
+Joining books and ratings will allow me to start answering on three of my research questions: "What are the most highly rated books?", "What is the relationship between a book's average rating and the year it was published?" and "Do readers who leave the most ratings leave higher ratings on average or lower ratings on average?"
+
+**Now let's actually join books and ratings**
+
+But first, some prefaces:
+
+The README I got my data from says:
+
+-   Both `book_id` and `user_id` are contiguous in the ratings.csv file.
+
+-   It also contains a note: `book_id` in the ratings dataset and `book_id` in the tbr dataset map to `work_id` in the books dataset (not `goodreads_book_id` as we would intuitively assume).
+
+This [article linked on the About section of the github where I found the Goodreads dataset](http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/) says:
+
+-   "Each book may have many editions. `goodreads_book_id` and `best_book_id` generally point to the most popular edition of a given book, while goodreads `work_id` refers to the book in the abstract sense."
+
+-   It also again states that "Note that book_id in ratings.csv and to_read.csv (I, Valerie, called this the "tbr" dataset) maps to `work_id`, not to goodreads_book_id. **It means that ratings for different editions are aggregated.**"
+
+To summarize, that seems to mean that:
+
+- book_id = unique ID, different book editions aggregated
+
+- goodreads_book_id = unique ID, determined by Goodreads, usually the most popular edition of a book
+
+- work_id = unique ID, refers to a book in the abstract sense; not necessarily the most popular edition
+
+I read through the README of the [dataset](https://github.com/zygmuntz/goodbooks-10k), the [article linked on the dataset](http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/), and [the Kaggle which has descriptions for the previous, unupdated version of the github dataset I'm using](https://www.kaggle.com/datasets/zygmunt/goodbooks-10k#books.csv).
+
+From these three links, I've arrived at several conclusions:
+
+-   Mapping `book_id` in the ratings dataset to `work_id` in the books dataset (as the README implies i should do) — instead of `book_id` in ratings to `book_id` in books — is only necessary if I care about a book in the abstract sense; not necessarily the most popular edition. I don't. I'm more interested in different book editions being aggregated. That's what `book_id` in ratings tracks, according to the article.
+
+-   And `books_id` in the books dataset *should be* equivalent to `books_id` in the ratings dataset. So I'm going to see if I can join the books and ratings dataset using `books_id` as the key:
+
+Let's start by seeing whether there is implicit missingness using antijoins.
+
+```{r}
+anti_join(books, ratings, by = c("book_id" = "book_id"))
+```
+
+There are no rows for `book_id` within books that don't have a matching `book_id` within rating and vice versa. All rows match.
+
+So **book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
+
+Just a quick side note because I find this very interesting: If I were to have instead mapped `work_id` in books with `book_id` in ratings (which I didn't because I'm interested in the version with the different book editions being aggregated, *not* a book in the abstract sense). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where `work_id` doesn't match to `book_id` and 5,846,293 rows where `book_id` doesn't match to `work_id` (there are simply many more work_id rows than book_id rows because, again, multiple book editions that haven't been aggregated. See my R file for more details). But since I'm not doing that because I'm not interested in books in the abstract sense, all I need to do is use `book_id` to join the datasets books and ratings.
+
+
+```{r}
+books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
+  group_by(title) 
+
+```
+
+Now, for the fun part. An EDA with our two new datasets, books_and_tags and books_and_ratings. And some of the original datasets too.
+
+Refer back to "Chu_Valerie_Final" for this.

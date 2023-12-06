@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>00_Joining_Datasets</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="00_Joining_Datasets_files/libs/clipboard/clipboard.min.js"></script>
+<script src="00_Joining_Datasets_files/libs/quarto-html/quarto.js"></script>
+<script src="00_Joining_Datasets_files/libs/quarto-html/popper.min.js"></script>
+<script src="00_Joining_Datasets_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="00_Joining_Datasets_files/libs/quarto-html/anchor.min.js"></script>
+<link href="00_Joining_Datasets_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="00_Joining_Datasets_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="00_Joining_Datasets_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="00_Joining_Datasets_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="00_Joining_Datasets_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">00_Joining_Datasets</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="set-up" class="level2">
+<h2 class="anchored" data-anchor-id="set-up">Set Up</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Package</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>books <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"data/books.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 10000 Columns: 23
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (7): isbn, authors, original_title, title, language_code, image_url, sm...
+dbl (16): book_id, goodreads_book_id, best_book_id, work_id, books_count, is...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>books_tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/book_tags.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 999912 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): goodreads_book_id, tag_id, count
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ratings.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 5976479 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): user_id, book_id, rating
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/tags.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 34252 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): tag_name
+dbl (1): tag_id
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tbr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/to_read.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 912705 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (2): user_id, book_id
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+My Data Source
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://github.com/zygmuntz/goodbooks-10k"><strong>https://github.com/zygmuntz/goodbooks-10k</strong></a></p>
+</div>
+</div>
+</section>
+<section id="an-overview-of-my-data" class="level2">
+<h2 class="anchored" data-anchor-id="an-overview-of-my-data">An Overview of My Data</h2>
+<p><strong>What is Goodreads?</strong></p>
+<p>Officially, this is how Goodreads describes itself: “Goodreads is the world’s largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007.”</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What is my data about?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This dataset contains six million ratings for the 10,000 most rated books on Goodreads.</p>
+</div>
+</div>
+<p>It comes in five separate csv files: “books”, “books_tags”, “ratings”, “tags”, and “tbr”</p>
+<p>(For context, users on Goodreads can <em>tag</em> books and add them to their shelves. And “tbr” stands for “to be read”.)</p>
+<p>In this document, when I say “Goodreads data”, I am referring to the five datasets generally. For individual datasets, I will use their more specific name.</p>
+</section>
+<section id="my-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="my-objectives">My Objectives</h2>
+<p>There are several questions I’m interested in examining in Goodreads data.</p>
+<ul>
+<li><p>What are the most highly rated books?</p></li>
+<li><p>Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?</p></li>
+<li><p>Is there any relationship between the number of times a book appears in the “tbr” dataset and the number of ratings it received?</p></li>
+<li><p>What is the relationship between a book’s average rating and the year it was published?</p></li>
+<li><p>How do users tag the most highly rated books? Is there a trend?</p></li>
+</ul>
+</section>
+<section id="joining-data" class="level2">
+<h2 class="anchored" data-anchor-id="joining-data">Joining Data</h2>
+<p>The README in my data source has some notes userful for joining the five Goodreads datasets. I’ve copied and pasted the notes I found most interesting and relevant below. I’ll re-explain the key points when I join my data in the following sections, but I just wanted to put the most interesting notes about the Goodreads data together in the same section:</p>
+<p><strong>Ratings</strong></p>
+<ul>
+<li><p>Ratings go from one to five. Both book IDs and user IDs are contiguous. For books, they are 1-10000, for users, 1-53424.</p></li>
+<li><p>to_read.csv provides IDs of the books marked “to read” by each user, as user_id,book_id pairs, sorted by time. There are close to a million pairs.</p></li>
+<li><p>books.csv has metadata for each book (goodreads IDs, authors, title, average rating, etc.). The metadata have been extracted from goodreads XML files, available in books_xml.</p></li>
+</ul>
+<p><strong>Tags</strong></p>
+<ul>
+<li><p>book_tags.csv contains tags/shelves/genres assigned by users to books. Tags in this file are represented by their IDs. They are sorted by goodreads_book_id ascending and count descending.</p></li>
+<li><p>Each tag/shelf is given an ID. tags.csv translates tag IDs to names.</p></li>
+</ul>
+<p><strong>Goodreads IDs</strong></p>
+<ul>
+<li><p>Each book may have many editions. goodreads_book_id and best_book_id generally point to the most popular edition of a given book, while goodreads work_id refers to the book in the abstract sense.</p></li>
+<li><p>Note that book_id in ratings.csv and to_read.csv maps to work_id, not to goodreads_book_id, meaning that ratings for different editions are aggregated.</p></li>
+</ul>
+</section>
+<section id="step-1-joining-tags-and-books_tags" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-joining-tags-and-books_tags">Step 1: Joining tags and books_tags</h2>
+<p><strong>Why am I joining tags and books_tags?</strong></p>
+<p>I want to join tags and books_tags. This is because each <code>goodreads_book_id</code> within the books_tags dataset has a <code>tag_id</code>. And each <code>tag_name</code> within the tags dataset has a <code>tag_id</code>. In other words, when I join the books_tags dataset together with the tags dataset, I can figure out what each <code>goodreads_book_id</code> was tagged with (<code>tag_name</code>). I would still have to match each <code>goodreads_book_id</code> with its title, but that would happen in a different join.</p>
+<p>And just to recap, the reason why I want to figure out what each <code>goodreads_book_id</code> was tagged with is so that I can start to answer my research question about if there’s a trend in how users tag the most highly rated books.</p>
+<p><strong>Now let’s actually join tags and books_tags:</strong></p>
+<p>One of the things we learned from the README:</p>
+<p>tags.csv and books_tags.csv both have the variable <code>tag_id</code> in common. And <code>tag_id</code> has only unique values for both datasets. <code>tag_id</code> also corresponds for both datasets. So let’s test whether <code>tag_id</code> is a feasible foreign / primary key.</p>
+<p>First, an exploration of implicit missing variables in the tags and books_tags datasets using anti_joins.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(tags, books_tags, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"tag_id"</span> <span class="ot">=</span> <span class="st">"tag_id"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: tag_id &lt;dbl&gt;, tag_name &lt;chr&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books_tags, tags, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"tag_id"</span> <span class="ot">=</span> <span class="st">"tag_id"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 3
+# ℹ 3 variables: goodreads_book_id &lt;dbl&gt;, tag_id &lt;dbl&gt;, count &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Using anti_joins shows us that there are no <code>tag_id</code> rows in <code>books_tags</code> that don’t have a matching <code>tag_id</code> row in <code>tags</code>. In other words, every <code>tag_id</code> is unique and each <code>tag_id</code> row in both datasets correspond directly to each other.</p>
+<p>Also, we can check double this. If we take the <code>count</code> of <code>tag_id</code> in both datasets, the number of rows is exactly the same: 34,252 rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>books_tags <span class="sc">|&gt;</span> <span class="fu">count</span>(tag_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 34,252 × 2
+   tag_id     n
+    &lt;dbl&gt; &lt;int&gt;
+ 1      0     7
+ 2      1     2
+ 3      2     1
+ 4      3     1
+ 5      4     1
+ 6      5     1
+ 7      6     1
+ 8      7     1
+ 9      8     1
+10      9     1
+# ℹ 34,242 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tags <span class="sc">|&gt;</span> <span class="fu">count</span>(tag_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 34,252 × 2
+   tag_id     n
+    &lt;dbl&gt; &lt;int&gt;
+ 1      0     1
+ 2      1     1
+ 3      2     1
+ 4      3     1
+ 5      4     1
+ 6      5     1
+ 7      6     1
+ 8      7     1
+ 9      8     1
+10      9     1
+# ℹ 34,242 more rows</code></pre>
+</div>
+</div>
+<p>So <strong><code>tag_id</code> is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
+<p>Now, let’s actually join the two datasets:</p>
+<p>To do this, I’m going to use a full_join (it won’t really matter whether I use a full_join, left_join, right_join, or inner_join in this case because <code>tag_id</code> in both datasets perfectly correspond).</p>
+<p>An excerpt of <strong>the new books_and_tags dataset:</strong> (The first 10 of 999,912 rows.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Join tags and books_tags</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>books_and_tags <span class="ot">&lt;-</span> <span class="fu">full_join</span>(tags, books_tags, <span class="fu">join_by</span>(tag_id <span class="sc">==</span> tag_id))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>books_and_tags <span class="sc">|&gt;</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">tag_id</th>
+<th style="text-align: left;">tag_name</th>
+<th style="text-align: right;">goodreads_book_id</th>
+<th style="text-align: right;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">665</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">81176</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">147074</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">2983489</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">6713071</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">6952423</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: right;">7494887</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">–1-</td>
+<td style="text-align: right;">43799</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">–1-</td>
+<td style="text-align: right;">1207904</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">–10-</td>
+<td style="text-align: right;">513367</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Step 1 is done. Now, before I get to the EDA of our new dataset, books_and_tags, I want to join another two datasets:</p>
+</section>
+<section id="step-2-joining-books-and-ratings" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-joining-books-and-ratings">Step 2: Joining books and ratings</h2>
+<p><strong>Why am I joining books and ratings?</strong></p>
+<p>Joining books and ratings will allow me to start answering on three of my research questions: “What are the most highly rated books?”, “What is the relationship between a book’s average rating and the year it was published?” and “Do readers who leave the most ratings leave higher ratings on average or lower ratings on average?”</p>
+<p><strong>Now let’s actually join books and ratings</strong></p>
+<p>But first, some prefaces:</p>
+<p>The README I got my data from says:</p>
+<ul>
+<li><p>Both <code>book_id</code> and <code>user_id</code> are contiguous in the ratings.csv file.</p></li>
+<li><p>It also contains a note: <code>book_id</code> in the ratings dataset and <code>book_id</code> in the tbr dataset map to <code>work_id</code> in the books dataset (not <code>goodreads_book_id</code> as we would intuitively assume).</p></li>
+</ul>
+<p>This <a href="http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/">article linked on the About section of the github where I found the Goodreads dataset</a> says:</p>
+<ul>
+<li><p>“Each book may have many editions. <code>goodreads_book_id</code> and <code>best_book_id</code> generally point to the most popular edition of a given book, while goodreads <code>work_id</code> refers to the book in the abstract sense.”</p></li>
+<li><p>It also again states that “Note that book_id in ratings.csv and to_read.csv (I, Valerie, called this the”tbr” dataset) maps to <code>work_id</code>, not to goodreads_book_id. <strong>It means that ratings for different editions are aggregated.</strong>”</p></li>
+</ul>
+<p>To summarize, that seems to mean that:</p>
+<ul>
+<li><p>book_id = unique ID, different book editions aggregated</p></li>
+<li><p>goodreads_book_id = unique ID, determined by Goodreads, usually the most popular edition of a book</p></li>
+<li><p>work_id = unique ID, refers to a book in the abstract sense; not necessarily the most popular edition</p></li>
+</ul>
+<p>I read through the README of the <a href="https://github.com/zygmuntz/goodbooks-10k">dataset</a>, the <a href="http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/">article linked on the dataset</a>, and <a href="https://www.kaggle.com/datasets/zygmunt/goodbooks-10k#books.csv">the Kaggle which has descriptions for the previous, unupdated version of the github dataset I’m using</a>.</p>
+<p>From these three links, I’ve arrived at several conclusions:</p>
+<ul>
+<li><p>Mapping <code>book_id</code> in the ratings dataset to <code>work_id</code> in the books dataset (as the README implies i should do) — instead of <code>book_id</code> in ratings to <code>book_id</code> in books — is only necessary if I care about a book in the abstract sense; not necessarily the most popular edition. I don’t. I’m more interested in different book editions being aggregated. That’s what <code>book_id</code> in ratings tracks, according to the article.</p></li>
+<li><p>And <code>books_id</code> in the books dataset <em>should be</em> equivalent to <code>books_id</code> in the ratings dataset. So I’m going to see if I can join the books and ratings dataset using <code>books_id</code> as the key:</p></li>
+</ul>
+<p>Let’s start by seeing whether there is implicit missingness using antijoins.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(books, ratings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"book_id"</span> <span class="ot">=</span> <span class="st">"book_id"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 23
+# ℹ 23 variables: book_id &lt;dbl&gt;, goodreads_book_id &lt;dbl&gt;, best_book_id &lt;dbl&gt;,
+#   work_id &lt;dbl&gt;, books_count &lt;dbl&gt;, isbn &lt;chr&gt;, isbn13 &lt;dbl&gt;, authors &lt;chr&gt;,
+#   original_publication_year &lt;dbl&gt;, original_title &lt;chr&gt;, title &lt;chr&gt;,
+#   language_code &lt;chr&gt;, average_rating &lt;dbl&gt;, ratings_count &lt;dbl&gt;,
+#   work_ratings_count &lt;dbl&gt;, work_text_reviews_count &lt;dbl&gt;, ratings_1 &lt;dbl&gt;,
+#   ratings_2 &lt;dbl&gt;, ratings_3 &lt;dbl&gt;, ratings_4 &lt;dbl&gt;, ratings_5 &lt;dbl&gt;,
+#   image_url &lt;chr&gt;, small_image_url &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>There are no rows for <code>book_id</code> within books that don’t have a matching <code>book_id</code> within rating and vice versa. All rows match.</p>
+<p>So <strong>book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.</strong></p>
+<p>Just a quick side note because I find this very interesting: If I were to have instead mapped <code>work_id</code> in books with <code>book_id</code> in ratings (which I didn’t because I’m interested in the version with the different book editions being aggregated, <em>not</em> a book in the abstract sense). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where <code>work_id</code> doesn’t match to <code>book_id</code> and 5,846,293 rows where <code>book_id</code> doesn’t match to <code>work_id</code> (there are simply many more work_id rows than book_id rows because, again, multiple book editions that haven’t been aggregated. See my R file for more details). But since I’m not doing that because I’m not interested in books in the abstract sense, all I need to do is use <code>book_id</code> to join the datasets books and ratings.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>books_and_ratings <span class="ot">&lt;-</span> <span class="fu">full_join</span>(books, ratings, <span class="fu">join_by</span>(book_id <span class="sc">==</span> book_id)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(title) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, for the fun part. An EDA with our two new datasets, books_and_tags and books_and_ratings. And some of the original datasets too.</p>
+<p>Refer back to “Chu_Valerie_Final” for this.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

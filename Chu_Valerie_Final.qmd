@@ -229,13 +229,7 @@ Now that the new books_and_ratings dataset has been created:
 
 ```{r, include = FALSE}
 books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
-  group_by(title) |> 
-  select(title, book_id, goodreads_book_id, work_id, user_id, rating)
-
-books_and_ratings # |> 
-  # slice_head(n = 10) # |> 
-  # knitr::kable()
-  # my computer won't load when I try to make this a neat table like I did above. So I'm just going to change echo = FALSE to include = FALSE and not print this tibble altogether since it's pretty messy right now. 
+  group_by(title) 
 
 ```
 
@@ -596,7 +590,7 @@ tags_count <- books_and_tags |>
 tags_count
 ```
 
-
+## Part 2: Which are the highest rated YA books?
 
 
 # My Progress
