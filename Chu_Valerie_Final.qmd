@@ -244,9 +244,9 @@ I'm surprised at some of the ratings of these books, yet very much not surprised
 # Start by creating a new variable, rank_of_number_ratings, that assigns each book a rank based on how high their ratings_count is. In other words, more ratings = higher rank. 
 
 rank_ratings <- function(books, ratings_count) {
-  books %>%
-    arrange(desc({{ ratings_count }})) %>%
-    mutate(rank_of_number_ratings = row_number())
+  books |> 
+    arrange(desc({{ ratings_count }})) |> 
+    mutate(rank_of_number_ratings = row_number()) 
 }
 
 rank_ratings <- rank_ratings(books, ratings_count)
@@ -265,8 +265,8 @@ ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code
   labs(
     title = "Average Rating vs. Ratings Place",
     subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
-    x = "Books ranked by the number of ratings it got (1 = Most ratings, 10000 = Least ratings)", 
-    y = "Average Rating",
+    x = "Books Rank (by its number of ratings)", 
+    y = "Average Rating (1 - 5 stars)",
     color = "Language Code") +
   theme_bw()
 
@@ -308,7 +308,7 @@ rank_ratings_summary <- rank_ratings |>
 rank_ratings_prop <- rank_ratings_summary |> 
   mutate(percent = count / sum(count) * 100)
   
-rank_ratings_prop <- rank_ratings_prop %>%
+rank_ratings_prop <- rank_ratings_prop |> 
   mutate(language_code = coalesce(language_code, "other"))
 
 colnames(rank_ratings_prop) <- c("Language Code", "Count", "Percent")

@@ -42,13 +42,18 @@ books |>
 # that assigns each book a rank based on how high their ratings_count is. 
 # In other words, more ratings = higher rank. 
 rank_ratings <- function(books, ratings_count) {
-  books %>%
-    arrange(desc({{ ratings_count }})) %>%
+  books |> 
+    arrange(desc({{ ratings_count }})) |> 
     mutate(rank_of_number_ratings = row_number())
 }
 
 rank_ratings <- rank_ratings(books, ratings_count)
 # rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
+
+# Number of distinct ratings
+distinct_ratings_count <- rank_ratings |> 
+  summarize(count = n_distinct(ratings_count))
+# There are 9003 distinct ratings, so even if not every rating has a unique ID, it won't mess with the overall data trend.
 
 
 # Create a scatterplot to show how the average rating changes as the rank of the number of ratings changes
@@ -84,7 +89,7 @@ rank_ratings_summary <- rank_ratings |>
 rank_ratings_prop <- rank_ratings_summary |> 
   mutate(percent = count / sum(count) * 100)
 
-rank_ratings_prop <- rank_ratings_prop %>%
+rank_ratings_prop <- rank_ratings_prop |> 
   mutate(language_code = coalesce(language_code, "other"))
 
 colnames(rank_ratings_prop) <- c("Language Code", "Count", "Percent")

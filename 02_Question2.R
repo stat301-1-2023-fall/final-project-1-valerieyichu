@@ -7,6 +7,7 @@ library(tidyverse)
 
 
 
+
 ## Load Data -----
 
 books <- read_delim("data/books.csv")
@@ -16,6 +17,8 @@ tags <- read_csv("data/tags.csv")
 tbr <- read_csv("data/to_read.csv")
 books_and_tags <- read_rds("data/books_and_tags.csv")
 books_and_ratings <- read_rds("data/books_and_ratings.csv")
+
+
 
 
 ## Question 2, Part 1 -----
