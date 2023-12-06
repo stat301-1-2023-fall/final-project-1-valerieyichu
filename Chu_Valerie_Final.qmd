@@ -42,6 +42,13 @@ Notes
 
 - perhaps add a count of each language. or factor all the english ones as english varieties then have an other category.
 
+To Dos
+
+- Create README - both for the main part and for the data (explains where the data comes from, gitignores, etc.). 
+
+- Spellcheck documents
+
+
 
 
 ::: {.callout-tip icon="false"}
@@ -105,7 +112,9 @@ It comes in five separate csv files: "books", "books_tags", "ratings", "tags", a
 
 (For context, users on Goodreads can *tag* books and add them to their shelves. And "tbr" stands for "to be read".)
 
-In this document, when I say "Goodreads data" or "Goodreads dataset", I am referring to the five datasets generally. For individual datasets, I will use their specific names.
+In this document, when I say "Goodreads data" or "Goodreads dataset", I am referring to the five datasets generally. For individual datasets, I will use their specific names. 
+
+(All data is in the "data" folder, and I didn't have to clean up any of the five original datasets, so they're not in there.)
 
 
 **Why am I interested in this dataset?**
