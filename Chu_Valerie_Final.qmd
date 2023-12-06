@@ -36,7 +36,9 @@ Notes
 
 - maybe use gg_miss_var
 
-- Write in the csv
+- Write in the csv codebook
+
+- save plot
 
 - perhaps add a count of each language. or factor all the english ones as english varieties then have an other category.
 
@@ -496,10 +498,10 @@ popular_tags
 
 
 
+```{r, include = FALSE}
+# Possibly delete later.
 ### Question 3, Part 1: Which books have the most tags? The most hated or liked ones?
 
-
-```{r}
 tags_count <- books_and_tags |> 
   group_by(goodreads_book_id) |> 
   # add everything in count
@@ -508,13 +510,38 @@ tags_count <- books_and_tags |>
 tags_count
 ```
 
-## Part 2: Which are the highest rated YA books?
+## Part 1: Which are the highest rated young adult (YA) books?
+
+```{r, echo = FALSE}
+# Which books have a tag_name "ya"? 
+
+books_and_tags_ya <- books_and_tags |> 
+  filter(str_detect(tag_name, "^ya"))
+
+# books_and_tags_ya
+
+```
+
+```{r, echo = FALSE}
+# Reminder: The "books_and_tags" joined the "books_tags" dataset and the "tags" dataset. 
+# It hasn't yet matched "goodreads_book_id" with its title. So let's get the title. 
+
+books_and_tags_ya_new <- full_join(books_and_tags_ya, books, join_by(goodreads_book_id == goodreads_book_id))
+
+# books_and_tags_ya_new
+
+```
+
+**100 Most Highly Rated YA Books**
+```{r}
+books_and_tags_ya_new |> 
+  arrange(desc(average_rating)) |> 
+  select(goodreads_book_id, tag_name, title, authors, average_rating, ratings_count) |> 
+  slice_head(n = 100) |> 
+  DT::datatable()
+
+```
+
+Do YA books published in certain years tend to be more highly rated than other YA books?
 
 
-# My Progress
-
--   I've been making good progress. I picked out the appropriate keys (which took hours because I had to try numerous ones due to how vague the README was at some parts) and joined four datasets to produce two separate datasets: books_and_ratings and books_and_tags.
-
--   I also finished exploring my first question through several tables, a bivariate analysis and a multivariate analysis.
-
--   For my final project, I intend to continue exploring the other questions I wrote out in the "My Objectives" section of this document.
