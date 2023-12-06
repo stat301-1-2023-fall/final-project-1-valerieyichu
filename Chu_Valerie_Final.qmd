@@ -361,7 +361,7 @@ A few things I found interesting about the distribution of the average rating of
 
 -   Most books (3695 of them, as seen in the table above this graph) have a rating greater than 4 and ≤ 4.25.
 
--   Another 3269 books have a rating between greater than 3.75 and ≤ 4.
+-   Another 3269 books have a rating greater than 3.75 and ≤ 4.
 
 -   1 book has an average rating greater than 2.25 and ≤ 2.5. 1 book has a rating greater than 2.5 and ≤ 2.75.
 
@@ -388,10 +388,10 @@ Without more data, it's hard to tell whether we can explain away the cluster aro
 Also, I should note again that in the context of this dataset containing only the most rated (ie. popular) books on Goodreads, it does make sense that books with lower ratings likely aren't promoted enough — and therefore likely aren't rated enough — to appear on this dataset.   
 
 
-# Question 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
+# Exploration 2: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
 
 
-### Question 2, Part 1: Who are the readers who leave the most ratings on Goodreads? 
+### Part 1: Who are the readers who leave the most ratings on Goodreads? 
 
 Each user (user_id) can give one rating to one book. There are 53,424 users who rated the 10,000 most rated books on Goodreads. These are the top 10 raters.
 
@@ -419,64 +419,14 @@ books_and_ratings <- books_and_ratings |>
 
 ```
 
-### Attempt 1
-```{r}
-books_and_ratings_top_raters <- books_and_ratings |> 
-  group_by(user_id) |> 
-  mutate(count = n()) |> 
-  ungroup() |> 
-  group_by(book_id) |> 
-  slice_sample(n = 10)
-```
-
-
-```{r}
-count_cut <- books_and_ratings_top_raters |> 
-  mutate(average_rating_cut = cut(count, 
-                                 breaks = c(0, 25, 50, 75,
-                                            100, 125, 150, 175,
-                                            200))) 
-
-count_cut
-```
-
-```{r}
-books_and_ratings_top_raters_id <- count_cut |> 
-  arrange(desc(count)) |> 
-  mutate(id = row_number())
-
-```
-
-```{r}
-books_and_ratings_top_raters_id |> 
-  ggplot(aes(x = id, y = average_rating)) +
-  geom_point() +
-#  geom_point() +
-#  geom_smooth(alpha = 0.25) +
-#  scale_x_continuous(breaks = seq(0, 60000, by = 10000)) +
-#  ylim(c(0, 5)) +
-#  scale_y_continuous(breaks = seq(0, 5, by = 0.5)) +
-  theme_bw() +
-  labs(
-    title = "Do Top Raters Give Higher Or Lower Average Ratings?",
-    subtitle = "Top raters tend to give slightly lower average ratings than those who rate less books.",
-    x = "Top raters ranked by the number of ratings they gave (1 = Most ratings, 50,000 = Least ratings)", 
-    y = "Average Rating")
-
-```
-
-
-#### Attempt 2
-
 ```{r, echo = FALSE}
 # We just added a new variable, `average_rating` to the "books_and_ratings" dataset. 
   # `average_rating` shows the average rating of each user.
 # However, there are 5976497 observations in our "books_and_ratings" dataset, and my computer crashes if I try to plot all those points. 
-# Besides, I'm interested in the users who leave the most number of ratings anways. 
+# Besides, I'm interested in the users who leave the most number of ratings anyways. 
 # As the table above shows, the users who left the most ratings left 200 ratings. So let's use filter to keep only the users who rated more than 175 books. 
 
 # Users who rated more than 175 books
-
 books_and_ratings_top_raters <- books_and_ratings |> 
   group_by(user_id) |> 
   mutate(count = n()) |> 
@@ -486,20 +436,33 @@ books_and_ratings_top_raters <- books_and_ratings |>
 
 ```{r, echo = FALSE}
 # Creating a new variable, `id`, that gives each top rater a id. The more books rated, the higher the id. 
-
 books_and_ratings_top_raters_id <- books_and_ratings_top_raters |> 
   arrange(desc(count)) |> 
-  mutate(id = row_number())
+  group_by(count) |> 
+  mutate(id = row_number()) 
   
 # books_and_ratings_top_raters_id
 ```
+
+```{r, echo = FALSE}
+# Create the variable `average_rating_cut` that takes each `count` and puts it into a bin. 
+# Starting at 175 books rated and above, since we only care about top raters
+
+books_and_ratings_final <- books_and_ratings_top_raters_id |> 
+  mutate(count_cut = cut(count, 
+                                  breaks = c(175, 180, 185, 190, 195,
+                                            200))) 
+
+# books_and_ratings_final
+```
+
 
 ```{r, include = FALSE}
 # What is the number of Top Users, ie users who rated more than 175 books
 number_of_top_raters <- books_and_ratings_top_raters_id |> 
   summarize(count = n_distinct(average_rating))
 
-number_of_top_raters
+# number_of_top_raters
 
 # There are 537 top raters.
 
@@ -507,10 +470,10 @@ number_of_top_raters
 
 
 ```{r, echo = FALSE}
-
-books_and_ratings_top_raters_id |> 
-  ggplot(aes(x = id, y = average_rating, color = count)) +
+books_and_ratings_final |> 
+  ggplot(aes(x = id, y = average_rating, color = count_cut)) +
   geom_col() +
+  facet_wrap(~ count_cut, scales = "free_y") +
 #  geom_point() +
 #  geom_smooth(alpha = 0.25) +
 #  scale_x_continuous(breaks = seq(0, 60000, by = 10000)) +
@@ -520,8 +483,8 @@ books_and_ratings_top_raters_id |>
   labs(
     title = "Do Top Raters Give Higher Or Lower Average Ratings?",
     subtitle = "Top raters tend to give slightly lower average ratings than those who rate less books.",
-    x = "Top raters ranked by the number of ratings they gave (1 = Most ratings, 50,000 = Least ratings)", 
-    y = "Average Rating")
+    x = "User Rank (by number of books rated)", 
+    y = "Average Rating (1-5 stars)")
 
 ```
 
@@ -576,7 +539,7 @@ books_and_tags_ya_new <- full_join(books_and_tags_ya, books, join_by(goodreads_b
 ```
 
 **100 Most Highly Rated YA Books**
-```{r}
+```{r, echo = FALSE}
 books_and_tags_ya_new |> 
   arrange(desc(average_rating)) |> 
   select(goodreads_book_id, tag_name, title, authors, average_rating, ratings_count) |> 
