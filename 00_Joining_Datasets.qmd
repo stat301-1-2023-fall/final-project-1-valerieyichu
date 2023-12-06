@@ -34,7 +34,6 @@ tbr <- read_csv("data/to_read.csv")
 
 Officially, this is how Goodreads describes itself: "Goodreads is the world's largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007."
 
-
 ::: {.callout-tip icon="false"}
 ## What is my data about?
 
@@ -159,21 +158,21 @@ This [article linked on the About section of the github where I found the Goodre
 
 -   "Each book may have many editions. `goodreads_book_id` and `best_book_id` generally point to the most popular edition of a given book, while goodreads `work_id` refers to the book in the abstract sense."
 
--   It also again states that "Note that book_id in ratings.csv and to_read.csv (I, Valerie, called this the "tbr" dataset) maps to `work_id`, not to goodreads_book_id. **It means that ratings for different editions are aggregated.**"
+-   It also again states that "Note that book_id in ratings.csv and to_read.csv (I, Valerie, called this the"tbr" dataset) maps to `work_id`, not to goodreads_book_id. **It means that ratings for different editions are aggregated.**"
 
 To summarize, that seems to mean that:
 
-- book_id = unique ID, different book editions aggregated
+-   book_id = unique ID, different book editions aggregated
 
-- goodreads_book_id = unique ID, determined by Goodreads, usually the most popular edition of a book
+-   goodreads_book_id = unique ID, determined by Goodreads, usually the most popular edition of a book
 
-- work_id = unique ID, refers to a book in the abstract sense; not necessarily the most popular edition
+-   work_id = unique ID, refers to a book in the abstract sense; not necessarily the most popular edition
 
 I read through the README of the [dataset](https://github.com/zygmuntz/goodbooks-10k), the [article linked on the dataset](http://fastml.com/goodbooks-10k-a-new-dataset-for-book-recommendations/), and [the Kaggle which has descriptions for the previous, unupdated version of the github dataset I'm using](https://www.kaggle.com/datasets/zygmunt/goodbooks-10k#books.csv).
 
 From these three links, I've arrived at several conclusions:
 
--   Mapping `book_id` in the ratings dataset to `work_id` in the books dataset (as the README implies i should do) — instead of `book_id` in ratings to `book_id` in books — is only necessary if I care about a book in the abstract sense; not necessarily the most popular edition. I don't. I'm more interested in different book editions being aggregated. That's what `book_id` in ratings tracks, according to the article.
+-   Mapping `book_id` in the ratings dataset to `work_id` in the books dataset (as the README implies i should do) --- instead of `book_id` in ratings to `book_id` in books --- is only necessary if I care about a book in the abstract sense; not necessarily the most popular edition. I don't. I'm more interested in different book editions being aggregated. That's what `book_id` in ratings tracks, according to the article.
 
 -   And `books_id` in the books dataset *should be* equivalent to `books_id` in the ratings dataset. So I'm going to see if I can join the books and ratings dataset using `books_id` as the key:
 
@@ -188,7 +187,6 @@ There are no rows for `book_id` within books that don't have a matching `book_id
 So **book_id is the primary key for both datasets and also a foreign key that can be used to join the two datasets.**
 
 Just a quick side note because I find this very interesting: If I were to have instead mapped `work_id` in books with `book_id` in ratings (which I didn't because I'm interested in the version with the different book editions being aggregated, *not* a book in the abstract sense). But just hypothetically speaking. Then I would have first needed to condense the ratings into summarized outputs then join that with books using a left join (because there are 9,824 rows where `work_id` doesn't match to `book_id` and 5,846,293 rows where `book_id` doesn't match to `work_id` (there are simply many more work_id rows than book_id rows because, again, multiple book editions that haven't been aggregated. See my R file for more details). But since I'm not doing that because I'm not interested in books in the abstract sense, all I need to do is use `book_id` to join the datasets books and ratings.
-
 
 ```{r}
 books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 

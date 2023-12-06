@@ -16,6 +16,7 @@ tags <- read_csv("data/tags.csv")
 tbr <- read_csv("data/to_read.csv")
 
 
+## NOTE - REFER TO THE qmd "00_Joining_Datasets" FOR A MORE IN-DEPTH EXPLANATION OF THIS PART
 
 
 ## Step 1: Joining tags and book_tags -----
@@ -42,6 +43,7 @@ books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
 books_and_tags
 
 # Print an excerpt of the new dataset
+# **The new books_and_tags dataset** (The first 10 of 999,912 rows.)
 books_and_tags |> 
   slice_head(n = 10) |> 
   knitr::kable()

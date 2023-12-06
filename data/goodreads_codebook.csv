@@ -1,0 +1,34 @@
+Dataset,Variables,Meaning
+books,book_id,"unique ID, different book editions aggregated"
+books,goodreads_book_id,"unique ID, determined by Goodreads, usually the most popular edition of a book"
+books,best_book_id,"unique ID, most popular edition of a given book"
+books,work_id,"unique ID, refers to a book in the abstract sense; not necessarily the most popular edition"
+books,books_count,"likely refers to the number of editions of that book, but the dataset doesn't confirm this"
+books,isbn,international standard book number 10 digits
+books,isbn13,international standard book number 13 digits
+books,authors,authors
+books,original_publication_year,original publication year
+books,original_title,original title
+books,title,title
+books,language_code,abbreviated language tags
+books,average_rating,average rating
+books,ratings_count,number of ratings
+books,work_ratings_count,unknown
+books,work_text_reviews_count,unknown
+books,ratings_1,unknown
+books,ratings_2,unknown
+books,ratings_3,unknown
+books,ratings_4,unknown
+books,ratings_5,unknown
+books,image_url,image of book cover
+books,small_image_url,smaller image of book cover
+books_tags,goodreads_book_id,"unique ID, determined by Goodreads"
+books_tags,tag_id,unique tag ID
+books_tags,count,number of times that book has been tagged with that tag_name
+ratings,user_id,"unique user ID, contiguous"
+ratings,book_id,"unique book ID, contiguous"
+ratings,rating,the rating that user gave to that book (1-5 stars)
+tags,tag_id,unique tag ID
+tags,tag_name,tag name
+tbr,user_id,unique user ID
+tbr,book_id,unique book ID

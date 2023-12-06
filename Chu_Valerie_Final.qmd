@@ -64,6 +64,9 @@ books_tags <- read_csv("data/book_tags.csv")
 ratings <- read_csv("data/ratings.csv")
 tags <- read_csv("data/tags.csv")
 tbr <- read_csv("data/to_read.csv")
+
+# Load Codebook
+goodreads_codebook <- read_csv("data/goodreads_codebook.csv")
 ```
 
 ## Introduction
@@ -74,27 +77,18 @@ tbr <- read_csv("data/to_read.csv")
 [**https://github.com/zygmuntz/goodbooks-10k**](https://github.com/zygmuntz/goodbooks-10k)
 :::
 
+
 **What is Goodreads?**
 
 This is how Goodreads describes itself: "Goodreads is the world's largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007."
 
 Among other unique features, Goodreads allows users to:
 
-- Categorize books on their bookshelves
+- Rate books
 
 - Write book reviews
 
-- Find their next read
-
-- Vote on their annual favorites across genres
-
-- See what books their friends are reading
-
-- Track the books they're reading, have read, and want to read
-
-- See their personalized book recommendations. (Goodreads says "Our recommendation engine analyzes 20 billion data points to give suggestions tailored to your literary tastes.")
-
-- Read community reviews
+- Track and tag the books they're reading, have read, and want to read
 
 
 ## Data Overview and Quality
@@ -102,19 +96,21 @@ Among other unique features, Goodreads allows users to:
 ::: {.callout-tip icon="false"}
 ## What is my data about?
 
-This dataset contains six million ratings for the 10,000 most rated books on Goodreads. It was last updated on Sept. 19, 2017, so books published after that date won't appear in this dataset. 
+This dataset contains six million ratings for the 10,000 most rated books on Goodreads. 
+
+It was last updated on Sept. 19, 2017, so books published after that date won't appear in this dataset. 
 :::
 
 It comes in five separate csv files: "books", "books_tags", "ratings", "tags", and "tbr"
 
 (For context, users on Goodreads can *tag* books and add them to their shelves. And "tbr" stands for "to be read".)
 
-In this document, when I say "Goodreads data", I am referring to the five datasets generally. For individual datasets, I will use their more specific name.
+In this document, when I say "Goodreads data" or "Goodreads dataset", I am referring to the five datasets generally. For individual datasets, I will use their specific names.
 
 
 **Why am I interested in this dataset?**
 
-The reason why I'm interested in this dataset is extremely simple: I love reading. Analyzing Goodreads data/Goodreads user data seems super fun. 
+The reason why I'm interested in this dataset is extremely simple: I love reading. Analyzing Goodreads data / Goodreads user data seems super fun. 
 
 More specifically, I'm interested in analyzing user habits on Goodreads. This is why I chose this dataset. I've spent several hours combing through Kaggle, Google, Reddit, and other places on the internet. As far as I can tell, this is the most comprehensive dataset about books and user readings habits I can find, freely available from the internet. It was scraped from Goodread's and Goodread users's publicly available data. 
 
@@ -122,7 +118,7 @@ More specifically, I'm interested in analyzing user habits on Goodreads. This is
 
 The Goodreads dataset is of high quality. 
 
-There are no missingness values in any of the five dataset included in the Goodreads dataset except for "books", which is missing some values in: language_code, isbn, isbn13, original_title, original_publication_year. This will not effect my exploratory data analysis, although I will keep the missingness in mind. 
+There are no missingness values in any of the five dataset included in the Goodreads dataset except for "books", which is missing some values in: language_code, isbn, isbn13, original_title, original_publication_year. This will not effect my exploratory data analysis, although I will keep the missingness in mind. (See "01_Exploring_Missingness.R" for more.)
 
 The "books" dataset:
 
@@ -175,15 +171,10 @@ Why am I joining tags and books_tags?
 
 When I join the "books_tags" dataset together with the "tags" dataset, I can figure out what each book (`goodreads_book_id`) was tagged with (`tag_name`). (I would still have to match each `goodreads_book_id` with its title, but that's another join.)
 
-**The new books_and_tags dataset** (The first 10 of 999,912 rows.)
 ```{r, echo = FALSE}
 # Join tags and books_tags
 
 books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
-
-books_and_tags |> 
-  slice_head(n = 10) |> 
-  knitr::kable()
 
 ```
 
