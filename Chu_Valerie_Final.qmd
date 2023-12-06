@@ -597,3 +597,11 @@ books_and_tags_ya_new |>
 Do YA books published in certain years tend to be more highly rated than other YA books?
 
 
+## Conclusion
+
+
+## References
+
+Zając, Zygmunt (2017, Sept. 19). Github. [https://github.com/zygmuntz/goodbooks-10k](https://github.com/zygmuntz/goodbooks-10k)
+
+
