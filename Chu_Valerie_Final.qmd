@@ -102,7 +102,7 @@ Among other unique features, Goodreads allows users to:
 ::: {.callout-tip icon="false"}
 ## What is my data about?
 
-This dataset contains six million ratings for the 10,000 most rated books on Goodreads.
+This dataset contains six million ratings for the 10,000 most rated books on Goodreads. It was last updated on Sept. 19, 2017, so books published after that date won't appear in this dataset. 
 :::
 
 It comes in five separate csv files: "books", "books_tags", "ratings", "tags", and "tbr"
