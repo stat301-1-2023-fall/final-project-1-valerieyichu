@@ -120,7 +120,9 @@ More specifically, I'm interested in analyzing user habits on Goodreads. This is
 
 **More about the data**
 
-The Goodreads dataset is of high quality. There are no missingness values. 
+The Goodreads dataset is of high quality. 
+
+There are no missingness values in any of the five dataset included in the Goodreads dataset except for "books", which is missing some values in: language_code, isbn, isbn13, original_title, original_publication_year. This will not effect my exploratory data analysis, although I will keep the missingness in mind. 
 
 The "books" dataset:
 
@@ -133,11 +135,6 @@ The "books" dataset:
 - There are 6 categorical variables.
 
 The other four datasets can be combined with each other and with the "books" dataset in ways that can enhance my exploration of Goodreads data and user habits. 
-
-```{r}
-books_and_ratings |> 
-  naniar::gg_miss_var()
-```
 
 
 ## My Objectives
@@ -208,6 +205,7 @@ books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |>
 ```
 
 Now, for the fun part. An EDA with our two new datasets, "books_and_tags" and "books_and_ratings". And maybe some of the original datasets too.
+
 
 ## Exploration 1: The Rating Habits of Goodreads Users
 
