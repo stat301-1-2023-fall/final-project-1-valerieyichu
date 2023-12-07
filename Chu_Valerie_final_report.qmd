@@ -91,7 +91,7 @@ More specifically, I'm interested in analyzing user habits on Goodreads. This is
 
 The Goodreads dataset is of high quality.
 
-There are no missingness values in any of the five dataset included in the Goodreads dataset except for "books", which is missing some values in: language_code, isbn, isbn13, original_title, original_publication_year. This will not effect my exploratory data analysis, although I will keep the missingness in mind. (See "01_Exploring_Missingness.R" for more.)
+There are no missingness values in any of the five dataset included in the Goodreads dataset except for "books", which is missing some values in: language_code, isbn, isbn13, original_title, original_publication_year. This will not effect my exploratory data analysis, although I will keep the missingness in mind. (See "2_Exploring_Missingness.R" for more.)
 
 The "books" dataset:
 
@@ -624,7 +624,7 @@ books_and_tags_ya_new |>
 
 ```
 
-It's quite funny to me that books published as far back as -1750 have been categorized by Goodreads users as YA books. But that's the beauty of the genre. It continues to evolve.
+It's quite funny to me that books published as far back as 1750 BC have been categorized by Goodreads users as YA books. But that's the beauty of the genre. It continues to evolve.
 
 ### Part 4: Which YA books have more ratings?
 
@@ -650,7 +650,7 @@ books_and_tags_ya_new |>
 
 ```
 
-Which YA books have the most ratings? It would appear that the years after 1750 won. But first, maybe I should start from YA novels published in the year -1750 and work my way forward in time.
+Which YA books have the most ratings? It would appear that the years after 1750 won. But first, maybe I should start from YA novels published in the year 1750 BC and work my way forward in time.
 
 ## Conclusion
 
@@ -666,7 +666,7 @@ Among other things, I learned that:
 
 -   "young-adult" is the 49th most popular tag.
 
--   YA books have been published as far back as -1750.
+-   YA books have been published as far back as 1750 BC
 
 Working with this dataset has taught me so much about Goodreads, book trends, and data exploration. I've learned so many interesting things from this dataset. And best of all, I know which books to read next.
 

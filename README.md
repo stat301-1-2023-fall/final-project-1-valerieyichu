@@ -1,6 +1,6 @@
 ## The Goodreads Dataset
 
-Hey, I'm Valerie Chu. This is a study of a Goodreads dataset. It's the most comprehensive dataset on the internet that I've found to date. 
+Hey, I'm Valerie Chu. This is a study of a Goodreads dataset. As far as I can tell, this is the most comprehensive dataset about books and user readings habits I can find, freely available from the internet. It was scraped from Goodread's and Goodread users's publicly available data.
 
 
 ::: {.callout-tip icon="false"}
