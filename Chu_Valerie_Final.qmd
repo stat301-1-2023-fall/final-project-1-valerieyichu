@@ -185,7 +185,7 @@ To answer this question, I'm going to look at the books dataset. The variable `a
 **10 Books with the Highest Average Goodreads Rating**
 
 ```{r, echo = FALSE}
-#| label: fig-1
+#| label: tbl-1
 #| tbl-cap: "10 Books with the Highest Average Goodreads Rating"
 
 books |> 
@@ -196,7 +196,7 @@ books |>
 
 ```
 
-I'm surprised at some of the ratings of these books, yet very much not surprised at others.
+I'm surprised at some of the ratings of these books, yet very much not surprised at others. These are some things we can see from @tbl-1:
 
 -   "The Complete Calvin and Hobbes" is more geared toward middle-grade readers, so it's odd that it has the highest rating.
 
@@ -249,9 +249,11 @@ ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code
 
 **There appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
 
-Looking at the correlation confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
+Looking at the correlation @tbl-2 confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
 
 ```{r, echo = FALSE}
+#| label: tbl-2
+#| tbl-cap: "The correlation between a book's rank and its average rating"
 # reminder: rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
 
 corr <- rank_ratings |> 
@@ -280,6 +282,9 @@ rank_ratings_summary <- rank_ratings |>
 ```
 
 ```{r, echo = FALSE}
+#| label: tbl-3
+#| tbl-cap: "How many books and what percent of books on Goodreads are written in English?"
+
 rank_ratings_prop <- rank_ratings_summary |> 
   mutate(percent = count / sum(count) * 100)
   
@@ -292,6 +297,14 @@ rank_ratings_prop |>
   DT::datatable()
  
 ```
+
+@tbl-3 reveals both some surprising and some unsurprising data:
+
+- The green-ness of @tbl-2 already told us to expect that most books on Goodreads would be written in some variety of English. However, I was surprised at the sheer extent of books written in English: 63.41% of books have the language code "eng", while 20.7% of books were written in American English and 2.57% were written in British English. 
+
+- I did not expect that "Other" would make up 10.84% of the 10,000 most rated books on Goodreads. That's a lot of other languages. 
+
+- I was also surprised that Arabic was the 5th most popular language on Goodreads, after several varieties of English and "Other". I instead expected European languages to dominate the Top 10 most popular languages on here since Goodreads is an American company, but Arabic made the list. 
 
 
 ### Part 4: What's the distribution of book ratings?
@@ -319,6 +332,9 @@ books_cut
 
 **Distribution of Book Ratings**
 ```{r, echo = FALSE}
+#| label: tbl-4
+#| tbl-cap: "Distribution of Book Ratings"
+
 books_count <- books_cut |> 
   count(average_rating_cut) 
 
@@ -343,9 +359,9 @@ A few things I found interesting about the distribution of the average rating of
 
 -   It's left skewed and unimodal.
 
--   Most books (3695 of them, as seen in the table above this graph) have a rating between 4 and 4.25.
+-   Most books (3695 of them, as seen in @tbl-4) have a rating between 4 and 4.25.
 
--   Another 3269 books have a rating between 3.75 and 4.
+-   Another 3269 books (see @tbl-4) have a rating between 3.75 and 4.
 
 -   1 book has an average rating between 2.25 and 2.5. 1 book has a rating between 2.5 and 2.75.
 
@@ -382,6 +398,9 @@ Each user (user_id) can give one rating to one book. There are 53,424 users who 
 **Top 10 Goodreads Users Who Rated the Most Books in this Dataset** 
 
 ```{r, echo = FALSE}
+#| label: tbl-5
+#| tbl-cap: "The 10 Goodreads Users Who Rated the Most Books in this Dataset"
+
 # Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of the 10k most rated books on Goodreads, having users who rated 200 books (as a few book-rating users have done) is quite impressive.
 
 books_and_ratings_sliced <- books_and_ratings |> 
@@ -395,6 +414,10 @@ books_and_ratings_sliced |>
   knitr::kable()
 
 ```
+
+@tbl-5 shows that the users who rated the most books in this dataset all rated around 200 books. If we also keep in mind that this dataset only has the data of the 10,000 most rated books on Goodreads, having users who rated 200 books of these books is quite impressive. 
+
+At the same time, I did expect this number to be higher, especially since I know the people who tend to use Goodreads are bookworms who can read dozens of books per year. But maybe since Goodreads was launched in January 2007 and did not gain popularity until more people have access to technology, this makes sense.  
 
 #### Part 5, Section 2: How do top raters tend to rate books?
 
@@ -464,7 +487,11 @@ books_and_ratings_new |>
     color = "Books Rated")
   
 ```
-```{r}
+
+```{r, echo = FALSE}
+#| label: tbl-6
+#| tbl-cap: "The correlation between a user's rank and their average rating"
+ 
 corr_raters <- books_and_ratings_new |> 
   select(id, average_rating) |> 
   cor() |> 
@@ -473,7 +500,11 @@ corr_raters <- books_and_ratings_new |>
 corr_raters
 ```
 
-I'm not surprised that there's no correlation between how many books someone rated and whether they had a higher or lower rating. 
+I'm not surprised that @tbl-6 shows there's no correlation between how many books someone rated and whether they had a higher or lower average rating. 
+
+@tbl-2 looked at whether there was a correlation between a book's average rating and its rank it based on the number of ratings it received.
+
+In retrospect, it makes sense that if there's no rating between number of ratings and average rating, top Goodreads users wouldn't differ from the average trend. 
 
 
 # Exploration 2: Young Adult Novels on Goodreads
@@ -482,6 +513,9 @@ I'm not surprised that there's no correlation between how many books someone rat
 ### Part 1: What are the most common tags?
 
 ```{r, echo = FALSE}
+#| label: tbl-7
+#| tbl-cap: "What are the most common tags?"
+
 popular_tags <- books_and_tags |> 
   group_by(tag_name) |> 
   summarize(tags = n()) |> 
@@ -531,6 +565,9 @@ books_and_tags_ya_new <- full_join(books_and_tags_ya, books, join_by(goodreads_b
 
 **100 Most Highly Rated YA Books**
 ```{r, echo = FALSE}
+#| label: tbl-8
+#| tbl-cap: "100 Most Highly Rated YA Books"
+
 books_and_tags_ya_new |> 
   arrange(desc(average_rating)) |> 
   select(goodreads_book_id, tag_name, title, authors, average_rating, ratings_count) |> 
