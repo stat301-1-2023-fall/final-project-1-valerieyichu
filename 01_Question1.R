@@ -50,10 +50,15 @@ rank_ratings <- function(books, ratings_count) {
 rank_ratings <- rank_ratings(books, ratings_count)
 # rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
 
+
 # Number of distinct ratings
 distinct_ratings_count <- rank_ratings |> 
   summarize(count = n_distinct(ratings_count))
 # There are 9003 distinct ratings, so even if not every rating has a unique ID, it won't mess with the overall data trend.
+# But that isn't a problem anyway, since looking at the newly "rank_ratings" dataset shows that 
+  # even when two different books have the same number of ratings, they'll get a different rank rating. 
+# For example, "Morrigan's Cross (Circle Trilogy, #1)" by Nora Roberts and "Mudbound" by Hillary Jordan both have 43,455 ratings.
+  # But "Morrigan's Cross (Circle Trilogy, #1)" has a rank_of_number_rankings of 2351, while "Mudbound" is at 2350. 
 
 
 # Create a scatterplot to show how the average rating changes as the rank of the number of ratings changes

@@ -63,19 +63,22 @@ books_and_ratings_top_raters_id <- books_and_ratings_top_raters |>
 books_and_ratings_top_raters_id
 
 
-books_and_ratings_top_raters_id |> 
-  ggplot(aes(x = user_id, y = average_rating)) +
-  geom_point() +
-  geom_smooth() +
-  scale_x_continuous(breaks = seq(0, 60000, by = 10000)) +
-  ylim(c(0, 5)) +
-  scale_y_continuous(breaks = seq(0, 5, by = 0.5)) +
+books_and_ratings_final |> 
+  ggplot(aes(x = id, y = average_rating, color = count_cut)) +
+  geom_col() +
+  # facet_wrap(~ count_cut, scales = "free_y") +
+  #  geom_point() +
+  #  geom_smooth(alpha = 0.25) +
+  #  scale_x_continuous(breaks = seq(0, 60000, by = 10000)) +
+  #  ylim(c(0, 5)) +
+  #  scale_y_continuous(breaks = seq(0, 5, by = 0.5)) +
   theme_bw() +
   labs(
     title = "Do Top Raters Give Higher Or Lower Average Ratings?",
     subtitle = "Top raters tend to give slightly lower average ratings than those who rate less books.",
-    x = "Top raters ranked by the number of ratings they gave (1 = Most ratings given, 10000 = Least ratings)", 
-    y = "Average Rating")
+    x = "User Rank (by number of books rated)", 
+    y = "Average Rating (1-5 stars)",
+    color = "Books Rated")
 
 
 

@@ -20,37 +20,6 @@ from: markdown+emoji
 ---
 
 
-## Things to Fix
-
-Q1, Pt 1
-
--   If two books have the same average rating, put the book with the higher rating count ahead of the one with the lower rating count.
-
--   Filter with 1,000+ ratings. Or mention that this book only contains the 10,000 most popular books on Goodreads, so that's why this filtering doesn't matter since it already takes care of that itself.
-
-Q1, Pt 3
-
--   Mention that the average is so high bc these are the 10,000 most popular books on Goodreads.
-
-Notes
-
-- maybe use gg_miss_var
-
-- Write in the csv codebook
-
-- save plot
-
-- perhaps add a count of each language. or factor all the english ones as english varieties then have an other category.
-
-To Dos
-
-- Create README - both for the main part and for the data (explains where the data comes from, gitignores, etc.). 
-
-- Spellcheck documents
-
-
-
-
 ::: {.callout-tip icon="false"}
 ## Github Repo
 
@@ -232,7 +201,7 @@ I'm surprised at some of the ratings of these books, yet very much not surprised
 
 -   I definitely expected a Harry Potter book to be one of Goodreads's highest average books, but not necessarily a boxed set. (Although I should note, the problem with Goodreads is that it considers boxed sets individual books, and there are neither string functions that I can use to filter them from individual books nor tags I can use to filter them, since the naming conventions vary from boxed set to boxed set and closely resemble how individual book titles appear.) But just from being a casual Goodreads user, I've observed that boxed sets tend to get higher ratings than individual books of the series. So in a way, it *is* unsurprising that the trend holds true here.
 
--   The "ESV Study Bible" is also something I expected to see on this list, although I expected it to be ranked higher. Today, it's not 1800s Europe where everyone owns a copy of the Bible, but there are still many people who do and love reading it.
+-   The "ESV Study Bible" is also something I expected to see on this list, although I expected it to be ranked higher. The Bible is an important book for many people.
 
 -   I *am* surprised that various spinoffs of Calvin and Hobbes and Harry Potter dominate 7 of 10 rankings in the top 10 most highly rated books. I knew they were popular, but not *that* popular. But I guess Goodreads is also an American company, and those are the types of books Americans read and love.
 
@@ -252,6 +221,9 @@ rank_ratings <- function(books, ratings_count) {
 rank_ratings <- rank_ratings(books, ratings_count)
 
 # rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
+# Note: Even when two different books have the same number of ratings (`ratings_count`), they'll get a different rank rating. 
+  # For example, "Morrigan's Cross (Circle Trilogy, #1)" by Nora Roberts and "Mudbound" by Hillary Jordan both have 43,455 ratings.
+  # But "Morrigan's Cross (Circle Trilogy, #1)" has a rank (`rank_of_number_rankings`) of 2351, while "Mudbound" is at 2350. 
 
 ```
 
@@ -368,13 +340,13 @@ A few things I found interesting about the distribution of the average rating of
 
 -   It's left skewed and unimodal.
 
--   Most books (3695 of them, as seen in the table above this graph) have a rating greater than 4 and ≤ 4.25.
+-   Most books (3695 of them, as seen in the table above this graph) have a rating between 4 and 4.25.
 
--   Another 3269 books have a rating greater than 3.75 and ≤ 4.
+-   Another 3269 books have a rating between 3.75 and 4.
 
--   1 book has an average rating greater than 2.25 and ≤ 2.5. 1 book has a rating greater than 2.5 and ≤ 2.75.
+-   1 book has an average rating between 2.25 and 2.5. 1 book has a rating between 2.5 and 2.75.
 
--   5 books have an average rating greater than 4.75 and ≤ 5.0.
+-   5 books have an average rating between 4.75 and 5.0.
 
 So clearly, there are very very few books in the 10,000 most rated books on Goodreads with an average rating of less than 3. And there are very very few books with an average rating of more than 4.75.
 
@@ -409,10 +381,13 @@ Each user (user_id) can give one rating to one book. There are 53,424 users who 
 ```{r, echo = FALSE}
 # Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of the 10k most rated books on Goodreads, having users who rated 200 books (as a few book-rating users have done) is quite impressive.
 
-books_and_ratings |> 
+books_and_ratings_sliced <- books_and_ratings |> 
   group_by(user_id) |> 
   summarize(count = n()) |> 
-  arrange(desc(count)) |> 
+  arrange(desc(count)) 
+
+
+books_and_ratings_sliced |> 
   slice_head(n = 10) |> 
   knitr::kable()
 
@@ -429,66 +404,52 @@ books_and_ratings <- books_and_ratings |>
 
 ```
 
-```{r, echo = FALSE}
-# We just added a new variable, `average_rating` to the "books_and_ratings" dataset. 
-  # `average_rating` shows the average rating of each user.
-# However, there are 5976497 observations in our "books_and_ratings" dataset, and my computer crashes if I try to plot all those points. 
-# Besides, I'm interested in the users who leave the most number of ratings anyways. 
-# As the table above shows, the users who left the most ratings left 200 ratings. So let's use filter to keep only the users who rated more than 175 books. 
 
-# Users who rated more than 175 books
-books_and_ratings_top_raters <- books_and_ratings |> 
+```{r}
+# Create a new dataset, "books_and_ratings_new" 
+# Count the number of books each user rated.
+# Show what each user's average rating was.
+# And get rid of all duplicates. 
+# This new dataset now only has 53,424 rows because there are that many Goodreads users who have rated at least one book in this dataset. 
+
+books_and_ratings_new <- books_and_ratings |> 
   group_by(user_id) |> 
   mutate(count = n()) |> 
-  filter(count > 175)
+  select(user_id, average_rating, count) |> 
+  distinct(user_id, .keep_all = TRUE) 
 
 ```
 
-```{r, echo = FALSE}
-# Creating a new variable, `id`, that gives each top rater a id. The more books rated, the higher the id. 
-books_and_ratings_top_raters_id <- books_and_ratings_top_raters |> 
-  arrange(desc(count)) |> 
-  group_by(count) |> 
-  mutate(id = row_number()) 
+```{r}
+# Creating a new variable, `id`, that gives each rater a id. The more books rated, the higher the id. 
+books_and_ratings_new <- books_and_ratings_new |> 
+  mutate(id = row_number(desc(count)))
   
-# books_and_ratings_top_raters_id
+# books_and_ratings_new
 ```
 
 ```{r, echo = FALSE}
-# Create the variable `average_rating_cut` that takes each `count` and puts it into a bin. 
-# Starting at 175 books rated and above, since we only care about top raters
+# Create the variable `count_cut` that takes each `count` and puts it into a bin.
+# Create the variable `rating_cut` that takes each `average_rating` and puts it into a bin. 
 
-books_and_ratings_final <- books_and_ratings_top_raters_id |> 
+books_and_ratings_new <- books_and_ratings_new |> 
   mutate(count_cut = cut(count, 
-                                  breaks = c(175, 180, 185, 190, 195,
-                                            200))) 
+                         breaks = c(0, 25, 50, 75, 
+                                    100, 125, 150, 175,
+                                            200)),
+         rating_cut = cut(average_rating, 
+                          breaks = c(0, 1, 2, 3, 4, 5))) 
 
-# books_and_ratings_final
+# books_and_ratings_new
 ```
 
 
-```{r, include = FALSE}
-# What is the number of Top Users, ie users who rated more than 175 books
-number_of_top_raters <- books_and_ratings_top_raters_id |> 
-  summarize(count = n_distinct(average_rating))
-
-# number_of_top_raters
-
-# There are 537 top raters.
-
-```
-
-
-```{r, echo = FALSE}
-books_and_ratings_final |> 
+```{r}
+books_and_ratings_new |> 
   ggplot(aes(x = id, y = average_rating, color = count_cut)) +
-  geom_col() +
-  facet_wrap(~ count_cut, scales = "free_y") +
-#  geom_point() +
-#  geom_smooth(alpha = 0.25) +
-#  scale_x_continuous(breaks = seq(0, 60000, by = 10000)) +
-#  ylim(c(0, 5)) +
-#  scale_y_continuous(breaks = seq(0, 5, by = 0.5)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth() +
+ # facet_wrap(~ rating_cut, scales = "free_y") +
   theme_bw() +
   labs(
     title = "Do Top Raters Give Higher Or Lower Average Ratings?",
@@ -496,8 +457,10 @@ books_and_ratings_final |>
     x = "User Rank (by number of books rated)", 
     y = "Average Rating (1-5 stars)",
     color = "Books Rated")
-
+  
 ```
+
+
 
 # Exploration 2: Young Adult Novels on Goodreads
 
