@@ -1,7 +1,7 @@
 ---
 title: "The Habits of Goodreads Users"
 subtitle: |
-  | An Exploration of Ratings, Tags, and More
+  | An Exploration of Ratings, Young Adult Novels, Tags, and More
   | Data Science 1 with R (STAT 301-1)
 author: "Valerie Chu"
 date: today
@@ -405,7 +405,7 @@ books_and_ratings <- books_and_ratings |>
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 # Create a new dataset, "books_and_ratings_new" 
 # Count the number of books each user rated.
 # Show what each user's average rating was.
@@ -420,9 +420,11 @@ books_and_ratings_new <- books_and_ratings |>
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 # Creating a new variable, `id`, that gives each rater a id. The more books rated, the higher the id. 
 books_and_ratings_new <- books_and_ratings_new |> 
+  group_by(count) |> 
+  arrange(desc(count)) |> 
   mutate(id = row_number(desc(count)))
   
 # books_and_ratings_new
@@ -444,22 +446,31 @@ books_and_ratings_new <- books_and_ratings_new |>
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 books_and_ratings_new |> 
   ggplot(aes(x = id, y = average_rating, color = count_cut)) +
   geom_point(alpha = 0.1) +
-  geom_smooth() +
+  # geom_smooth() +
  # facet_wrap(~ rating_cut, scales = "free_y") +
   theme_bw() +
   labs(
     title = "Do Top Raters Give Higher Or Lower Average Ratings?",
-    subtitle = "Top raters tend to give slightly lower average ratings than those who rate less books.",
+    subtitle = "There is no correlation between books rated and average rating.",
     x = "User Rank (by number of books rated)", 
     y = "Average Rating (1-5 stars)",
     color = "Books Rated")
   
 ```
+```{r}
+corr_raters <- books_and_ratings_new |> 
+  select(id, average_rating) |> 
+  cor() |> 
+  knitr::kable()
 
+corr_raters
+```
+
+I'm not surprised that there's no correlation between how many books someone rated and whether they had a higher or lower rating. 
 
 
 # Exploration 2: Young Adult Novels on Goodreads
@@ -565,7 +576,7 @@ books_and_tags_ya_new |>
 ## Conclusion
 
 
-## References
+# References
 
 Zając, Zygmunt (2017, Sept. 19). Github. [https://github.com/zygmuntz/goodbooks-10k](https://github.com/zygmuntz/goodbooks-10k)
 
