@@ -210,7 +210,7 @@ I'm surprised at some of the ratings of these books, yet very much not surprised
 
 ### Part 2: Do people hate-rate or love-rate books?
 
-**In other words, is there a relationship between a book's number of ratings and its average rating?**
+**In other words, is there a relationship between a book's number of ratings (ie. popularity) and its average rating?**
 
 ```{r, echo = FALSE}
 # Start by creating a new variable, rank_of_number_ratings, that assigns each book a rank based on how high their ratings_count is. In other words, more ratings = higher rank. 
@@ -231,6 +231,9 @@ rank_ratings <- rank_ratings(books, ratings_count)
 ```
 
 ```{r, echo = FALSE}
+#| label: fig-1
+#| fig-cap: "Do people tend to rate popular books more highly?"
+
 # reminder: rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
 # Create a scatterplot to show how the average rating changes as the rank of the number of ratings changes
 
@@ -238,7 +241,7 @@ rank_ratings |>
 ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code)) +
   geom_point(alpha = 0.1) +
   labs(
-    title = "Average Rating vs. Ratings Place",
+    title = "Do people tend to rate popular books more highly?",
     subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
     x = "Books Rank (by its number of ratings)", 
     y = "Average Rating (1 - 5 stars)",
@@ -247,7 +250,7 @@ ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code
 
 ```
 
-**There appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
+@fig-1 shows that **There appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
 
 Looking at the correlation @tbl-2 confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
 
@@ -271,7 +274,7 @@ I'm very surprised at this finding. I had expected the rank of the number of rat
 
 ### Part 3: How many books and what percent of books on Goodreads are written in English?
 
-This dataset is a dataset of the 10,000 most rated books on Goodreads. The graph above is so green because most of these books are in some variety of English. Unsurprisingly, the people who use Goodreads, an American-based company, mostly rate books written in English and other European languages. 
+This dataset is a dataset of the 10,000 most rated books on Goodreads. The graph above, @fig-1, is so green because most of these books are in some variety of English. Unsurprisingly, the people who use Goodreads, an American-based company, mostly rate books written in English and other European languages. 
 
 **So, how many books and what percent of books on Goodreads are written in English?**
 ```{r, echo = FALSE}
@@ -300,7 +303,7 @@ rank_ratings_prop |>
 
 @tbl-3 reveals both some surprising and some unsurprising data:
 
-- The green-ness of @tbl-2 already told us to expect that most books on Goodreads would be written in some variety of English. However, I was surprised at the sheer extent of books written in English: 63.41% of books have the language code "eng", while 20.7% of books were written in American English and 2.57% were written in British English. 
+- The green-ness of @fig-1 already told us to expect that most books on Goodreads would be written in some variety of English. However, I was surprised at the sheer extent of books written in English: 63.41% of books have the language code "eng", while 20.7% of books were written in American English and 2.57% were written in British English. 
 
 - I did not expect that "Other" would make up 10.84% of the 10,000 most rated books on Goodreads. That's a lot of other languages. 
 
@@ -345,6 +348,9 @@ books_count |>
 ```
 
 ```{r, echo = FALSE}
+#| label: fig-2
+#| fig-cap: "The Distribution of the Average Rating of Books on Goodreads"
+
 books_cut |> 
   ggplot(aes(x = average_rating_cut)) +
   geom_bar() +
@@ -355,7 +361,7 @@ books_cut |>
 
 ```
 
-A few things I found interesting about the distribution of the average rating of books on Goodreads:
+A few things I found interesting about the distribution of the average rating of books on Goodreads, as seen in @fig-2:
 
 -   It's left skewed and unimodal.
 
@@ -473,6 +479,9 @@ books_and_ratings_new <- books_and_ratings_new |>
 
 
 ```{r, echo = FALSE}
+#| label: fig-3
+#| fig-cap: "Do Top Raters Give Higher Or Lower Average Ratings?"
+
 books_and_ratings_new |> 
   ggplot(aes(x = id, y = average_rating, color = count_cut)) +
   geom_point(alpha = 0.1) +
@@ -481,7 +490,7 @@ books_and_ratings_new |>
   theme_bw() +
   labs(
     title = "Do Top Raters Give Higher Or Lower Average Ratings?",
-    subtitle = "There is no correlation between books rated and average rating.",
+    subtitle = "There is no correlation between number of books rated and average rating.",
     x = "User Rank (by number of books rated)", 
     y = "Average Rating (1-5 stars)",
     color = "Books Rated")
@@ -580,6 +589,9 @@ books_and_tags_ya_new |>
 ### Part 3: What years were young adult (YA) books published in?
 
 ```{r, echo = FALSE}
+#| label: fig-4
+#| fig-cap: "What years were YA books published in?"
+
 # An exploration of the variable `original_publication_year`
 
 books_and_tags_ya_new |> 
@@ -597,6 +609,9 @@ books_and_tags_ya_new |>
 ### Part 4: Which YA books have more ratings?
 
 ```{r, echo = FALSE}
+#| label: fig-5
+#| fig-cap: "Which YA books have more ratings?"
+
 books_and_tags_ya_new |> 
   ggplot(aes(x = original_publication_year, y = ratings_count)) +
   geom_point(alpha = 0.1) +
