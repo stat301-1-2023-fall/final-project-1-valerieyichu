@@ -1,5 +1,5 @@
 
-### Progress Memo 2 -----
+### Don't Grade - Notes From Class and Misc. Scratch Work -----
 
 ## The Instructions -----
     # Basic objectives

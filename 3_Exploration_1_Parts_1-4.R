@@ -84,6 +84,7 @@ corr
 
 
 
+
 ## Exploration 1 Part 3 -----
 # So, how many books and what percent of books on Goodreads are written in English?
 rank_ratings_summary <- rank_ratings |> 
@@ -159,6 +160,16 @@ books_cut |>
        x = "Average Rating",
        y = "Number of Books") +
   theme_bw()
+
+
+
+
+## Exploration 1 Part 5 -----
+
+# Exploration 1 Part 5 was so complicated I gave it its own R file. 
+# See "02_Exploration2.R"
+
+
 
 
 
