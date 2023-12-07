@@ -657,6 +657,22 @@ Which YA books have the most ratings? It would appear that the years after 1750 
 
 ## Conclusion
 
+For anyone who loves books, this Goodreads dataset holds a treasure trove of information. 
+
+Through these data explorations, I answered everything I've ever wondered about Goodreads user habits, user tag trends, YA book trends, and more. 
+
+Among other things, I learned that:
+
+- Goodreads users don't love-rate or hate-rate books. 
+
+- Most books on Goodreads are written in English, but Arabic also appeared as a top 5 language. 
+
+- "young-adult" is the 49th most popular tag.
+
+- YA books have been published as far back as -1750. 
+
+Working with this dataset has taught me so much about Goodreads, book trends, and data exploration. I've learned so many interesting things from this dataset. And best of all, I know which books to read next. 
+
 # References
 
 Zając, Zygmunt (2017, Sept. 19). Github. <https://github.com/zygmuntz/goodbooks-10k>
