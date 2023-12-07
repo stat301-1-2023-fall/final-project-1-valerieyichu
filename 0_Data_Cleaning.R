@@ -23,6 +23,7 @@ tbr <- read_csv("data/to_read.csv")
 
 
 ## NOTE - REFER TO THE qmd "1_Joining_Datasets" FOR A MORE IN-DEPTH EXPLANATION OF THIS PART
+# I made it a qmd because there was a lot of writing involved. 
 
 
 

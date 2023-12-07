@@ -167,7 +167,7 @@ books_cut |>
 ## Exploration 1 Part 5 -----
 
 # Exploration 1 Part 5 was so complicated I gave it its own R file. 
-# See "02_Exploration2.R"
+# See "01_Exploration_1_Part_5.R"
 
 
 

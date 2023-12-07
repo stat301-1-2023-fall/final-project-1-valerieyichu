@@ -538,23 +538,10 @@ popular_tags
 
 
 
-```{r, include = FALSE}
-# Possibly delete later.
-### Question 3, Part 1: Which books have the most tags? The most hated or liked ones?
-
-tags_count <- books_and_tags |> 
-  group_by(goodreads_book_id) |> 
-  # add everything in count
-  summarize(book_tags_count = n())
-
-tags_count
-```
-
 ### Part 2: Which are the highest rated young adult (YA) books?
 
 ```{r, echo = FALSE}
 # Which books have a tag_name "ya"? 
-
 books_and_tags_ya <- books_and_tags |> 
   filter(str_detect(tag_name, "^ya"))
 
