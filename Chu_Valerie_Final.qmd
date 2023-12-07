@@ -114,15 +114,15 @@ Some of these questions include:
 
 -   What are the most highly rated books?
 
--   Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
+-   Do people hate-rate or love-rate books?
 
--   Is there any relationship between the number of times a book appears in the "tbr" dataset and the number of ratings it received?
+-   What's the distribution of average ratings?
 
--   What is the relationship between a book's average rating and the year it was published?
+-   What are the most common tags?
 
--   How do users tag the most highly rated books? Is there a trend?
+-   What years were young adult books published in?
 
-I have divided my exploration of the Goodreads dataset into two parts. The first part looks at the rating habits of Goodreads users. The second part focuses on how Goodreads users interact with young adult (YA) novels on Goodreads.
+I divided my exploration of the Goodreads dataset into two parts. The first part looks at the rating habits of Goodreads users. The second part focuses on how Goodreads users interact with young adult (YA) novels on Goodreads.
 
 ## Joining Data
 
@@ -136,10 +136,12 @@ The joining data step took a lot of exploration due to some unclearness in the R
 
 Why am I joining tags and books_tags?
 
-When I join the "books_tags" dataset together with the "tags" dataset, I can figure out what each book (`goodreads_book_id`) was tagged with (`tag_name`). (I would still have to match each `goodreads_book_id` with its title, but that's another join.)
+When I join the "books_tags" dataset together with the "tags" dataset, I can figure out what each book was tagged with. 
 
 ```{r, echo = FALSE}
 # Join tags and books_tags
+
+# (I would still have to match each `goodreads_book_id` with its title, but that's another join.)
 
 books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
 
@@ -151,8 +153,6 @@ Why am I joining books and ratings?
 
 When I join the "books" dataset with the "ratings" dataset, I can see the rating each user gave each book.
 
-Joining "books" and "ratings" will allow me to start answering on three of my research questions: "What are the most highly rated books?", "What is the relationship between a book's average rating and the year it was published?" and "Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?"
-
 ```{r, include = FALSE}
 books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
   group_by(title) |> 
@@ -160,7 +160,7 @@ books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |>
 
 ```
 
-Now, for the fun part. An EDA with our two new datasets, "books_and_tags" and "books_and_ratings". And maybe some of the original datasets too.
+Now, for the fun part. An EDA with our two new datasets, "books_and_tags" and "books_and_ratings". And some of the original datasets too.
 
 ## Exploration 1: The Rating Habits of Goodreads Users
 
