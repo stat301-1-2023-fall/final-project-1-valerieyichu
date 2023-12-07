@@ -185,6 +185,9 @@ To answer this question, I'm going to look at the books dataset. The variable `a
 **10 Books with the Highest Average Goodreads Rating**
 
 ```{r, echo = FALSE}
+#| label: fig-1
+#| tbl-cap: "10 Books with the Highest Average Goodreads Rating"
+
 books |> 
   arrange(desc(average_rating)) |> 
   select(book_id, title, authors, average_rating, ratings_count) |> 
