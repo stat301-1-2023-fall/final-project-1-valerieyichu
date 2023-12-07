@@ -1,0 +1,675 @@
+---
+title: "The Habits of Goodreads Users"
+subtitle: |
+  | An Exploration of Ratings, Young Adult Novels, Tags, and More
+  | Data Science 1 with R (STAT 301-1)
+author: "Valerie Chu"
+date: today
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: show
+    link-external-newwindow: true
+
+execute:
+  warning: false
+  
+from: markdown+emoji 
+---
+
+::: {.callout-tip icon="false"}
+## Github Repo
+
+<https://github.com/stat301-1-2023-fall/final-project-1-valerieyichu.git>
+:::
+
+```{r, echo = FALSE}
+# Load Package
+library(tidyverse)
+
+```
+
+```{r, echo = FALSE}
+# Load Data
+
+books <- read_delim("data/books.csv")
+books_tags <- read_csv("data/book_tags.csv")
+ratings <- read_csv("data/ratings.csv")
+tags <- read_csv("data/tags.csv")
+tbr <- read_csv("data/to_read.csv")
+
+# Load Codebook
+goodreads_codebook <- read_csv("data/goodreads_codebook.csv")
+```
+
+## Introduction
+
+::: {.callout-tip icon="false"}
+## My Data Source
+
+[**https://github.com/zygmuntz/goodbooks-10k**](https://github.com/zygmuntz/goodbooks-10k)
+:::
+
+**What is Goodreads?**
+
+This is how Goodreads describes itself: "Goodreads is the world's largest site for readers and book recommendations. Our mission is to help readers discover books they love and get more out of reading. Goodreads launched in January 2007."
+
+Among other unique features, Goodreads allows users to:
+
+-   Rate books
+
+-   Write book reviews
+
+-   Track and tag the books they're reading, have read, and want to read
+
+## Data Overview and Quality
+
+::: {.callout-tip icon="false"}
+## What is my data about?
+
+This dataset contains six million ratings for the 10,000 most rated books on Goodreads.
+
+It was last updated on Sept. 19, 2017, so books published after that date won't appear in this dataset.
+:::
+
+It comes in five separate csv files: "books", "books_tags", "ratings", "tags", and "tbr"
+
+(For context, users on Goodreads can *tag* books and add them to their shelves. And "tbr" stands for "to be read".)
+
+In this document, when I say "Goodreads data" or "Goodreads dataset", I am referring to the five datasets generally. For individual datasets, I will use their specific names.
+
+
+**Why am I interested in this dataset?**
+
+The reason why I'm interested in this dataset is extremely simple: I love reading. Analyzing Goodreads data / Goodreads user data seems super fun.
+
+More specifically, I'm interested in analyzing user habits on Goodreads. This is why I chose this dataset. I've spent several hours combing through Kaggle, Google, Reddit, and other places on the internet. As far as I can tell, this is the most comprehensive dataset about books and user readings habits I can find, freely available from the internet. It was scraped from Goodread's and Goodread users's publicly available data.
+
+**More about the data**
+
+The Goodreads dataset is of high quality.
+
+There are no missingness values in any of the five dataset included in the Goodreads dataset except for "books", which is missing some values in: language_code, isbn, isbn13, original_title, original_publication_year. This will not effect my exploratory data analysis, although I will keep the missingness in mind. (See "01_Exploring_Missingness.R" for more.)
+
+The "books" dataset:
+
+-   There are 10,000 observations.
+
+-   There are 23 variables.
+
+-   There are 17 numerical variables.
+
+-   There are 6 categorical variables.
+
+The other four datasets can be combined with each other and with the "books" dataset in ways that can enhance my exploration of Goodreads data and user habits.
+
+## My Objectives
+
+There are several questions I'm interested in examining in Goodreads data.
+
+Some of these questions include:
+
+-   What are the most highly rated books?
+
+-   Do people hate-rate or love-rate books?
+
+-   What's the distribution of average ratings?
+
+-   What are the most common tags?
+
+-   What years were young adult books published in?
+
+I divided my exploration of the Goodreads dataset into two parts. The first part looks at the rating habits of Goodreads users. The second part focuses on how Goodreads users interact with young adult (YA) novels on Goodreads.
+
+## Joining Data
+
+::: {.callout-tip icon="false"}
+## Note
+
+The joining data step took a lot of exploration due to some unclearness in the README I got this dataset from. I made a qmd in this project called "00_Joining_Datasets" that walks through my process of joining these two datasets in more depth.
+:::
+
+**Step 1: Joining tags and books_tags**
+
+Why am I joining tags and books_tags?
+
+When I join the "books_tags" dataset together with the "tags" dataset, I can figure out what each book was tagged with.
+
+```{r, echo = FALSE}
+# Join tags and books_tags
+
+# (I would still have to match each `goodreads_book_id` with its title, but that's another join.)
+
+books_and_tags <- full_join(tags, books_tags, join_by(tag_id == tag_id))
+
+```
+
+**Step 2: Joining books and ratings**
+
+Why am I joining books and ratings?
+
+When I join the "books" dataset with the "ratings" dataset, I can see the rating each user gave each book.
+
+```{r, include = FALSE}
+books_and_ratings <- full_join(books, ratings, join_by(book_id == book_id)) |> 
+  group_by(title) |> 
+  select(title, book_id, goodreads_book_id, work_id, user_id, rating)
+
+```
+
+Now, for the fun part. An EDA with our two new datasets, "books_and_tags" and "books_and_ratings". And some of the original datasets too.
+
+## Exploration 1: The Rating Habits of Goodreads Users
+
+### Part 1: Which 10 books have the highest average Goodreads rating?
+
+In an exploration of the rating habits of Goodreads users, there seems to be an obvious place to start: What are the most highly-rated books on Goodreads?
+
+**10 Books with the Highest Average Goodreads Rating**
+
+```{r, echo = FALSE}
+#| label: tbl-1
+#| tbl-cap: "10 Books with the Highest Average Goodreads Rating"
+
+# To answer this question, I'm going to look at the books dataset. The variable `average_rating` can help us figure this out.
+
+books |> 
+  arrange(desc(average_rating)) |> 
+  select(book_id, title, authors, average_rating, ratings_count) |> 
+  slice_head(n = 10) |> 
+  DT::datatable()
+
+```
+
+I'm surprised at some of the ratings of these books, yet very much not surprised at others. These are some things we can see from @tbl-1:
+
+-   "The Complete Calvin and Hobbes" is more geared toward middle-grade readers, so it's odd that it has the highest rating.
+
+-   But I'm not surprised that "Words of Radiance" had the second highest average Goodreads rating. I know that the Goodreads demographic tends to be young adults and book bloggers, most of who all enjoy reading and rating young adult fiction on Goodreads. That's a category this book falls within.
+
+-   I definitely expected a Harry Potter book to be one of Goodreads's highest average books, but not necessarily a boxed set. (Although I should note, the problem with Goodreads is that it considers boxed sets individual books, and there are neither string functions that I can use to filter them from individual books nor tags I can use to filter them, since the naming conventions vary from boxed set to boxed set and closely resemble how individual book titles appear.) But just from being a casual Goodreads user, I've observed that boxed sets tend to get higher ratings than individual books of the series. So in a way, it *is* unsurprising that the trend holds true here.
+
+-   The "ESV Study Bible" is also something I expected to see on this list, although I expected it to be ranked higher. The Bible is an important book for many people.
+
+-   I *am* surprised that various spinoffs of Calvin and Hobbes and Harry Potter dominate 7 of 10 rankings in the top 10 most highly rated books. I knew they were popular, but not *that* popular. But I guess Goodreads is also an American company, and those are the types of books Americans read and love.
+
+### Part 2: Do people hate-rate or love-rate books?
+
+After an exploration of the most highly-rated books on Goodreads, this question came to my mind.
+
+As someone who tends to rate books that I love more than books that I'm neutral about or dislike, I'm curious about whether other people also have the same tendencies as me, and whether this shows in the 10,000 most rated books on Goodreads as of 2017.
+
+If there actually is a love-rate or hate-rate trend, this means that there would be either a positive or negative correlation between book popularity and average rating. After all, the most promoted/most popular books tend are likely to make their way onto this dataset of most rated books. So are those ratings good or bad?
+
+**In other words, is there a relationship between a book's number of ratings (ie. popularity) and its average rating?**
+
+```{r, echo = FALSE}
+# Start by creating a new variable, rank_of_number_ratings, that assigns each book a rank based on how high their ratings_count is. In other words, more ratings = higher rank. 
+
+rank_ratings <- function(books, ratings_count) {
+  books |> 
+    arrange(desc({{ ratings_count }})) |> 
+    mutate(rank_of_number_ratings = row_number()) 
+}
+
+rank_ratings <- rank_ratings(books, ratings_count)
+
+# rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
+# Note: Even when two different books have the same number of ratings (`ratings_count`), they'll get a different rank rating. 
+  # For example, "Morrigan's Cross (Circle Trilogy, #1)" by Nora Roberts and "Mudbound" by Hillary Jordan both have 43,455 ratings.
+  # But "Morrigan's Cross (Circle Trilogy, #1)" has a rank (`rank_of_number_rankings`) of 2351, while "Mudbound" is at 2350. 
+
+```
+
+```{r, echo = FALSE}
+#| label: fig-1
+#| fig-cap: "Do people tend to rate popular books more highly?"
+
+# reminder: rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
+# Create a scatterplot to show how the average rating changes as the rank of the number of ratings changes
+
+rank_ratings |> 
+ggplot(aes(x = rank_of_number_ratings, y = average_rating, color = language_code)) +
+  geom_point(alpha = 0.1) +
+  labs(
+    title = "Do people tend to rate popular books more highly?",
+    subtitle = "There is no relationship between a book's average rating and the number of ratings it received.",
+    x = "Books Rank (by its number of ratings)", 
+    y = "Average Rating (1 - 5 stars)",
+    color = "Language Code") +
+  theme_bw()
+
+```
+
+@fig-1 shows that **There appears to be no relationship between a *book's average rating* and *its rank based on the number of ratings it received*.**
+
+Looking at the correlation @tbl-2 confirms this: The correlation between `rank_of_number_ratings` and`average_rating` is almost 0.
+
+```{r, echo = FALSE}
+#| label: tbl-2
+#| tbl-cap: "The correlation between a book's rank and its average rating"
+# reminder: rank_ratings contains everything inside the books dataset, plus the variable `rank_of_number_ratings`
+
+corr <- rank_ratings |> 
+  select(average_rating, rank_of_number_ratings) |> 
+  cor() |> 
+  knitr::kable()
+
+corr
+
+```
+
+I'm very surprised at this finding. I had expected the rank of the number of ratings a book received to have at least some correlation with the average rating.
+
+**So, it seems people are neither more nor less inclined to rate a book based on whether they hated or loved that book.**
+
+### Part 3: How many books and what percent of books on Goodreads are written in English?
+
+@fig-1 was so green because most of these books are written in some variety of English. Unsurprisingly, the people who use Goodreads, an American-based company, mostly rate books written in English and other European languages.
+
+**So, how many books and what percent of books on Goodreads are written in English?**
+
+```{r, echo = FALSE}
+rank_ratings_summary <- rank_ratings |> 
+  group_by(language_code) |> 
+  summarize(count = n()) 
+
+```
+
+```{r, echo = FALSE}
+#| label: tbl-3
+#| tbl-cap: "How many books and what percent of books on Goodreads are written in English?"
+
+rank_ratings_prop <- rank_ratings_summary |> 
+  mutate(percent = count / sum(count) * 100)
+  
+rank_ratings_prop <- rank_ratings_prop |> 
+  mutate(language_code = coalesce(language_code, "other"))
+
+colnames(rank_ratings_prop) <- c("Language Code", "Count", "Percent")
+
+rank_ratings_prop |> 
+  DT::datatable()
+ 
+```
+
+@tbl-3 reveals both some surprising and some unsurprising data:
+
+-   The green-ness of @fig-1 already told us to expect that most books on Goodreads would be written in some variety of English. However, I was surprised at the sheer extent of books written in English: 63.41% of books have the language code "eng", while 20.7% of books were written in American English and 2.57% were written in British English.
+
+-   I did not expect that "Other" would make up 10.84% of the 10,000 most rated books on Goodreads. That's a lot of other languages.
+
+-   I was also surprised that Arabic was the 5th most popular language on Goodreads, after several varieties of English and "Other". I instead expected European languages to dominate the Top 10 most popular languages on here since Goodreads is an American company, but Arabic made the list.
+
+### Part 4: What's the distribution of book ratings?
+
+While working on Parts 1-3, this question naturally came up. We already know that most books on Goodreads are published in English, and that there tends to be no correlation between a book's number of ratings and its average rating. But let's take a step back and dive deeper into what book ratings on Goodreads tend to look like.
+
+When I look at a Goodreads rating, I don't think of the rating scale as continuous. I think about them in bins of 0.25.
+
+For example, a book with an average rating greater than 4.5 stars is excellent. A book with ≥ 4.75 is practically unheard of. And a book with an average rating between 4.0 and 4.25 is great.
+
+So that's why instead of using a histogram, I'm going to put average ratings into bins of 0.25 and create a bar plot that will display the distribution of book ratings on Goodreads in a way that's intuitive to think about.
+
+```{r, include = FALSE}
+books_cut <- rank_ratings |> 
+  mutate(average_rating_cut = cut(average_rating, 
+                                 breaks = c(0, 0.25, 0.5, 0.75,
+                                            1, 1.25, 1.5, 1.75,
+                                            2, 2.25, 2.5, 2.75,
+                                            3, 3.25, 3.5, 3.75, 
+                                            4, 4.25, 4.5, 4.75, 
+                                            5))) |> 
+  select(title, average_rating, average_rating_cut)
+
+books_cut
+
+```
+
+**Distribution of Book Ratings**
+
+```{r, echo = FALSE}
+#| label: tbl-4
+#| tbl-cap: "Distribution of Book Ratings"
+
+books_count <- books_cut |> 
+  count(average_rating_cut) 
+
+colnames(books_count) <- c("Average Rating", "Number of Books")
+
+books_count |>
+  knitr::kable()
+```
+
+@tbl-4 shows the distribution of book ratings in numbers. Let's visualize it.
+
+```{r, echo = FALSE}
+#| label: fig-2
+#| fig-cap: "The Distribution of the Average Rating of Books on Goodreads"
+
+books_cut |> 
+  ggplot(aes(x = average_rating_cut)) +
+  geom_bar() +
+  labs(title = "The Distribution of the Average Rating of Books on Goodreads",
+       x = "Average Rating",
+       y = "Number of Books") +
+  theme_bw()
+
+```
+
+These are a few things I found interesting about the distribution of the average rating of books on Goodreads, as seen in @fig-2:
+
+-   It's left skewed and unimodal.
+
+-   Most books (3695 of them, as seen in @tbl-4) have a rating between 4 and 4.25.
+
+-   Another 3269 books (see @tbl-4) have a rating between 3.75 and 4.
+
+-   1 book has an average rating between 2.25 and 2.5. 1 book has a rating between 2.5 and 2.75.
+
+-   5 books have an average rating between 4.75 and 5.0.
+
+So clearly, there are very very few books in the 10,000 most rated books on Goodreads with an average rating of less than 3. And there are very very few books with an average rating of more than 4.75.
+
+That means that people who rate the popular books on Goodreads usually either:
+
+-   
+
+    1.  Like the book enough that they went to Goodreads and rated it decently highly (a 3, 4, or 5).
+
+-   
+
+    2.  Don't like to rate extremely high or low.
+
+-   
+
+    3.  Or the number of people who gave books a decently high rating tend to pull up the average ratings of the people who rate books lowly.
+
+Without more data, it's hard to tell whether we can explain away the cluster around book ratings between 3.75 and 4.25 as one of these suggestions, a combination of these suggestions, or none of these suggestions. It's still fun to think about though.
+
+Also, I should note again that in the context of this dataset containing only the most rated (ie. popular) books on Goodreads, it does make sense that books with lower ratings likely aren't promoted enough --- and therefore likely aren't rated enough --- to appear on this dataset.
+
+### Part 5: Do readers who leave the most ratings leave the higher ratings on average or lower ratings on average?
+
+@tbl-4 and @fig-2 showed us the distribution of book ratings, while @fig-1 explored whether people love-rate or hate-rate books. But is there a trend in the number of books people have read and how they rate books? Does reading more books make people set their expectations higher and thus rate books lower on average, or is it maybe the other way around?
+
+#### Part 5, Section 1: Who are the readers who leave the most ratings on Goodreads?
+
+First, let's start by seeing which readers leave the most ratings on Goodreads.
+
+Each user (user_id) can give one rating to one book. There are 53,424 users who rated the 10,000 most rated books on Goodreads. These are the top 10 raters.
+
+**Top 10 Goodreads Users Who Rated the Most Books in this Dataset**
+
+```{r, echo = FALSE}
+#| label: tbl-5
+#| tbl-cap: "The 10 Goodreads Users Who Rated the Most Books in this Dataset"
+
+# Grouping by user_id and counting that number tells us the users who rate the most books on Goodreads. `count` is the number of books the user has rated. If we also keep in mind that this dataset only has the data of the 10k most rated books on Goodreads, having users who rated 200 books (as a few book-rating users have done) is quite impressive.
+
+books_and_ratings_sliced <- books_and_ratings |> 
+  group_by(user_id) |> 
+  summarize(count = n()) |> 
+  arrange(desc(count)) 
+
+
+books_and_ratings_sliced |> 
+  slice_head(n = 10) |> 
+  knitr::kable()
+
+```
+
+@tbl-5 shows that the users who rated the most books in this dataset all rated around 200 books. If we also keep in mind that this dataset only has the data of the 10,000 most rated books on Goodreads, having users who rated 200 books of these books is quite impressive.
+
+However, I did expect this number to be higher, especially since I know the people who tend to use Goodreads are bookworms who can read dozens of books per year. But since Goodreads was launched in January 2007 and might not have gained popularity until more people had access to technology, this could make sense.
+
+#### Part 5, Section 2: How do top raters tend to rate books?
+
+Now that we know which Goodreads users rated the most books, it logically follows for us to examine whether there's a trend in how top raters tend to rate books.
+
+This graph shows the relationship between a user's rank (based on the number of books they rated) and the average rating they gave. The colors are pretty evenly spread across the graph, and it's there seems to be no trend in how top raters rate books.
+
+```{r, echo = FALSE}
+# Now, let's see what the average ratings of these top book-rating users is. 
+
+books_and_ratings <- books_and_ratings |> 
+  group_by(user_id) |> 
+  mutate(average_rating = (mean(rating, na.rm = TRUE))) 
+
+```
+
+```{r, echo = FALSE}
+# Create a new dataset, "books_and_ratings_new" 
+# Count the number of books each user rated.
+# Show what each user's average rating was.
+# And get rid of all duplicates. 
+# This new dataset now only has 53,424 rows because there are that many Goodreads users who have rated at least one book in this dataset. 
+
+books_and_ratings_new <- books_and_ratings |> 
+  group_by(user_id) |> 
+  mutate(count = n()) |> 
+  select(user_id, average_rating, count) |> 
+  distinct(user_id, .keep_all = TRUE) 
+
+```
+
+```{r, echo = FALSE}
+# Creating a new variable, `id`, that gives each rater a id. The more books rated, the higher the id. 
+books_and_ratings_new <- books_and_ratings_new |> 
+  group_by(count) |> 
+  arrange(desc(count)) |> 
+  mutate(id = row_number(desc(count)))
+  
+# books_and_ratings_new
+```
+
+```{r, echo = FALSE}
+# Create the variable `count_cut` that takes each `count` and puts it into a bin.
+# Create the variable `rating_cut` that takes each `average_rating` and puts it into a bin. 
+
+books_and_ratings_new <- books_and_ratings_new |> 
+  mutate(count_cut = cut(count, 
+                         breaks = c(0, 25, 50, 75, 
+                                    100, 125, 150, 175,
+                                            200)),
+         rating_cut = cut(average_rating, 
+                          breaks = c(0, 1, 2, 3, 4, 5))) 
+
+# books_and_ratings_new
+```
+
+```{r, echo = FALSE}
+#| label: fig-3
+#| fig-cap: "Do Top Raters Give Higher Or Lower Average Ratings?"
+
+books_and_ratings_new |> 
+  ggplot(aes(x = id, y = average_rating, color = count_cut)) +
+  geom_point(alpha = 0.1) +
+  # geom_smooth() +
+ # facet_wrap(~ rating_cut, scales = "free_y") +
+  theme_bw() +
+  labs(
+    title = "Do Top Raters Give Higher Or Lower Average Ratings?",
+    subtitle = "There is no correlation between number of books rated and average rating.",
+    x = "User Rank (by number of books rated)", 
+    y = "Average Rating (1-5 stars)",
+    color = "Books Rated")
+  
+```
+
+Let's confirm this with a correlation table.
+
+```{r, echo = FALSE}
+#| label: tbl-6
+#| tbl-cap: "The correlation between a user's rank and their average rating"
+ 
+corr_raters <- books_and_ratings_new |> 
+  select(id, average_rating) |> 
+  cor() |> 
+  knitr::kable()
+
+corr_raters
+```
+
+In retrospect, I'm not surprised @fig-3 and @tbl-6 show that there's no correlation between how many books someone rated and whether they had a higher or lower average rating.
+
+@tbl-2 already found that there was no correlation between a book's average rating and its rank it based on the number of ratings it received. It makes sense that if there's no rating between number of ratings and average rating, top Goodreads users wouldn't differ from this average trend either.
+
+# Exploration 2: Young Adult Novels on Goodreads
+
+The young adult (YA) genre is one I've always enjoyed reading. Many people who use Goodreads, such as book bloggers and book YouTubers, also tend to prefer the YA genre. The YA genre is quite popular on Goodreads.
+
+This is why YA novels are my second area of exploration for this Goodreads dataset.
+
+### Part 1: What are the most common tags?
+
+I know that the YA genre is quite popular on Goodreads, but I was also curious what the most popular tags were.
+
+For context, users on Goodreads can *tag* books and add them to their bookshelves. It's basically a way to personalize the labeling of books.
+
+**The most common Goodreads tags**
+
+```{r, echo = FALSE}
+#| label: tbl-7
+#| tbl-cap: "What are the most common tags?"
+
+popular_tags <- books_and_tags |> 
+  group_by(tag_name) |> 
+  summarize(tags = n()) |> 
+  filter(tags > 1000) |> 
+  arrange(desc(tags)) |> 
+  DT::datatable()
+
+popular_tags
+
+```
+
+@tbl-7 reveals some interesting trends in Goodreads data:
+
+-   "to-read" is, of course, the most popular tag. Goodreads basically lets users use it as a default tag. Same for "favorites".
+
+-   The first dozen or so tags are all plain, simple tags that resembled labels. They were to be expected. However, I was surprised that "read-in-2015", "read-in-2016", and "read-in-2014" made the list of the top 30 most popular tags. People must love categorizing their bookshelves by date, which I did not expect.
+
+-   "fiction" and adult" were some of the first few genre tags to appear. And of course, "fantasy" and romance" made an appearance at ranks 37 and 38 respectively.
+
+-   And "young-adult" debuted at rank 49, just before "english".
+
+### Part 2: Which are the highest rated young adult (YA) books?
+
+Now that I knew which were the most popular tags, I was curious which were the most higly rated YA books. Let's explore that.
+
+```{r, echo = FALSE}
+# Which books have a tag_name "ya"? 
+books_and_tags_ya <- books_and_tags |> 
+  filter(str_detect(tag_name, "^ya"))
+
+# books_and_tags_ya
+
+```
+
+```{r, echo = FALSE}
+# Reminder: The "books_and_tags" joined the "books_tags" dataset and the "tags" dataset. 
+# It hasn't yet matched "goodreads_book_id" with its title. So let's get the title. 
+
+books_and_tags_ya_new <- full_join(books_and_tags_ya, books, join_by(goodreads_book_id == goodreads_book_id))
+
+# books_and_tags_ya_new
+
+```
+
+**100 Most Highly Rated YA Books**
+
+```{r, echo = FALSE}
+#| label: tbl-8
+#| tbl-cap: "100 Most Highly Rated YA Books"
+
+books_and_tags_ya_new |> 
+  arrange(desc(average_rating)) |> 
+  select(goodreads_book_id, tag_name, title, authors, average_rating, ratings_count) |> 
+  slice_head(n = 100) |> 
+  DT::datatable()
+
+```
+
+Much like for @tbl-1, I was unsurprised by the sheer amount of Harry Potter and Calvin and Hobbes books that made the list of the 100 most highly rated YA books.
+
+Goodreads is, after all, based in America.
+
+But both lists were remarkably similar in their top picks. So perhaps YA books tend to get higher average ratings than most other genres.
+
+### Part 3: What years were young adult (YA) books published in?
+
+This is something I've always been curious about. YA novels are, by name, *young adult* novels. They were written for young adults. And that's a trend that has been going on for a long time.
+
+Naturally, I was curious about how many books (and how ancient these books) have been tagged by Goodreads users as YA books.
+
+```{r, echo = FALSE}
+#| label: fig-4
+#| fig-cap: "What years were YA books published in?"
+
+# An exploration of the variable `original_publication_year`
+
+books_and_tags_ya_new |> 
+  ggplot(aes(x = original_publication_year)) +
+  geom_boxplot() +
+  scale_x_continuous(breaks = seq(-2000, 2500, by = 500)) +
+  theme_bw() +
+  labs(
+    title = "What years were young adult books published in?",
+    subtitle = "Most YA books were published after the year 2000, but there are a few ancient ones.",
+    x = "Original Publication Year", 
+    y = NULL) 
+
+```
+
+It's quite funny to me that books published as far back as -1750 have been categorized by Goodreads users as YA books. But that's the beauty of the genre. It continues to evolve.
+
+### Part 4: Which YA books have more ratings?
+
+There is, of course, one final question I need to know the answer to --- the question that started this Goodreads data exploration when I searched around for the next unique YA book I should check out and realized there was a more efficient way to go about this than asking everyone I knew.
+
+Perhaps I should have simply created a scatterplot to see what years I was missing from my YA repertoire.
+
+```{r, echo = FALSE}
+#| label: fig-5
+#| fig-cap: "Which YA books have more ratings?"
+
+books_and_tags_ya_new |> 
+  ggplot(aes(x = original_publication_year, y = ratings_count)) +
+  geom_point(alpha = 0.1) +
+  scale_x_continuous(expand = c(0.1, 0.9), breaks = seq(-2000, 2500, by = 500)) +
+  theme_bw() +
+  labs(
+    title = "How does the year a young adult book was \npublished affect its number of Goodreads ratings?",
+    subtitle = "YA books published after 1750 have more ratings on Goodreads.",
+    x = "Original Publication Year", 
+    y = "Number of Ratings") +
+  theme(plot.title = element_text(size = 20))
+
+```
+
+Which YA books have the most ratings? It would appear that the years after 1750 won. But first, maybe I should start from YA novels published in the year -1750 and work my way forward in time.
+
+## Conclusion
+
+For anyone who loves books, this Goodreads dataset holds a treasure trove of information.
+
+Through these data explorations, I answered everything I've ever wondered about Goodreads user habits, user tag trends, YA book trends, and more.
+
+Among other things, I learned that:
+
+-   Goodreads users don't love-rate or hate-rate books.
+
+-   Most books on Goodreads are written in English, but Arabic also appeared as a top 5 language.
+
+-   "young-adult" is the 49th most popular tag.
+
+-   YA books have been published as far back as -1750.
+
+Working with this dataset has taught me so much about Goodreads, book trends, and data exploration. I've learned so many interesting things from this dataset. And best of all, I know which books to read next.
+
+# References
+
+Zając, Zygmunt (2017, Sept. 19). Github. <https://github.com/zygmuntz/goodbooks-10k>

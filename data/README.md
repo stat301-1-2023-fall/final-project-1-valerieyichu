@@ -16,9 +16,9 @@ See "1_Joining_Datasets" for more details.
 
 I also completed two joins and saved these two new files as rds files. They're both in the data folder. 
 
-- I joined "books_tags" and "tags" to create "books_and_tags".
+- I joined "books_tags" and "tags" to create "books_and_tags". This dataset was too big at a file size of 2.3 GB, so I included it in my "gitignore" file.
 
-- I joined "books" and "ratings" to create "books_and_ratings".
+- I joined "books" and "ratings" to create "books_and_ratings". This dataset would have been several GB, so instead of letting it get that big, I selected the variables I was interested in: "title", "book_id", "goodreads_book_id", "work_id", "user_id", "rating", and "average_rating".
 
 The "goodreads_codebook.csv" contains more information about specific variables and what they mean. 
 

@@ -101,14 +101,3 @@ books_and_tags_ya_new |>
 
 
 
-## Exploration 2, Part 5 -----
-
-
-
-
-
-
-
-
-
-
