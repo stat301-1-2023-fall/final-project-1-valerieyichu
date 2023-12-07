@@ -80,7 +80,6 @@ It comes in five separate csv files: "books", "books_tags", "ratings", "tags", a
 
 In this document, when I say "Goodreads data" or "Goodreads dataset", I am referring to the five datasets generally. For individual datasets, I will use their specific names.
 
-(All data is in the "data" folder, and I didn't have to clean up any of the five original datasets, so they're not in there.)
 
 **Why am I interested in this dataset?**
 
@@ -136,7 +135,7 @@ The joining data step took a lot of exploration due to some unclearness in the R
 
 Why am I joining tags and books_tags?
 
-When I join the "books_tags" dataset together with the "tags" dataset, I can figure out what each book was tagged with. 
+When I join the "books_tags" dataset together with the "tags" dataset, I can figure out what each book was tagged with.
 
 ```{r, echo = FALSE}
 # Join tags and books_tags
@@ -166,7 +165,7 @@ Now, for the fun part. An EDA with our two new datasets, "books_and_tags" and "b
 
 ### Part 1: Which 10 books have the highest average Goodreads rating?
 
-In an exploration of the rating habits of Goodreads users, there seems to be an obvious place to start: What are the most highly-rated books on Goodreads? 
+In an exploration of the rating habits of Goodreads users, there seems to be an obvious place to start: What are the most highly-rated books on Goodreads?
 
 **10 Books with the Highest Average Goodreads Rating**
 
@@ -198,11 +197,11 @@ I'm surprised at some of the ratings of these books, yet very much not surprised
 
 ### Part 2: Do people hate-rate or love-rate books?
 
-After an exploration of the most highly-rated books on Goodreads, this question came to my mind. 
+After an exploration of the most highly-rated books on Goodreads, this question came to my mind.
 
-As someone who tends to rate books that I love more than books that I'm neutral about or dislike, I'm curious about whether other people also have the same tendencies as me, and whether this shows in the 10,000 most rated books on Goodreads as of 2017. 
+As someone who tends to rate books that I love more than books that I'm neutral about or dislike, I'm curious about whether other people also have the same tendencies as me, and whether this shows in the 10,000 most rated books on Goodreads as of 2017.
 
-If there actually is a love-rate or hate-rate trend, this means that there would be either a positive or negative correlation between book popularity and average rating. After all, the most promoted/most popular books tend are likely to make their way onto this dataset of most rated books. So are those ratings good or bad? 
+If there actually is a love-rate or hate-rate trend, this means that there would be either a positive or negative correlation between book popularity and average rating. After all, the most promoted/most popular books tend are likely to make their way onto this dataset of most rated books. So are those ratings good or bad?
 
 **In other words, is there a relationship between a book's number of ratings (ie. popularity) and its average rating?**
 
@@ -344,7 +343,7 @@ books_count |>
   knitr::kable()
 ```
 
-@tbl-4 shows the distribution of book ratings in numbers. Let's visualize it. 
+@tbl-4 shows the distribution of book ratings in numbers. Let's visualize it.
 
 ```{r, echo = FALSE}
 #| label: fig-2
@@ -398,7 +397,7 @@ Also, I should note again that in the context of this dataset containing only th
 
 #### Part 5, Section 1: Who are the readers who leave the most ratings on Goodreads?
 
-First, let's start by seeing which readers leave the most ratings on Goodreads. 
+First, let's start by seeing which readers leave the most ratings on Goodreads.
 
 Each user (user_id) can give one rating to one book. There are 53,424 users who rated the 10,000 most rated books on Goodreads. These are the top 10 raters.
 
@@ -428,9 +427,9 @@ However, I did expect this number to be higher, especially since I know the peop
 
 #### Part 5, Section 2: How do top raters tend to rate books?
 
-Now that we know which Goodreads users rated the most books, it logically follows for us to examine whether there's a trend in how top raters tend to rate books. 
+Now that we know which Goodreads users rated the most books, it logically follows for us to examine whether there's a trend in how top raters tend to rate books.
 
-This graph shows the relationship between a user's rank (based on the number of books they rated) and the average rating they gave. The colors are pretty evenly spread across the graph, and it's there seems to be no trend in how top raters rate books. 
+This graph shows the relationship between a user's rank (based on the number of books they rated) and the average rating they gave. The colors are pretty evenly spread across the graph, and it's there seems to be no trend in how top raters rate books.
 
 ```{r, echo = FALSE}
 # Now, let's see what the average ratings of these top book-rating users is. 
@@ -481,7 +480,6 @@ books_and_ratings_new <- books_and_ratings_new |>
 # books_and_ratings_new
 ```
 
-
 ```{r, echo = FALSE}
 #| label: fig-3
 #| fig-cap: "Do Top Raters Give Higher Or Lower Average Ratings?"
@@ -501,7 +499,7 @@ books_and_ratings_new |>
   
 ```
 
-Let's confirm this with a correlation table. 
+Let's confirm this with a correlation table.
 
 ```{r, echo = FALSE}
 #| label: tbl-6
@@ -517,19 +515,19 @@ corr_raters
 
 In retrospect, I'm not surprised @fig-3 and @tbl-6 show that there's no correlation between how many books someone rated and whether they had a higher or lower average rating.
 
-@tbl-2 already found that there was no correlation between a book's average rating and its rank it based on the number of ratings it received. It makes sense that if there's no rating between number of ratings and average rating, top Goodreads users wouldn't differ from this average trend either. 
+@tbl-2 already found that there was no correlation between a book's average rating and its rank it based on the number of ratings it received. It makes sense that if there's no rating between number of ratings and average rating, top Goodreads users wouldn't differ from this average trend either.
 
 # Exploration 2: Young Adult Novels on Goodreads
 
-The young adult (YA) genre is one I've always enjoyed reading. Many people who use Goodreads, such as book bloggers and book YouTubers, also tend to prefer the YA genre. The YA genre is quite popular on Goodreads. 
+The young adult (YA) genre is one I've always enjoyed reading. Many people who use Goodreads, such as book bloggers and book YouTubers, also tend to prefer the YA genre. The YA genre is quite popular on Goodreads.
 
-This is why YA novels are my second area of exploration for this Goodreads dataset. 
+This is why YA novels are my second area of exploration for this Goodreads dataset.
 
 ### Part 1: What are the most common tags?
 
-I know that the YA genre is quite popular on Goodreads, but I was also curious what the most popular tags were. 
+I know that the YA genre is quite popular on Goodreads, but I was also curious what the most popular tags were.
 
-For context, users on Goodreads can *tag* books and add them to their bookshelves. It's basically a way to personalize the labeling of books. 
+For context, users on Goodreads can *tag* books and add them to their bookshelves. It's basically a way to personalize the labeling of books.
 
 **The most common Goodreads tags**
 
@@ -550,17 +548,17 @@ popular_tags
 
 @tbl-7 reveals some interesting trends in Goodreads data:
 
-- "to-read" is, of course, the most popular tag. Goodreads basically lets users use it as a default tag. Same for "favorites".
+-   "to-read" is, of course, the most popular tag. Goodreads basically lets users use it as a default tag. Same for "favorites".
 
-- The first dozen or so tags are all plain, simple tags that resembled labels. They were to be expected. However, I was surprised that "read-in-2015", "read-in-2016", and "read-in-2014" made the list of the top 30 most popular tags. People must love categorizing their bookshelves by date, which I did not expect. 
+-   The first dozen or so tags are all plain, simple tags that resembled labels. They were to be expected. However, I was surprised that "read-in-2015", "read-in-2016", and "read-in-2014" made the list of the top 30 most popular tags. People must love categorizing their bookshelves by date, which I did not expect.
 
-- "fiction" and adult" were some of the first few genre tags to appear. And of course, "fantasy" and romance" made an appearance at ranks 37 and 38 respectively.  
+-   "fiction" and adult" were some of the first few genre tags to appear. And of course, "fantasy" and romance" made an appearance at ranks 37 and 38 respectively.
 
-- And "young-adult" debuted at rank 49, just before "english". 
+-   And "young-adult" debuted at rank 49, just before "english".
 
 ### Part 2: Which are the highest rated young adult (YA) books?
 
-Now that I knew which were the most popular tags, I was curious which were the most higly rated YA books. Let's explore that. 
+Now that I knew which were the most popular tags, I was curious which were the most higly rated YA books. Let's explore that.
 
 ```{r, echo = FALSE}
 # Which books have a tag_name "ya"? 
@@ -595,17 +593,17 @@ books_and_tags_ya_new |>
 
 ```
 
-Much like for @tbl-1, I was unsurprised by the sheer amount of Harry Potter and Calvin and Hobbes books that made the list of the 100 most highly rated YA books. 
+Much like for @tbl-1, I was unsurprised by the sheer amount of Harry Potter and Calvin and Hobbes books that made the list of the 100 most highly rated YA books.
 
-Goodreads is, after all, based in America. 
+Goodreads is, after all, based in America.
 
-But both lists were remarkably similar in their top picks. So perhaps YA books tend to get higher average ratings than most other genres. 
+But both lists were remarkably similar in their top picks. So perhaps YA books tend to get higher average ratings than most other genres.
 
 ### Part 3: What years were young adult (YA) books published in?
 
-This is something I've always been curious about. YA novels are, by name, *young adult* novels. They were written for young adults. And that's a trend that has been going on for a long time. 
+This is something I've always been curious about. YA novels are, by name, *young adult* novels. They were written for young adults. And that's a trend that has been going on for a long time.
 
-Naturally, I was curious about how many books (and how ancient these books) have been tagged by Goodreads users as YA books. 
+Naturally, I was curious about how many books (and how ancient these books) have been tagged by Goodreads users as YA books.
 
 ```{r, echo = FALSE}
 #| label: fig-4
@@ -626,14 +624,13 @@ books_and_tags_ya_new |>
 
 ```
 
-It's quite funny to me that books published as far back as -1750 have been categorized by Goodreads users as YA books. But that's the beauty of the genre. It continues to evolve. 
-
+It's quite funny to me that books published as far back as -1750 have been categorized by Goodreads users as YA books. But that's the beauty of the genre. It continues to evolve.
 
 ### Part 4: Which YA books have more ratings?
 
-There is, of course, one final question I need to know the answer to — the question that started this Goodreads data exploration when I searched around for the next unique YA book I should check out and realized there was a more efficient way to go about this than asking everyone I knew. 
+There is, of course, one final question I need to know the answer to --- the question that started this Goodreads data exploration when I searched around for the next unique YA book I should check out and realized there was a more efficient way to go about this than asking everyone I knew.
 
-Perhaps I should have simply created a scatterplot to see what years I was missing from my YA repertoire. 
+Perhaps I should have simply created a scatterplot to see what years I was missing from my YA repertoire.
 
 ```{r, echo = FALSE}
 #| label: fig-5
@@ -657,21 +654,21 @@ Which YA books have the most ratings? It would appear that the years after 1750 
 
 ## Conclusion
 
-For anyone who loves books, this Goodreads dataset holds a treasure trove of information. 
+For anyone who loves books, this Goodreads dataset holds a treasure trove of information.
 
-Through these data explorations, I answered everything I've ever wondered about Goodreads user habits, user tag trends, YA book trends, and more. 
+Through these data explorations, I answered everything I've ever wondered about Goodreads user habits, user tag trends, YA book trends, and more.
 
 Among other things, I learned that:
 
-- Goodreads users don't love-rate or hate-rate books. 
+-   Goodreads users don't love-rate or hate-rate books.
 
-- Most books on Goodreads are written in English, but Arabic also appeared as a top 5 language. 
+-   Most books on Goodreads are written in English, but Arabic also appeared as a top 5 language.
 
-- "young-adult" is the 49th most popular tag.
+-   "young-adult" is the 49th most popular tag.
 
-- YA books have been published as far back as -1750. 
+-   YA books have been published as far back as -1750.
 
-Working with this dataset has taught me so much about Goodreads, book trends, and data exploration. I've learned so many interesting things from this dataset. And best of all, I know which books to read next. 
+Working with this dataset has taught me so much about Goodreads, book trends, and data exploration. I've learned so many interesting things from this dataset. And best of all, I know which books to read next.
 
 # References
 
